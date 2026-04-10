@@ -24,7 +24,7 @@ const sections: SectionData[] = [
     title: 'Currency & Security Printing',
     description:
       'We are a global logistics and investment firm, creating connections that power the future of trade.',
-    modelPath: '/Note_printer-transformed.glb',
+    modelPath: '/Note_printer.glb',
     modelScale: 1.3,
     modelPosition: [2, -0.2, -10], // Centered
     rotationOffset: [0.2, -0.8, 0],
