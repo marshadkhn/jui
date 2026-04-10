@@ -50,7 +50,7 @@ const sections: SectionData[] = [
     modelScale: 0.8,
     modelPosition: [3, 1, -11], // Fixed depth (it was 3, which was too close)
     rotationOffset: [0.5, 0, -Math.PI / 4],
-    shouldSpin: false,
+    spinSpeed: 0.2,
   },
 ];
 
