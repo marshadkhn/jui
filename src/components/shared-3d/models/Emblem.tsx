@@ -9,6 +9,8 @@ import React from 'react'
 import { useGLTF } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 
+type GLTFAction = any
+
 type GLTFResult = GLTF & {
   nodes: {
     ['4795763_2518821']: THREE.Mesh
@@ -19,7 +21,7 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[]
 }
 
-export function Model(props: JSX.IntrinsicElements['group']) {
+export function Model(props: React.JSX.IntrinsicElements['group']) {
   const { nodes, materials } = useGLTF('/models/Emblem-transformed.glb') as unknown as GLTFResult
   return (
     <group {...props} dispose={null}>
