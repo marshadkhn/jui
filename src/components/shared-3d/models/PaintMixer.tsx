@@ -15,11 +15,11 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[]
 }
 
-export function Model(props: React.JSX.IntrinsicElements['group']) {
+export function Model({ isMobile, ...props }: React.JSX.IntrinsicElements['group'] & { isMobile?: boolean }) {
   const { nodes, materials } = useGLTF('/models/Paint_mixer-transformed.glb') as unknown as GLTFResult
   return (
     <group {...props} dispose={null}>
-      <mesh castShadow receiveShadow geometry={nodes.Cylinder001.geometry}>
+      <mesh castShadow={!isMobile} receiveShadow={!isMobile} geometry={nodes.Cylinder001.geometry}>
         <meshStandardMaterial 
           {...materials.Material}
           color="#00D1FF"
@@ -29,21 +29,24 @@ export function Model(props: React.JSX.IntrinsicElements['group']) {
           transparent
           opacity={0.9}
         />
-        {/* Holographic Wireframe Layer */}
-        <mesh geometry={nodes.Cylinder001.geometry}>
-          <meshStandardMaterial 
-            color="#00D1FF"
-            wireframe
-            transparent
-            opacity={0.2}
-            emissive="#00D1FF"
-            emissiveIntensity={0.5}
-          />
-        </mesh>
+        {/* Holographic Wireframe Layer - SKIP ON MOBILE */}
+        {!isMobile && (
+          <mesh geometry={nodes.Cylinder001.geometry}>
+            <meshStandardMaterial 
+              color="#00D1FF"
+              wireframe
+              transparent
+              opacity={0.2}
+              emissive="#00D1FF"
+              emissiveIntensity={0.5}
+            />
+          </mesh>
+        )}
       </mesh>
     </group>
   )
 }
+
 
 useGLTF.preload('/models/Paint_mixer-transformed.glb')
 

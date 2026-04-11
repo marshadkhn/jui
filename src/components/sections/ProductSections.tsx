@@ -148,7 +148,7 @@ const ProductSections = () => {
               </motion.div>
 
               {/* Text Content Overlay */}
-              <div className="max-w-7xl mx-auto w-full h-full z-10 flex flex-col md:flex-row items-center justify-between px-16 ">
+              <div className="max-w-7xl mx-auto w-full h-full z-10 flex flex-col md:flex-row items-center justify-between px-6 sm:px-16 ">
                 <motion.div
                   className="relative max-w-lg pointer-events-auto"
                   style={{ opacity: textOpacity, y: textY }}

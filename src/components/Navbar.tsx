@@ -14,7 +14,7 @@ const menuItems = [
 
 const Navbar = () => {
   return (
-    <nav className=" relative top-0 left-0 w-full z-50 flex items-center justify-between px-10 py-8 bg-transparent transition-all duration-300 backdrop-blur-[0px] hover:backdrop-blur-sm">
+    <nav className=" relative top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 py-6 md:py-8 bg-transparent transition-all duration-300 backdrop-blur-[0px] hover:backdrop-blur-sm">
       {/* Logo */}
       <div className="flex-1">
         <Link
@@ -33,7 +33,7 @@ const Navbar = () => {
       </div>
 
       {/* Navigation Links */}
-      <div className="flex items-center gap-10">
+      <div className="hidden md:flex items-center gap-10">
         {menuItems.map((item) => (
           <Link
             key={item.name}

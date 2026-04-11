@@ -9,7 +9,13 @@ import { Model as EmblemModel } from '../shared-3d/models/Emblem';
 const WhatWeDo = () => {
   const sectionRef = React.useRef<HTMLDivElement>(null);
 
+  const [isMobile, setIsMobile] = React.useState(false);
+  React.useEffect(() => {
+    setIsMobile(window.innerWidth < 1024);
+  }, []);
+
   // Track scroll progress specifically for this section
+
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"]
@@ -23,12 +29,14 @@ const WhatWeDo = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[100vh] w-full flex flex-col lg:flex-row items-center justify-between px-16 lg:px-40 snap-start bg-transparent overflow-hidden"
+      className="relative h-[100vh] w-full flex flex-col lg:flex-row items-center justify-between px-6 sm:px-16 lg:px-40 snap-start bg-transparent overflow-hidden"
     >
+
       <motion.div
-        className="absolute inset-0 w-full h-full flex flex-col  lg:flex-row items-center justify-between px-16 lg:px-40 "
+        className="absolute inset-0 w-full h-full flex flex-col  lg:flex-row items-center justify-between px-6 sm:px-16 lg:px-40 "
         style={{ opacity, y: yOffset, scale: scaleEffect }}
       >
+
         {/* Ashoka Emblem on the Left */}
         <motion.div
           initial={{ opacity: 0, x: -100, scale: 0.8 }}
@@ -41,12 +49,17 @@ const WhatWeDo = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] lg:w-[450px] h-[300px] lg:h-[450px] bg-cyan-500/20 blur-[100px] rounded-full" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150px] lg:w-[250px] h-[150px] lg:h-[250px] bg-cyan-400/10 blur-[60px] rounded-full" />
 
-          <div className="w-full h-[400px] lg:h-[600px] relative z-10 flex justify-center items-center">
-            <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 8], fov: 35 }}>
+          <div className="w-full h-[300px] lg:h-[600px] relative z-10 flex justify-center items-center">
+            <Canvas 
+              dpr={isMobile ? [1, 1] : [1, 2]} 
+              camera={{ position: [0, 0, 8], fov: 35 }}
+              gl={{ antialias: !isMobile, alpha: true, powerPreference: "high-performance" }}
+            >
               <Suspense fallback={null}>
                 <ambientLight intensity={0.5} />
                 <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1.5} />
                 <pointLight position={[-10, -10, -10]} intensity={1} color="#00f2ff" />
+
 
                 <Center position={[-1, 0.5, 0]}>
                   <Float
@@ -62,16 +75,19 @@ const WhatWeDo = () => {
                   </Float>
                 </Center>
 
-                <Environment preset="city" />
-                <ContactShadows
-                  position={[0, -1.5, 0]}
-                  opacity={0.4}
-                  scale={10}
-                  blur={2.5}
-                  far={4}
-                />
+                <Environment preset="city" environmentIntensity={0.2} />
+                {!isMobile && (
+                  <ContactShadows
+                    position={[0, -1.5, 0]}
+                    opacity={0.4}
+                    scale={10}
+                    blur={2.5}
+                    far={4}
+                  />
+                )}
               </Suspense>
             </Canvas>
+
           </div>
         </motion.div>
 

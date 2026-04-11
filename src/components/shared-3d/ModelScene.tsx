@@ -6,8 +6,9 @@ import { PerspectiveCamera, Float, Stars, useGLTF, Environment, Points, PointMat
 import * as THREE from 'three';
 import { transform, useScroll, MotionValue } from 'framer-motion';
 
-// Kick off GLB download
-useGLTF.preload('/Earth5.glb');
+// Kick off GLB download in a more controlled manner if needed
+// useGLTF.preload('/Earth5.glb');
+
 
 /**
  * Procedural Cosmic Smoke Texture
@@ -63,17 +64,18 @@ useGLTF.preload('/Earth5.glb');
  * SpaceParticles handles both background "Dust" and foreground "Clouds".
  * These move on the Z-axis based on scroll to create a flying effect.
  */
-const SpaceParticles = ({ globalScroll }: { globalScroll: any }) => {
+const SpaceParticles = ({ globalScroll, isMobile }: { globalScroll: any, isMobile: boolean }) => {
   const pointsRef = useRef<THREE.Points>(null);
   const cloudRef = useRef<THREE.Points>(null);
   const atmosphereRef = useRef<THREE.Points>(null);
   // const smokeMap = useSmokeTexture();
 
-  // Background Dust
-  const dustCount = 4000;
+  // Background Dust - Reduced count for mobile
+  const dustCount = isMobile ? 1500 : 4000;
   const dustPositions = useMemo(() => {
     const pos = new Float32Array(dustCount * 3);
     for (let i = 0; i < dustCount; i++) {
+
       pos[i * 3] = (Math.random() - 0.5) * 60;
       pos[i * 3 + 1] = (Math.random() - 0.5) * 60;
       pos[i * 3 + 2] = (Math.random() - 0.5) * 120 - 60;
@@ -81,8 +83,9 @@ const SpaceParticles = ({ globalScroll }: { globalScroll: any }) => {
     return pos;
   }, []);
 
-  // Foreground Cloud Transition Particles - Increased count for thicker fog
-  const cloudCount = 450;
+  // Foreground Cloud Transition Particles - Reduced count for mobile
+  const cloudCount = isMobile ? 150 : 450;
+
   const cloudPositions = useMemo(() => {
     const pos = new Float32Array(cloudCount * 3);
     for (let i = 0; i < cloudCount; i++) {
@@ -151,6 +154,7 @@ const SpaceParticles = ({ globalScroll }: { globalScroll: any }) => {
     </>
   );
 };
+
 
 // EarthMesh — normalized synchronously via useMemo
 const EarthMesh = ({ indiaProgress }: { indiaProgress: any }) => {
@@ -267,6 +271,17 @@ const GlobeModel = ({ globalScroll, indiaProgress }: { globalScroll: MotionValue
 };
 
 const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<number>; indiaRef: React.RefObject<HTMLDivElement | null> }) => {
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const { scrollYProgress: indiaProgress } = useScroll({
     target: indiaRef,
     offset: ["start end", "center center"]
@@ -274,23 +289,42 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
 
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none z-[5]">
-      <Canvas shadows gl={{ antialias: true, alpha: true }}>
+      <Canvas 
+        shadows={!isMobile} 
+        gl={{ 
+          antialias: !isMobile, 
+          alpha: true,
+          powerPreference: "high-performance",
+          // Descale DPR on mobile to save memory and GPU
+          precision: isMobile ? 'mediump' : 'highp'
+        }}
+        dpr={isMobile ? [1, 1] : [1, 2]}
+      >
         <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
         <ambientLight intensity={0.15} />
         <pointLight position={[10, 10, 10]} intensity={1} color="#ffffff" />
-        <pointLight position={[-10, -10, -5]} intensity={0.3} color="#ffffff" /> {/* Changed from cyan to white */}
+        <pointLight position={[-10, -10, -5]} intensity={0.3} color="#ffffff" /> 
         <spotLight position={[0, 20, 10]} angle={0.25} penumbra={1} intensity={0.8} color="#ffffff" />
 
         <Suspense fallback={null}>
-          <SpaceParticles globalScroll={globalScroll} />
+          <SpaceParticles globalScroll={globalScroll} isMobile={isMobile} />
           <GlobeModel globalScroll={globalScroll} indiaProgress={indiaProgress} />
           <Environment preset="night" />
         </Suspense>
 
-        <Stars radius={200} depth={50} count={5000} factor={6} saturation={0} fade speed={1} />
+        <Stars 
+          radius={200} 
+          depth={50} 
+          count={isMobile ? 1500 : 5000} 
+          factor={isMobile ? 4 : 6} 
+          saturation={0} 
+          fade 
+          speed={1} 
+        />
       </Canvas>
     </div>
   );
 };
+
 
 export default ModelScene;

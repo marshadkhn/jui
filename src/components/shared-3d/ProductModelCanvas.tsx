@@ -61,8 +61,9 @@ const GltfModel = ({
   position = [0, 0, 0],
   rotationOffset = [0, 0, 0],
   shouldSpin = true,
-  spinSpeed = 0.15
-}: ModelProps) => {
+  spinSpeed = 0.15,
+  isMobile = false
+}: ModelProps & { isMobile?: boolean }) => {
   const modelRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
@@ -72,11 +73,11 @@ const GltfModel = ({
   });
 
   const SelectedModel = useMemo(() => {
-    if (path.includes('Note_printer')) return <NotePrinter />;
-    if (path.includes('Card')) return <Card />;
-    if (path.includes('Paint_mixer')) return <PaintMixer />;
+    if (path.includes('Note_printer')) return <NotePrinter isMobile={isMobile} />;
+    if (path.includes('Card')) return <Card isMobile={isMobile} />;
+    if (path.includes('Paint_mixer')) return <PaintMixer isMobile={isMobile} />;
     return null;
-  }, [path]);
+  }, [path, isMobile]);
 
   return (
     <Center position={position}>
@@ -89,7 +90,13 @@ const GltfModel = ({
   );
 };
 
+
 const ProductModelCanvas = (props: ModelProps) => {
+  const [isMobile, setIsMobile] = React.useState(false);
+  React.useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+
   // Ultra-Fast synchronized reveal: Hits full size by 0.2 progress
   const modelDynamicScale = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
@@ -120,7 +127,15 @@ const ProductModelCanvas = (props: ModelProps) => {
         }}
       />
 
-      <Canvas dpr={[1, 2]} shadows gl={{ antialias: true, alpha: true }}>
+      <Canvas 
+        dpr={isMobile ? [1, 1] : [1, 2]} 
+        shadows={!isMobile} 
+        gl={{ 
+          antialias: !isMobile, 
+          alpha: true,
+          powerPreference: "high-performance"
+        }}
+      >
         <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={22} />
 
         <Suspense fallback={null}>
@@ -129,22 +144,25 @@ const ProductModelCanvas = (props: ModelProps) => {
           <Float speed={0.3} rotationIntensity={0.2} floatIntensity={0.2}>
             {/* Pass the animated scale value here */}
             <DynamicScaleWrapper scaleValue={modelDynamicScale}>
-              <GltfModel {...props} />
+              <GltfModel {...props} isMobile={isMobile} />
             </DynamicScaleWrapper>
           </Float>
 
           <Environment preset="studio" environmentIntensity={0.2} />
 
-          <ContactShadows
-            position={[0, -2, 0]}
-            opacity={0.4}
-            scale={10}
-            blur={2}
-            far={5}
-          />
+          {!isMobile && (
+            <ContactShadows
+              position={[0, -2, 0]}
+              opacity={0.4}
+              scale={10}
+              blur={2}
+              far={5}
+            />
+          )}
 
         </Suspense>
       </Canvas>
+
     </div>
   );
 };

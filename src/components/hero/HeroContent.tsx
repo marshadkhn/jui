@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 const HeroContent = () => {
   return (
-    <section className="h-screen w-full flex items-center px-16 lg:px-24 snap-start">
+    <section className="h-screen w-full flex items-center px-6 sm:px-16 lg:px-24 snap-start">
       <motion.div
         className="max-w-xl z-10"
         initial={{ opacity: 0, y: 48 }}

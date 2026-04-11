@@ -20,7 +20,7 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[]
 }
 
-export function Model(props: React.JSX.IntrinsicElements['group']) {
+export function Model({ isMobile, ...props }: React.JSX.IntrinsicElements['group'] & { isMobile?: boolean }) {
   const { nodes, materials } = useGLTF('/models/Card-transformed.glb') as unknown as GLTFResult
   return (
     <group {...props} dispose={null}>

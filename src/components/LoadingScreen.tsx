@@ -25,6 +25,24 @@ const LoadingScreen = ({ onComplete }: Props) => {
     }
   }, [realProgress]);
 
+  const [showSkip, setShowSkip] = useState(false);
+
+  useEffect(() => {
+    // Show skip button after 12 seconds to prevent being stuck forever
+    const timer = setTimeout(() => {
+      if (maxProgress.current < 100) {
+        setShowSkip(true);
+      }
+    }, 12000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleFinish = () => {
+    setProgress(100);
+    setVisible(false);
+    setTimeout(onComplete, 900);
+  };
+
   useEffect(() => {
     const DURATION = 2500; // ms for the "simulated" part of the loader
     const startTime = Date.now();
@@ -60,6 +78,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
 
     requestAnimationFrame(tick);
   }, [onComplete]);
+
 
   const dashOffset = CIRC * (1 - progress / 100);
 
@@ -132,6 +151,18 @@ const LoadingScreen = ({ onComplete }: Props) => {
             Loading experience
           </motion.p>
 
+          {/* Skip functionality for slow connections */}
+          {showSkip && (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              onClick={handleFinish}
+              className="mt-8 px-6 py-2 border border-[#00D1FF]/30 rounded-full text-[#00D1FF]/70 text-[10px] font-bold tracking-widest uppercase hover:bg-[#00D1FF]/10 transition-colors cursor-pointer"
+            >
+              Skip and Enter
+            </motion.button>
+          )}
+
           {/* Decorative horizontal line */}
           <motion.div
             className="mt-4 h-px bg-gradient-to-r from-transparent via-[#00D1FF]/40 to-transparent"
@@ -139,6 +170,7 @@ const LoadingScreen = ({ onComplete }: Props) => {
             animate={{ width: 160 }}
             transition={{ delay: 0.3, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
           />
+
         </motion.div>
       )}
     </AnimatePresence>
