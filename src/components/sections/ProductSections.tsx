@@ -24,9 +24,9 @@ const sections: SectionData[] = [
     title: 'Currency & Security Printing',
     description:
       'We are a global logistics and investment firm, creating connections that power the future of trade.',
-    modelPath: '/Note_printer.glb',
-    modelScale: 1.3,
-    modelPosition: [2, -0.2, -10], // Centered
+    modelPath: '/models/Note_printer.glb',
+    modelScale: 2,
+    modelPosition: [3.5, -0.4, -10], // Centered
     rotationOffset: [0.2, -0.8, 0],
     shouldSpin: false,
   },
@@ -35,7 +35,7 @@ const sections: SectionData[] = [
     title: 'Card Industry Technology',
     description:
       'We are a global logistics and investment firm, creating connections that power the future of trade.',
-    modelPath: '/Card.glb',
+    modelPath: '/models/Card.glb',
     modelScale: 2,
     modelPosition: [2, 0, -12], // Same depth for consistency
     rotationOffset: [0.5, 0.7, 0],
@@ -46,13 +46,14 @@ const sections: SectionData[] = [
     title: 'Paints',
     description:
       'We are a global logistics and investment firm, creating connections that power the future of trade.',
-    modelPath: '/Paint_mixer.glb',
+    modelPath: '/models/Paint_mixer.glb',
     modelScale: 0.8,
-    modelPosition: [3, 1, -11], // Fixed depth (it was 3, which was too close)
+    modelPosition: [3, 1, -11], // Fixed depth
     rotationOffset: [0.5, 0, -Math.PI / 4],
     spinSpeed: 0.2,
   },
 ];
+
 
 const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -103,9 +104,10 @@ const ProductSections = () => {
 
           // Visibility: Faster transitions
           const opacity = useTransform(globalScroll,
-            [start, mid - window / 2, mid + window / 2, adjustedEnd],
+            [start, mid - window / 4, mid + window / 4, adjustedEnd],
             [0, 1, 1, 0]
           );
+
 
           // Fly-By Z: Moves through center focus more actively
           const z = useTransform(globalScroll,
@@ -146,9 +148,9 @@ const ProductSections = () => {
               </motion.div>
 
               {/* Text Content Overlay */}
-              <div className="max-w-7xl mx-auto w-full h-full z-10 flex flex-col md:flex-row items-center justify-between px-10 lg:px-20">
+              <div className="max-w-7xl mx-auto w-full h-full z-10 flex flex-col md:flex-row items-center justify-between px-16 ">
                 <motion.div
-                  className="relative max-w-md pointer-events-auto"
+                  className="relative max-w-lg pointer-events-auto"
                   style={{ opacity: textOpacity, y: textY }}
                 >
                   {/* Number */}

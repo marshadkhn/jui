@@ -21,7 +21,7 @@ type GLTFResult = GLTF & {
 }
 
 export function Model(props: React.JSX.IntrinsicElements['group']) {
-  const { nodes, materials } = useGLTF('/Card-transformed.glb') as unknown as GLTFResult
+  const { nodes, materials } = useGLTF('/models/Card-transformed.glb') as unknown as GLTFResult
   return (
     <group {...props} dispose={null}>
       <mesh castShadow receiveShadow geometry={nodes.Plane.geometry} material={materials.WF} />
@@ -29,4 +29,5 @@ export function Model(props: React.JSX.IntrinsicElements['group']) {
   )
 }
 
-useGLTF.preload('/Card-transformed.glb')
+useGLTF.preload('/models/Card-transformed.glb')
+

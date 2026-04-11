@@ -16,7 +16,7 @@ type GLTFResult = GLTF & {
 }
 
 export function Model(props: React.JSX.IntrinsicElements['group']) {
-  const { nodes, materials } = useGLTF('/Paint_mixer-transformed.glb') as unknown as GLTFResult
+  const { nodes, materials } = useGLTF('/models/Paint_mixer-transformed.glb') as unknown as GLTFResult
   return (
     <group {...props} dispose={null}>
       <mesh castShadow receiveShadow geometry={nodes.Cylinder001.geometry}>
@@ -45,5 +45,6 @@ export function Model(props: React.JSX.IntrinsicElements['group']) {
   )
 }
 
-useGLTF.preload('/Paint_mixer-transformed.glb')
+useGLTF.preload('/models/Paint_mixer-transformed.glb')
+
 

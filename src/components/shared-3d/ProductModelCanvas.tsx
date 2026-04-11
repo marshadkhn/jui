@@ -10,9 +10,9 @@ import { Model as PaintMixer } from './models/PaintMixer';
 
 // Preload all product models so they are ready by the time the loader finishes
 // Preload transformed models
-useGLTF.preload('/Note_printer-transformed.glb');
-useGLTF.preload('/Card-transformed.glb');
-useGLTF.preload('/Paint_mixer-transformed.glb');
+useGLTF.preload('/models/Note_printer_draco.glb');
+useGLTF.preload('/models/Card-transformed.glb');
+useGLTF.preload('/models/Paint_mixer-transformed.glb');
 
 import { MotionValue, useTransform, motion, useMotionTemplate } from 'framer-motion';
 
@@ -32,19 +32,20 @@ interface ModelProps {
  */
 const AtmosphericLights = ({ progress }: { progress?: MotionValue<number> }) => {
   const reveal = useTransform(
-    progress || new THREE.Vector3(0.5, 0, 0) as any,
-    [0, 0.5, 1],
-    [0.1, 1, 0.1]
+    progress || new THREE.Vector3(0.5, 0, 0) as any, 
+    [0.0, 0.4, 0.6, 1.0], 
+    [0, 1, 1, 0]
   );
-
-  const intensity = useRef(0.5);
+  
+  const intensity = useRef(0);
   useFrame(() => { intensity.current = reveal.get(); });
-
+  
   return (
     <>
       <ambientLight intensity={0.3 * intensity.current} />
       <directionalLight position={[10, 10, 10]} intensity={1.5 * intensity.current} />
-      <pointLight position={[-10, 10, 10]} intensity={intensity.current} color="#ffffff" distance={50} />
+      {/* Neutral highlight instead of blue */}
+      <pointLight position={[-10, 5, 2]} intensity={intensity.current * 1.5} color="#ffffff" />
     </>
   );
 };
@@ -89,16 +90,16 @@ const GltfModel = ({
 };
 
 const ProductModelCanvas = (props: ModelProps) => {
-  // Ultra-Fast synchronized reveal: Hits full size by 0.08 progress
+  // Ultra-Fast synchronized reveal: Hits full size by 0.2 progress
   const modelDynamicScale = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
-    [0.0, 0.08, 0.9, 1.0],
-    [0.01, props.scale || 1, props.scale || 1, (props.scale || 1) * 12]
+    [0.0, 0.2, 0.85, 1.0],
+    [0, props.scale || 1, props.scale || 1, (props.scale || 1) * 12]
   );
 
   const auraScale = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
-    [0.0, 0.08, 0.9, 1.0],
+    [0.0, 0.2, 0.9, 1.0],
     [0.8, 1.2, 1.2, 5]
   );
 

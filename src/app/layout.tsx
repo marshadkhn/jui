@@ -1,23 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/footer/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const Montserrat = localFont({
+  src: "../../public/montserrat.regular.otf",
+  variable: "--font-montserrat",
 });
 
 export const metadata: Metadata = {
   title: "JUI - Futuristic Space Design",
   description: "A premium futuristic space-themed experience.",
 };
+
+import SmoothScroll from "@/components/providers/SmoothScroll";
 
 export default function RootLayout({
   children,
@@ -27,14 +24,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-accent/30`}
+      className={`${Montserrat.variable} antialiased selection:bg-accent/30`}
     >
-      <body className="min-h-screen bg-background text-foreground overflow-x-hidden snap-y snap-proximity scroll-smooth">
-        <Navbar />
-        {children}
-        <Footer />
+      <body className="min-h-screen bg-background text-foreground overflow-x-hidden">
+        <SmoothScroll>
+          <Navbar />
+          {children}
+          {/* <Footer /> */}
+        </SmoothScroll>
       </body>
     </html>
   );
 }
+
 
