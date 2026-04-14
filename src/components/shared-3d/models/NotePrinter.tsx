@@ -29,13 +29,13 @@ const BlueprintMesh = ({ geometry, material, isMobile, ...props }: any) => (
     {/* Technical Wireframe Overlay - SKIP ON MOBILE */}
     {!isMobile && (
       <mesh geometry={geometry}>
-        <meshStandardMaterial 
-          color="#00D1FF" 
-          wireframe 
-          transparent 
-          opacity={0.3} 
-          emissive="#00D1FF" 
-          emissiveIntensity={0.5} 
+        <meshStandardMaterial
+          color="#00D1FF"
+          wireframe
+          transparent
+          opacity={0.3}
+          emissive="#00D1FF"
+          emissiveIntensity={0.5}
         />
       </mesh>
     )}
@@ -50,17 +50,23 @@ export function Model({ isMobile, ...props }: React.JSX.IntrinsicElements['group
       <BlueprintMesh name="Cylinder034" castShadow={!isMobile} receiveShadow={!isMobile} geometry={nodes.Cylinder034.geometry} material={materials.Black_Metal} position={[-0.442, -0.535, 0]} scale={0.998} isMobile={isMobile} />
       <BlueprintMesh name="Cylinder035" castShadow={!isMobile} receiveShadow={!isMobile} geometry={nodes.Cylinder035.geometry} material={materials.Material} position={[-0.442, -0.535, 0]} scale={1.001} isMobile={isMobile} />
       <BlueprintMesh name="Cylinder028" castShadow={!isMobile} receiveShadow={!isMobile} geometry={nodes.Cylinder028.geometry} material={materials.Material} position={[0, 2.559, 0]} rotation={[0, 0, -Math.PI / 2]} scale={[1.005, 0.275, 1.005]} isMobile={isMobile} />
-      
+
       <group name="Cube012" position={[0, 2.559, 0]} rotation={[-0.028, 0, 0]}>
         <BlueprintMesh name="Cube013_1" castShadow={!isMobile} receiveShadow={!isMobile} geometry={nodes.Cube013_1.geometry} material={materials.Black_Metal} isMobile={isMobile} />
         {/* Glow Logo Special */}
         <mesh name="Cube013_2" castShadow={!isMobile} receiveShadow={!isMobile} geometry={nodes.Cube013_2.geometry}>
-          <meshStandardMaterial 
-            {...materials.Logo} 
-            color="#00D1FF" 
-            emissive="#00D1FF" 
-            emissiveIntensity={2} 
-            toneMapped={false} 
+          <meshStandardMaterial
+            {...materials.Logo}
+            color="#00D1FF"
+            emissive="#00D1FF"
+            emissiveIntensity={10}
+            toneMapped={false}
+            transparent={true}
+            opacity={5}
+            side={THREE.DoubleSide}
+            polygonOffset
+            polygonOffsetFactor={-1}
+            polygonOffsetUnits={-1}
           />
         </mesh>
       </group>

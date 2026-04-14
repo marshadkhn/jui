@@ -2,14 +2,16 @@
 
 import React, { Suspense, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { useGLTF, Float, PerspectiveCamera, Environment, ContactShadows, Center } from '@react-three/drei';
+import { useGLTF, Float, PerspectiveCamera, Environment, ContactShadows, Center, AdaptiveDpr, AdaptiveEvents } from '@react-three/drei';
 import * as THREE from 'three';
 import { Model as NotePrinter } from './models/NotePrinter';
+import { NotePrinterAnimated } from './models/NotePrinterAnimated';
 import { Model as Card } from './models/Card';
 import { Model as PaintMixer } from './models/PaintMixer';
 
 // Preload all product models so they are ready by the time the loader finishes
 // Preload transformed models
+useGLTF.preload('/AnimatedModels/Note_printer2-transformed.glb');
 useGLTF.preload('/models/Note_printer_draco.glb');
 useGLTF.preload('/models/Card-transformed.glb');
 useGLTF.preload('/models/Paint_mixer-transformed.glb');
@@ -32,14 +34,14 @@ interface ModelProps {
  */
 const AtmosphericLights = ({ progress }: { progress?: MotionValue<number> }) => {
   const reveal = useTransform(
-    progress || new THREE.Vector3(0.5, 0, 0) as any, 
-    [0.0, 0.4, 0.6, 1.0], 
+    progress || new THREE.Vector3(0.5, 0, 0) as any,
+    [0.0, 0.4, 0.6, 1.0],
     [0, 1, 1, 0]
   );
-  
+
   const intensity = useRef(0);
   useFrame(() => { intensity.current = reveal.get(); });
-  
+
   return (
     <>
       <ambientLight intensity={0.3 * intensity.current} />
@@ -73,6 +75,7 @@ const GltfModel = ({
   });
 
   const SelectedModel = useMemo(() => {
+    if (path.includes('AnimatedModels/Note_printer')) return <NotePrinterAnimated />;
     if (path.includes('Note_printer')) return <NotePrinter isMobile={isMobile} />;
     if (path.includes('Card')) return <Card isMobile={isMobile} />;
     if (path.includes('Paint_mixer')) return <PaintMixer isMobile={isMobile} />;
@@ -100,20 +103,26 @@ const ProductModelCanvas = (props: ModelProps) => {
   // Ultra-Fast synchronized reveal: Hits full size by 0.2 progress
   const modelDynamicScale = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
-    [0.0, 0.2, 0.85, 1.0],
-    [0, props.scale || 1, props.scale || 1, (props.scale || 1) * 12]
+    [0.0, 0.15, 0.85, 1.0],
+    [0.6, 0.8, props.scale || 1, (props.scale || 1) * 12]
   );
 
   const auraScale = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
     [0.0, 0.2, 0.9, 1.0],
-    [0.8, 1.2, 1.2, 5]
+    [0, 1.2, 1.2, 5]
   );
 
   const auraOpacity = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
     [0.0, 0.08, 0.9, 1.0],
-    [0, 1, 1, 0]
+    [0, 0, 1, 0]
+  );
+
+  const modelOpacity = useTransform(
+    props.progress || new THREE.Vector3(0.5, 0, 0) as any,
+    [0.0, 0.6, 0.9, 1.0],
+    [0, 0.5, 1, 0]
   );
 
   return (
@@ -127,25 +136,31 @@ const ProductModelCanvas = (props: ModelProps) => {
         }}
       />
 
-      <Canvas 
-        dpr={isMobile ? [1, 1] : [1, 2]} 
-        shadows={!isMobile} 
-        gl={{ 
-          antialias: !isMobile, 
+      <Canvas
+        dpr={isMobile ? 1 : [1, 1.5]}
+        shadows={!isMobile}
+        performance={{ min: 0.5 }}
+        gl={{
+          antialias: !isMobile,
           alpha: true,
-          powerPreference: "high-performance"
+          powerPreference: "high-performance",
+          stencil: false,
+          depth: true
         }}
       >
         <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={22} />
 
         <Suspense fallback={null}>
+          <AdaptiveDpr pixelated />
+          <AdaptiveEvents />
+
           <AtmosphericLights progress={props.progress} />
 
           <Float speed={0.3} rotationIntensity={0.2} floatIntensity={0.2}>
-            {/* Pass the animated scale value here */}
-            <DynamicScaleWrapper scaleValue={modelDynamicScale}>
+            {/* Pass the animated scale and opacity values here */}
+            <DynamicMotionWrapper scaleValue={modelDynamicScale} opacityValue={modelOpacity}>
               <GltfModel {...props} isMobile={isMobile} />
-            </DynamicScaleWrapper>
+            </DynamicMotionWrapper>
           </Float>
 
           <Environment preset="studio" environmentIntensity={0.2} />
@@ -155,8 +170,9 @@ const ProductModelCanvas = (props: ModelProps) => {
               position={[0, -2, 0]}
               opacity={0.4}
               scale={10}
-              blur={2}
+              blur={2.5}
               far={5}
+              resolution={256}
             />
           )}
 
@@ -168,14 +184,19 @@ const ProductModelCanvas = (props: ModelProps) => {
 };
 
 /**
- * Small helper to apply MotionValue scale inside R3F loop
+ * Helper to apply MotionValue scale and visibility inside R3F loop
  */
-const DynamicScaleWrapper = ({ scaleValue, children }: { scaleValue: MotionValue<number>, children: React.ReactNode }) => {
+const DynamicMotionWrapper = ({ scaleValue, opacityValue, children }: { scaleValue: MotionValue<number>, opacityValue: MotionValue<number>, children: React.ReactNode }) => {
   const groupRef = useRef<THREE.Group>(null);
   useFrame(() => {
     if (groupRef.current) {
+      // Apply Scale
       const s = scaleValue.get();
       groupRef.current.scale.set(s, s, s);
+
+      // Apply Visibility/Opacity fallback
+      const o = opacityValue.get();
+      groupRef.current.visible = o > 0.001;
     }
   });
   return <group ref={groupRef}>{children}</group>;

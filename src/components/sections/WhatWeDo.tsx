@@ -114,14 +114,14 @@ const WhatWeDo = () => {
             <h2 className="text-white text-5xl lg:text-7xl font-bold tracking-tight">What we do</h2>
           </div>
 
-          <p className="text-[#EAF6FF] text-xl lg:text-2xl  leading-[1.4] mb-12">
+          <p className="text-white text-xl lg:text-2xl  leading-[1.4] mb-12">
             We provide diversified solutions specializing in currency & security printing materials, card industry technologies, and high-performance industrial coatings
           </p>
 
           <div className="flex items-center gap-4">
             <motion.button
               whileHover={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
-              className="w-14 h-14 border border-white/30 flex items-center justify-center transition-colors group"
+              className="w-14 h-14 border border-white/40 flex items-center justify-center transition-colors group"
             >
               <svg
                 width="24"
@@ -138,7 +138,7 @@ const WhatWeDo = () => {
 
             <motion.button
               whileHover={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
-              className="h-14 px-10 border border-white/30 text-white text-xs font-bold uppercase tracking-[0.2em] transition-colors"
+              className="h-14 px-10 border border-white/50 text-white text-xs font-bold uppercase tracking-[0.2em] transition-colors"
             >
               Contact Us
             </motion.button>

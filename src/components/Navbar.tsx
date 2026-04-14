@@ -38,7 +38,7 @@ const Navbar = () => {
           <Link
             key={item.name}
             href={item.href}
-            className="text-[0.9rem] font-semibold tracking-[0.2em] text-foreground hover:text-accent transition-all duration-100 ease-out whitespace-nowrap hover:scale-110 inline-block"
+            className="text-[0.9rem] font-semibold tracking-[0.2em] text-white hover:text-accent transition-all duration-100 ease-out whitespace-nowrap hover:scale-110 inline-block"
           >
             {item.name}
           </Link>

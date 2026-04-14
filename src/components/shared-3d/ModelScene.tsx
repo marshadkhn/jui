@@ -2,155 +2,192 @@
 
 import React, { useRef, Suspense, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { PerspectiveCamera, Float, Stars, useGLTF, Environment, Points, PointMaterial } from '@react-three/drei';
+import { PerspectiveCamera, Float, Stars, useGLTF, Environment, Points, PointMaterial, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import { transform, useScroll, MotionValue } from 'framer-motion';
 
 // Kick off GLB download in a more controlled manner if needed
 // useGLTF.preload('/Earth5.glb');
 
-
-/**
- * Procedural Cosmic Smoke Texture
- * Creates a wispy, irregular texture that looks like a nebula rather than a simple circle.
- */
-// const useSmokeTexture = () => {
-//   return useMemo(() => {
-//     const canvas = document.createElement('canvas');
-//     canvas.width = 512; // Higher res for better wispy edges
-//     canvas.height = 512;
-//     const ctx = canvas.getContext('2d');
-//     if (!ctx) return null;
-
-//     ctx.clearRect(0, 0, 512, 512);
-
-//     // Create a "Cosmic Brush" effect
-//     // We build 3-4 distinct "clumps" of gas
-//     const drawCloud = (centerX: number, centerY: number, baseRadius: number, color: string) => {
-//       for (let i = 0; i < 100; i++) { // More clumps for smoother gradients
-//         const x = centerX + (Math.random() - 0.5) * baseRadius * 2;
-//         const y = centerY + (Math.random() - 0.5) * baseRadius * 2;
-//         const r = baseRadius * (0.5 + Math.random() * 1.0);
-
-//         const gradient = ctx.createRadialGradient(x, y, 0, x, y, r);
-//         gradient.addColorStop(0, color);
-//         gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-//         ctx.globalAlpha = 0.02 + Math.random() * 0.04; // Even softer alpha
-//         ctx.fillStyle = gradient;
-//         ctx.beginPath();
-//         // More vertices for even less circular shapes
-//         for (let j = 0; j < 8; j++) {
-//           const angle = (j / 8) * Math.PI * 2;
-//           const wobble = r * (0.7 + Math.random() * 0.6);
-//           ctx.lineTo(x + Math.cos(angle) * wobble, y + Math.sin(angle) * wobble);
-//         }
-//         ctx.closePath();
-//         ctx.fill();
-//       }
-//     };
-
-//     drawCloud(256, 256, 150, 'rgba(80, 90, 100, 0.4)'); // Muted charcoal/grey base
-//     drawCloud(220, 280, 120, 'rgba(40, 45, 55, 0.3)');  // Darker smoke pockets
-//     drawCloud(300, 220, 110, 'rgba(120, 130, 145, 0.2)'); // Subtle bluish grey highlights
-//     drawCloud(256, 256, 80, 'rgba(200, 210, 220, 0.1)');  // Faint central mist
-
-//     const texture = new THREE.CanvasTexture(canvas);
-//     return texture;
-//   }, []);
-// };
-
 /**
  * SpaceParticles handles both background "Dust" and foreground "Clouds".
  * These move on the Z-axis based on scroll to create a flying effect.
  */
-const SpaceParticles = ({ globalScroll, isMobile }: { globalScroll: any, isMobile: boolean }) => {
+const NebulaMaterial = {
+  uniforms: {
+    uMap: { value: null },
+    uTime: { value: 0 },
+    uScroll: { value: 0 },
+    uIndia: { value: 0 }, // Progress toward India section
+    uColor: { value: new THREE.Color('#004D5E') },
+    uOpacity: { value: 0.75 } // More volumetric
+  },
+  vertexShader: `
+    uniform float uTime;
+    uniform float uScroll;
+    uniform float uIndia;
+    attribute float size;
+    attribute float rotation;
+    attribute vec3 drift;
+    varying float vRotation;
+    varying float vOpacity;
+
+    void main() {
+      vRotation = rotation + uTime * 0.05 * drift.x;
+      
+      // Independent slow drift
+      vec3 pos = position + drift * sin(uTime * 0.1);
+      
+      // Shifted Z-logic to place clouds "above" (in front of) Earth
+      float speedMult = 1.0 + drift.z * 0.3;
+      pos.z += uScroll * 110.0 - 75.0; // Pushed further back initially, moving closer to foreground
+      
+      // Pull clouds slightly toward center when Earth appears
+      pos.xy *= (1.0 - uIndia * 0.1);
+      
+      vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+      float dist = -mvPosition.z;
+      
+      // Correct for perspective
+      gl_PointSize = size * (450.0 / dist);
+      gl_Position = projectionMatrix * mvPosition;
+      
+      // Fade out when very close to camera or very far
+      vOpacity = smoothstep(2.0, 8.0, dist) * smoothstep(120.0, 90.0, dist);
+      
+      // Stronger atmosphere around Earth
+      float centerDist = length(pos.xy);
+      float atmosphericGlow = smoothstep(25.0, 0.0, centerDist) * uIndia;
+      vOpacity *= (1.0 + atmosphericGlow * 1.8);
+    }
+  `,
+  fragmentShader: `
+    uniform sampler2D uMap;
+    uniform vec3 uColor;
+    uniform float uOpacity;
+    varying float vRotation;
+    varying float vOpacity;
+
+    void main() {
+      float mid = 0.5;
+      vec2 rotatedUv = vec2(
+        cos(vRotation) * (gl_PointCoord.x - mid) + sin(vRotation) * (gl_PointCoord.y - mid) + mid,
+        cos(vRotation) * (gl_PointCoord.y - mid) - sin(vRotation) * (gl_PointCoord.x - mid) + mid
+      );
+      
+      vec4 tex = texture2D(uMap, rotatedUv);
+      float alpha = max(max(tex.r, tex.g), tex.b);
+      
+      if (alpha < 0.05) discard;
+      
+      gl_FragColor = vec4(uColor, alpha * uOpacity * vOpacity);
+    }
+  `
+};
+
+const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScroll: any, indiaProgress: any, isMobile: boolean }) => {
   const pointsRef = useRef<THREE.Points>(null);
   const cloudRef = useRef<THREE.Points>(null);
-  const atmosphereRef = useRef<THREE.Points>(null);
-  // const smokeMap = useSmokeTexture();
+  const smokeMap = useTexture('/smoke.png');
 
-  // Background Dust - Reduced count for mobile
-  const dustCount = isMobile ? 1500 : 4000;
+  // Background Dust
+  const dustCount = isMobile ? 3000 : 8000;
   const dustPositions = useMemo(() => {
     const pos = new Float32Array(dustCount * 3);
     for (let i = 0; i < dustCount; i++) {
-
-      pos[i * 3] = (Math.random() - 0.5) * 60;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 60;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 120 - 60;
+        pos[i * 3] = (Math.random() - 0.5) * 80;
+        pos[i * 3 + 1] = (Math.random() - 0.5) * 80;
+        pos[i * 3 + 2] = (Math.random() - 0.5) * 140 - 70;
     }
     return pos;
   }, []);
 
-  // Foreground Cloud Transition Particles - Reduced count for mobile
-  const cloudCount = isMobile ? 150 : 450;
-
-  const cloudPositions = useMemo(() => {
+  // Nebula Clouds - Strategic distribution
+  const cloudCount = isMobile ? 60 : 180;
+  const cloudData = useMemo(() => {
     const pos = new Float32Array(cloudCount * 3);
+    const sizes = new Float32Array(cloudCount);
+    const rotations = new Float32Array(cloudCount);
+    const drifts = new Float32Array(cloudCount * 3);
+
     for (let i = 0; i < cloudCount; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 80;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 80;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 100 - 40;
+      // Randomly cover the screen area
+      pos[i * 3] = (Math.random() - 0.5) * 140;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 140;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 120 - 40;
+
+      sizes[i] = isMobile ? (35 + Math.random() * 50) : (80 + Math.random() * 140);
+      rotations[i] = Math.random() * Math.PI * 2;
+      drifts[i * 3] = (Math.random() - 0.5) * 3;
+      drifts[i * 3 + 1] = (Math.random() - 0.5) * 3;
+      drifts[i * 3 + 2] = (Math.random() - 0.5) * 5; // Z Speed variation
     }
-    return pos;
-  }, []);
+    return { pos, sizes, rotations, drifts };
+  }, [cloudCount]);
 
   useFrame((state, delta) => {
     const scroll = globalScroll.get();
+    const indiaVal = indiaProgress.get();
 
-    // Constant slow travel + scroll boost for depth
+    // Constant slow travel for dust
     if (pointsRef.current) {
       pointsRef.current.position.z = (scroll * 120) % 60;
-      pointsRef.current.rotation.z += delta * 0.02;
+      pointsRef.current.rotation.z += delta * 0.01;
     }
 
-    // Cloud warp effect - smoother, more atmospheric transition
+    // Update nebula uniforms
     if (cloudRef.current) {
-      // Offset by 0.15 so it's visible at scroll 0
-      const t = ((scroll * 3.5) + 0.15) % 1;
-      cloudRef.current.position.z = t * 180 - 60;
-      cloudRef.current.scale.set(1.5 + t * 2.5, 1.5 + t * 2.5, 1);
-      cloudRef.current.rotation.z += delta * 0.05;
-
-      const mat = cloudRef.current.material as THREE.PointsMaterial;
-      // Increased opacity and better curve for persistent hero fog
-      mat.opacity = Math.pow(Math.sin(t * Math.PI), 1.2) * 0.45;
-    }
-
-
-    if (atmosphereRef.current) {
-      atmosphereRef.current.rotation.y += delta * 0.05;
+      const mat = cloudRef.current.material as THREE.ShaderMaterial;
+      if (mat.uniforms) {
+        mat.uniforms.uTime.value = state.clock.elapsedTime;
+        mat.uniforms.uScroll.value = scroll;
+        mat.uniforms.uIndia.value = indiaVal;
+      }
     }
   });
 
   return (
     <>
-      {/* Dense Background Space Dust */}
       <Points ref={pointsRef} positions={dustPositions} stride={3}>
         <PointMaterial
           transparent
-          color="#ffffff" // Changed from cyan to white
-          size={0.07}
+          color="#ffffff"
+          size={0.06}
           sizeAttenuation={true}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
+          opacity={0.8}
         />
       </Points>
 
-      {/* Cloud Warp Transition Layer */}
-      {/* <Points ref={cloudRef} positions={cloudPositions} stride={3}>
-        <PointMaterial
+      {/* Advanced Shader-based Nebula */}
+      <points ref={cloudRef}>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[cloudData.pos, 3]}
+          />
+          <bufferAttribute
+            attach="attributes-size"
+            args={[cloudData.sizes, 1]}
+          />
+          <bufferAttribute
+            attach="attributes-rotation"
+            args={[cloudData.rotations, 1]}
+          />
+          <bufferAttribute
+            attach="attributes-drift"
+            args={[cloudData.drifts, 3]}
+          />
+        </bufferGeometry>
+        <shaderMaterial
+          args={[NebulaMaterial]}
           transparent
-          color="#666666"
-          map={smokeMap}
-          size={90}
-          sizeAttenuation={true}
           depthWrite={false}
           blending={THREE.NormalBlending}
-          opacity={10}
+          uniforms-uMap-value={smokeMap}
         />
-      </Points> */}
+      </points>
     </>
   );
 };
@@ -234,11 +271,11 @@ const GlobeModel = ({ globalScroll, indiaProgress }: { globalScroll: MotionValue
   const meshGroupRef = useRef<THREE.Group>(null);
 
   // Use raw transform mappers for robust HMR / real-time updates
-  const getPosX = transform([0, 0.1, 0.16, 0.88, 1], [1.2, 0, 0, 0, 0]);
-  const getPosY = transform([0, 0.1, 0.16, 0.88, 1], [-4.7, 0, 0, 0, 0]);
-  const getOpacity = transform([0.12, 0.16, 0.94, 0.98], [1, 0, 0, 1]);
-  const getScale = transform([0, 0.1, 0.16, 0.88, 1], [3.5, 5, 35, 0.4, 1.2]);
-  const getPosZ = transform([0, 0.1, 0.16, 0.88, 1], [0, 5, 28, -15, 2]);
+  const getPosX = transform([0, 0.1, 0.16, 0.72, 0.78], [1.2, 0, 0, 0, 0]);
+  const getPosY = transform([0, 0.1, 0.16, 0.72, 0.78], [-4.7, 0, 0, 0, 0]);
+  const getOpacity = transform([0.12, 0.16, 0.72, 0.76], [1, 0, 0, 1]);
+  const getScale = transform([0, 0.1, 0.16, 0.72, 0.78], [3.5, 5, 35, 0.4, 1.2]);
+  const getPosZ = transform([0, 0.1, 0.16, 0.72, 0.78], [0, 5, 28, -15, 2]);
 
   useFrame(() => {
     if (!containerRef.current || !meshGroupRef.current) return;
@@ -289,10 +326,10 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
 
   return (
     <div className="fixed inset-0 w-full h-full pointer-events-none z-[5]">
-      <Canvas 
-        shadows={!isMobile} 
-        gl={{ 
-          antialias: !isMobile, 
+      <Canvas
+        shadows={!isMobile}
+        gl={{
+          antialias: !isMobile,
           alpha: true,
           powerPreference: "high-performance",
           // Descale DPR on mobile to save memory and GPU
@@ -303,23 +340,23 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
         <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
         <ambientLight intensity={0.15} />
         <pointLight position={[10, 10, 10]} intensity={1} color="#ffffff" />
-        <pointLight position={[-10, -10, -5]} intensity={0.3} color="#ffffff" /> 
+        <pointLight position={[-10, -10, -5]} intensity={0.3} color="#ffffff" />
         <spotLight position={[0, 20, 10]} angle={0.25} penumbra={1} intensity={0.8} color="#ffffff" />
 
         <Suspense fallback={null}>
-          <SpaceParticles globalScroll={globalScroll} isMobile={isMobile} />
+          <SpaceParticles globalScroll={globalScroll} indiaProgress={indiaProgress} isMobile={isMobile} />
           <GlobeModel globalScroll={globalScroll} indiaProgress={indiaProgress} />
           <Environment preset="night" />
         </Suspense>
 
-        <Stars 
-          radius={200} 
-          depth={50} 
-          count={isMobile ? 1500 : 5000} 
-          factor={isMobile ? 4 : 6} 
-          saturation={0} 
-          fade 
-          speed={1} 
+        <Stars
+          radius={300}
+          depth={100}
+          count={isMobile ? 4000 : 15000}
+          factor={isMobile ? 5 : 8}
+          saturation={1}
+          fade
+          speed={2}
         />
       </Canvas>
     </div>

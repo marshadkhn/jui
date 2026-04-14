@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/footer/Footer";
 
 const Montserrat = localFont({
   src: "../../public/montserrat.regular.otf",
@@ -10,7 +9,7 @@ const Montserrat = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "JUI - Futuristic Space Design",
+  title: "JUI",
   description: "A premium futuristic space-themed experience.",
 };
 
@@ -30,7 +29,6 @@ export default function RootLayout({
         <SmoothScroll>
           <Navbar />
           {children}
-          {/* <Footer /> */}
         </SmoothScroll>
       </body>
     </html>

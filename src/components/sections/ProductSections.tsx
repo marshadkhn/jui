@@ -24,8 +24,8 @@ const sections: SectionData[] = [
     title: 'Currency & Security Printing',
     description:
       'We are a global logistics and investment firm, creating connections that power the future of trade.',
-    modelPath: '/models/Note_printer.glb',
-    modelScale: 2,
+    modelPath: '/AnimatedModels/Note_printer2-transformed.glb',
+    modelScale: 2.2,
     modelPosition: [3.5, -0.4, -10], // Centered
     rotationOffset: [0.2, -0.8, 0],
     shouldSpin: false,
@@ -112,7 +112,7 @@ const ProductSections = () => {
           // Fly-By Z: Moves through center focus more actively
           const z = useTransform(globalScroll,
             [start, mid - window / 2, mid + window / 2, adjustedEnd],
-            [-800, 0, 0, 1500]
+            [-100, 0, 0, 1500]
           );
 
           // Text movement: Fades in/out snappier
@@ -173,7 +173,7 @@ const ProductSections = () => {
 
                   {/* Description */}
                   <p
-                    className="text-[#8BAAB8] text-base leading-relaxed mb-8"
+                    className="text-white/90 text-base leading-relaxed mb-8"
                     style={{ maxWidth: '340px' }}
                   >
                     {data.description}
@@ -181,10 +181,10 @@ const ProductSections = () => {
 
                   {/* CTA row */}
                   <div className="flex items-center gap-4 group cursor-pointer inline-flex">
-                    <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-white/50 group-hover:text-white/80 transition-colors">
+                    <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-white/80 group-hover:text-white transition-colors">
                       Lorem Ipsum
                     </span>
-                    <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white/40 transition-colors">
+                    <div className="w-6 h-6 rounded-full border border-white/40 flex items-center justify-center group-hover:border-white transition-colors">
                       <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
                         <path d="M1 5H9M9 5L6 2M9 5L6 8" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>

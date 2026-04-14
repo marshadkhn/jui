@@ -3,6 +3,7 @@ import { useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import LoadingScreen from "@/components/LoadingScreen";
 import IndiaSection from "@/components/sections/IndiaSection";
+import Footer from "@/components/Footer";
 import { useScroll } from "framer-motion";
 
 const Hero = dynamic(() => import("@/components/hero/Hero"), { ssr: false });
@@ -28,6 +29,7 @@ export default function Home() {
       <Hero indiaRef={indiaSectionRef} />
       <ProductSections />
       <IndiaSection ref={indiaSectionRef} />
+      <Footer />
 
       {/* Loader */}
       {!loadingDone && (
