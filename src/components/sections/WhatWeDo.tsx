@@ -50,15 +50,15 @@ const WhatWeDo = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150px] lg:w-[250px] h-[150px] lg:h-[250px] bg-cyan-400/10 blur-[60px] rounded-full" />
 
           <div className="w-full h-[300px] lg:h-[600px] relative z-10 flex justify-center items-center">
-            <Canvas 
-              dpr={isMobile ? [1, 1] : [1, 2]} 
+            <Canvas
+              dpr={isMobile ? [1, 1] : [1, 2]}
               camera={{ position: [0, 0, 8], fov: 35 }}
               gl={{ antialias: !isMobile, alpha: true, powerPreference: "high-performance" }}
             >
               <Suspense fallback={null}>
                 <ambientLight intensity={0.5} />
                 <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1.5} />
-                <pointLight position={[-10, -10, -10]} intensity={1} color="#00f2ff" />
+                <pointLight position={[-1, 0.5, 0]} intensity={1} color="#00f2ff" />
 
 
                 <Center position={[-1, 0.5, 0]}>
@@ -69,8 +69,8 @@ const WhatWeDo = () => {
                     floatingRange={[-0.2, 0.2]}
                   >
                     <EmblemModel
-                      scale={0.6}
-                      rotation={[0, 0, 0]} // Rotate Y to center the lion, Z to straighten
+                      scale={1}
+                      rotation={[0, 0.5, 0]} // Rotate Y to center the lion, Z to straighten
                     />
                   </Float>
                 </Center>
