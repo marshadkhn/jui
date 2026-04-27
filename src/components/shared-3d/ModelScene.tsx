@@ -1,6 +1,9 @@
 'use client';
 
-import React, { useRef, Suspense, useMemo } from 'react';
+import React, { useRef, Suspense, useMemo, useEffect, useState } from 'react';
+
+// 🔧 DEBUG — set to false (or remove) once you've found the right values
+const DEBUG_ROTATION = false;
 import { Canvas, useFrame } from '@react-three/fiber';
 import { PerspectiveCamera, Float, Stars, useGLTF, Environment, Points, PointMaterial, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
@@ -95,9 +98,9 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
   const dustPositions = useMemo(() => {
     const pos = new Float32Array(dustCount * 3);
     for (let i = 0; i < dustCount; i++) {
-        pos[i * 3] = (Math.random() - 0.5) * 80;
-        pos[i * 3 + 1] = (Math.random() - 0.5) * 80;
-        pos[i * 3 + 2] = (Math.random() - 0.5) * 140 - 70;
+      pos[i * 3] = (Math.random() - 0.5) * 80;
+      pos[i * 3 + 1] = (Math.random() - 0.5) * 80;
+      pos[i * 3 + 2] = (Math.random() - 0.5) * 140 - 70;
     }
     return pos;
   }, []);
@@ -194,9 +197,17 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
 
 
 // EarthMesh — normalized synchronously via useMemo
-const EarthMesh = ({ indiaProgress }: { indiaProgress: any }) => {
+const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any; debugRotX: number; debugRotY: number }) => {
   const rotRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF('/Earth5.glb');
+
+  // Start with India facing the camera so it's visible in the hero
+  useEffect(() => {
+    if (rotRef.current) {
+      rotRef.current.rotation.y = -1.520;
+      rotRef.current.rotation.x = -0.520;
+    }
+  }, []);
 
   const { normScale, offset } = useMemo(() => {
     // We want to measure the scene's intrinsic size.
@@ -237,6 +248,13 @@ const EarthMesh = ({ indiaProgress }: { indiaProgress: any }) => {
   useFrame((state, delta) => {
     if (!rotRef.current) return;
 
+    // 🔧 DEBUG: override rotation with slider values
+    if (DEBUG_ROTATION) {
+      rotRef.current.rotation.x = debugRotX;
+      rotRef.current.rotation.y = debugRotY;
+      return;
+    }
+
     const iProgress = indiaProgress.get();
 
     if (iProgress > 0.01) {
@@ -245,7 +263,7 @@ const EarthMesh = ({ indiaProgress }: { indiaProgress: any }) => {
       rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, getIndiaRotX(iProgress), 0.1);
     } else {
       // Natural slow background rotation
-      rotRef.current.rotation.y += delta * 0.05;
+      rotRef.current.rotation.y += delta * 0.01;
       rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, 0, 0.1);
     }
   });
@@ -266,7 +284,7 @@ const EarthMesh = ({ indiaProgress }: { indiaProgress: any }) => {
 };
 
 // Outer group — handles scroll-driven position and scale
-const GlobeModel = ({ globalScroll, indiaProgress }: { globalScroll: MotionValue<number>, indiaProgress: MotionValue<number> }) => {
+const GlobeModel = ({ globalScroll, indiaProgress, debugRotX, debugRotY }: { globalScroll: MotionValue<number>, indiaProgress: MotionValue<number>, debugRotX: number, debugRotY: number }) => {
   const containerRef = useRef<THREE.Group>(null);
   const meshGroupRef = useRef<THREE.Group>(null);
 
@@ -300,7 +318,7 @@ const GlobeModel = ({ globalScroll, indiaProgress }: { globalScroll: MotionValue
     <group ref={containerRef}>
       <group ref={meshGroupRef}>
         <Float speed={1.5} rotationIntensity={0.05} floatIntensity={0.1}>
-          <EarthMesh indiaProgress={indiaProgress} />
+          <EarthMesh indiaProgress={indiaProgress} debugRotX={debugRotX} debugRotY={debugRotY} />
         </Float>
       </group>
     </group>
@@ -309,6 +327,9 @@ const GlobeModel = ({ globalScroll, indiaProgress }: { globalScroll: MotionValue
 
 const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<number>; indiaRef: React.RefObject<HTMLDivElement | null> }) => {
   const [isMobile, setIsMobile] = React.useState(false);
+  const [debugRotX, setDebugRotX] = useState(-0.520);
+  const [debugRotY, setDebugRotY] = useState(-1.520);
+
 
   React.useEffect(() => {
     const checkMobile = () => {
@@ -325,41 +346,90 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
   });
 
   return (
-    <div className="fixed inset-0 w-full h-full pointer-events-none z-[5]">
-      <Canvas
-        shadows={!isMobile}
-        gl={{
-          antialias: !isMobile,
-          alpha: true,
-          powerPreference: "high-performance",
-          // Descale DPR on mobile to save memory and GPU
-          precision: isMobile ? 'mediump' : 'highp'
-        }}
-        dpr={isMobile ? [1, 1] : [1, 2]}
-      >
-        <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
-        <ambientLight intensity={0.15} />
-        <pointLight position={[10, 10, 10]} intensity={1} color="#ffffff" />
-        <pointLight position={[-10, -10, -5]} intensity={0.3} color="#ffffff" />
-        <spotLight position={[0, 20, 10]} angle={0.25} penumbra={1} intensity={0.8} color="#ffffff" />
+    <>
+      <div className="fixed inset-0 w-full h-full pointer-events-none z-[5]">
+        <Canvas
+          shadows={!isMobile}
+          gl={{
+            antialias: !isMobile,
+            alpha: true,
+            powerPreference: "high-performance",
+            precision: isMobile ? 'mediump' : 'highp'
+          }}
+          dpr={isMobile ? [1, 1] : [1, 2]}
+        >
+          <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={45} />
+          <ambientLight intensity={0.15} />
+          <pointLight position={[10, 10, 10]} intensity={1} color="#ffffff" />
+          <pointLight position={[-10, -10, -5]} intensity={0.3} color="#ffffff" />
+          <spotLight position={[0, 20, 10]} angle={0.25} penumbra={1} intensity={0.8} color="#ffffff" />
 
-        <Suspense fallback={null}>
-          <SpaceParticles globalScroll={globalScroll} indiaProgress={indiaProgress} isMobile={isMobile} />
-          <GlobeModel globalScroll={globalScroll} indiaProgress={indiaProgress} />
-          <Environment preset="night" />
-        </Suspense>
+          <Suspense fallback={null}>
+            <SpaceParticles globalScroll={globalScroll} indiaProgress={indiaProgress} isMobile={isMobile} />
+            <GlobeModel globalScroll={globalScroll} indiaProgress={indiaProgress} debugRotX={debugRotX} debugRotY={debugRotY} />
+            <Environment preset="night" />
+          </Suspense>
 
-        <Stars
-          radius={300}
-          depth={100}
-          count={isMobile ? 4000 : 15000}
-          factor={isMobile ? 5 : 8}
-          saturation={1}
-          fade
-          speed={2}
-        />
-      </Canvas>
-    </div>
+          <Stars
+            radius={300}
+            depth={100}
+            count={isMobile ? 4000 : 15000}
+            factor={isMobile ? 5 : 8}
+            saturation={1}
+            fade
+            speed={2}
+          />
+        </Canvas>
+      </div>
+
+      {/* 🔧 DEBUG PANEL — outside pointer-events-none wrapper so sliders are clickable */}
+      {DEBUG_ROTATION && (
+        <div style={{
+          position: 'fixed',
+          top: '16px',
+          right: '16px',
+          background: 'rgba(0,0,0,0.85)',
+          border: '1px solid rgba(255,255,255,0.15)',
+          borderRadius: '12px',
+          padding: '16px 20px',
+          color: '#fff',
+          fontFamily: 'monospace',
+          fontSize: '13px',
+          zIndex: 9999,
+          pointerEvents: 'auto',
+          minWidth: '260px',
+          backdropFilter: 'blur(10px)',
+        }}>
+          <div style={{ marginBottom: '12px', fontWeight: 'bold', color: '#4ade80' }}>🌍 Earth Rotation Debug</div>
+
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
+            <span>rotation.x (tilt up/down): <strong style={{ color: '#facc15' }}>{debugRotX.toFixed(3)}</strong></span>
+            <input
+              type="range" min="-2" max="2" step="0.01"
+              value={debugRotX}
+              onChange={e => setDebugRotX(parseFloat(e.target.value))}
+              style={{ accentColor: '#4ade80', cursor: 'pointer' }}
+            />
+          </label>
+
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '16px' }}>
+            <span>rotation.y (spin left/right): <strong style={{ color: '#facc15' }}>{debugRotY.toFixed(3)}</strong></span>
+            <input
+              type="range" min="-4" max="4" step="0.01"
+              value={debugRotY}
+              onChange={e => setDebugRotY(parseFloat(e.target.value))}
+              style={{ accentColor: '#4ade80', cursor: 'pointer' }}
+            />
+          </label>
+
+          <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: '6px', padding: '8px 10px', fontSize: '12px', lineHeight: '1.8' }}>
+            📋 Copy these values:<br />
+            <span style={{ color: '#86efac' }}>rotation.x = {debugRotX.toFixed(3)}</span><br />
+            <span style={{ color: '#86efac' }}>rotation.y = {debugRotY.toFixed(3)}</span>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

@@ -10,7 +10,7 @@ const Montserrat = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "JUI",
+  title: "JUI GLOBAL",
   description: "A premium futuristic space-themed experience.",
 };
 

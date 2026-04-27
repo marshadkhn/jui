@@ -192,7 +192,7 @@ const ProductSections = () => {
                   </div>
 
                   {data.number === '1' && (
-                    <div className="mt-10 opacity-70">
+                    <div className="mt-10  z-30">
                       <Image
                         src="/auth.png"
                         alt="Auth Certificate"
