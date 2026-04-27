@@ -94,7 +94,7 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
   const smokeMap = useTexture('/smoke.png');
 
   // Background Dust
-  const dustCount = isMobile ? 3000 : 8000;
+  const dustCount = isMobile ? 5000 : 15000;
   const dustPositions = useMemo(() => {
     const pos = new Float32Array(dustCount * 3);
     for (let i = 0; i < dustCount; i++) {
@@ -289,11 +289,11 @@ const GlobeModel = ({ globalScroll, indiaProgress, debugRotX, debugRotY }: { glo
   const meshGroupRef = useRef<THREE.Group>(null);
 
   // Use raw transform mappers for robust HMR / real-time updates
-  const getPosX = transform([0, 0.1, 0.16, 0.72, 0.78], [1.2, 0, 0, 0, 0]);
-  const getPosY = transform([0, 0.1, 0.16, 0.72, 0.78], [-4.7, 0, 0, 0, 0]);
-  const getOpacity = transform([0.12, 0.16, 0.72, 0.76], [1, 0, 0, 1]);
-  const getScale = transform([0, 0.1, 0.16, 0.72, 0.78], [3.5, 5, 35, 0.4, 1.2]);
-  const getPosZ = transform([0, 0.1, 0.16, 0.72, 0.78], [0, 5, 28, -15, 2]);
+  const getPosX = transform([0, 0.1, 0.16, 0.80, 0.86], [1.2, 0, 0, 0, 0]);
+  const getPosY = transform([0, 0.1, 0.16, 0.80, 0.86], [-4.7, 0, 0, 0, 0]);
+  const getOpacity = transform([0.12, 0.16, 0.80, 0.84], [1, 0, 0, 1]);
+  const getScale = transform([0, 0.1, 0.16, 0.80, 0.86], [3.5, 5, 35, 0.4, 1.2]);
+  const getPosZ = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 5, 28, -15, 2]);
 
   useFrame(() => {
     if (!containerRef.current || !meshGroupRef.current) return;
@@ -373,8 +373,8 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
           <Stars
             radius={300}
             depth={100}
-            count={isMobile ? 4000 : 15000}
-            factor={isMobile ? 5 : 8}
+            count={isMobile ? 8000 : 28000}
+            factor={isMobile ? 6 : 10}
             saturation={1}
             fade
             speed={2}

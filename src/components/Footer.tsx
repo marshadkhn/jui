@@ -10,12 +10,10 @@ const Footer = () => {
     company: [
       { name: 'About Us', href: '#' },
       { name: 'JUI Globals', href: '#' },
-      { name: 'Sustainability', href: '#' },
-      { name: 'Careers', href: '#' },
+
     ],
     expertise: [
       { name: 'Currency Printing', href: '#' },
-      { name: 'Security Paper', href: '#' },
       { name: 'Card Technology', href: '#' },
       { name: 'Paints & Coatings', href: '#' },
     ],
@@ -35,7 +33,7 @@ const Footer = () => {
       {/* Top Transition Blur - Creates the "merged" effect with India section */}
       <div className="absolute top-1 left-0 w-full h-72 -translate-y-full pointer-events-none z-50">
         <div
-          className="w-full h-full bg-gradient-to-t from-black to-transparent backdrop-blur-7xl"
+          className="w-full h-full bg-gradient-to-t from-black to-transparent backdrop-blur-md"
           style={{
             maskImage: 'linear-gradient(to top, black, transparent)',
             WebkitMaskImage: 'linear-gradient(to top, black, transparent)'
@@ -47,9 +45,9 @@ const Footer = () => {
       <div className="absolute inset-0 bg-black z-[-1]" />
 
       {/* Background Depth Elements */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
+      {/* <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden">
         <div className="absolute top-[20%] left-[50%] -translate-x-1/2 w-[80%] h-[60%] bg-[radial-gradient(circle_at_center,rgba(0,209,255,0.05)_0%,transparent_70%)] opacity-50" />
-      </div>
+      </div> */}
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
 
@@ -166,13 +164,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-4 bg-white/[0.03] px-5 py-2.5 rounded-full border border-white/5">
-            <span className="flex h-2 w-2 relative">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-accent opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
-            </span>
-            <span className="text-[10px] tracking-[0.3em] uppercase font-bold text-accent/90">Active Protocol</span>
-          </div>
+
         </div>
       </div>
 

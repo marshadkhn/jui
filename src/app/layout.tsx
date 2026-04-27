@@ -4,9 +4,9 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 
 
-const Montserrat = localFont({
-  src: "../../public/montserrat.regular.otf",
-  variable: "--font-montserrat",
+const CenturyGothic = localFont({
+  src: "../../public/centurygothic.ttf",
+  variable: "--font-century-gothic",
 });
 
 export const metadata: Metadata = {
@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${Montserrat.variable} antialiased selection:bg-accent/30`}
+      className={`${CenturyGothic.variable} antialiased selection:bg-accent/30`}
     >
       <body className="min-h-screen bg-background text-foreground overflow-x-hidden">
         <CustomCursor />

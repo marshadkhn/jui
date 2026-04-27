@@ -5,9 +5,11 @@ Files: public\AnimatedModels\Note_printer2.glb [394.02MB] > D:\FREELANCING\MAGIC
 */
 
 import * as THREE from 'three'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useGLTF, useAnimations } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
+import { useFrame } from '@react-three/fiber'
+import { MotionValue } from 'framer-motion'
 
 type ActionName = 'TopAction' | 'BottomAction'
 
@@ -31,15 +33,32 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[]
 }
 
-export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group']) {
-  const group = React.useRef<THREE.Group>(null)
+export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] & { progress?: MotionValue<number> }) {
+  const group = useRef<THREE.Group>(null)
   const { nodes, materials, animations } = useGLTF('/AnimatedModels/Note_printer2-transformed.glb') as unknown as GLTFResult
   const { actions } = useAnimations(animations, group)
 
-  // Auto-play baked animations
-  React.useEffect(() => {
-    Object.values(actions).forEach((action) => action?.play())
+  // Initialize animations but keep them paused
+  useEffect(() => {
+    Object.values(actions).forEach((action) => {
+      if (action) {
+        action.play().paused = true
+      }
+    })
   }, [actions])
+
+  // Sync animation time with scroll progress
+  useFrame(() => {
+    if (props.progress) {
+      const p = props.progress.get()
+      Object.values(actions).forEach((action) => {
+        if (action) {
+          const duration = action.getClip().duration
+          action.time = p * duration
+        }
+      })
+    }
+  })
 
   return (
     <group ref={group} {...props} dispose={null}>

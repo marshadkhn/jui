@@ -64,23 +64,29 @@ const GltfModel = ({
   rotationOffset = [0, 0, 0],
   shouldSpin = true,
   spinSpeed = 0.15,
-  isMobile = false
+  isMobile = false,
+  progress
 }: ModelProps & { isMobile?: boolean }) => {
   const modelRef = useRef<THREE.Group>(null);
 
   useFrame((state) => {
     if (modelRef.current && shouldSpin) {
-      modelRef.current.rotation.y = state.clock.getElapsedTime() * spinSpeed;
+      if (progress) {
+        // Rotate based on scroll progress (e.g. 2 full rotations)
+        modelRef.current.rotation.y = progress.get() * Math.PI * 4;
+      } else {
+        modelRef.current.rotation.y = state.clock.getElapsedTime() * spinSpeed;
+      }
     }
   });
 
   const SelectedModel = useMemo(() => {
-    if (path.includes('AnimatedModels/Note_printer')) return <NotePrinterAnimated />;
+    if (path.includes('AnimatedModels/Note_printer')) return <NotePrinterAnimated progress={progress} />;
     if (path.includes('Note_printer')) return <NotePrinter isMobile={isMobile} />;
     if (path.includes('Card')) return <Card isMobile={isMobile} />;
     if (path.includes('Paint_mixer')) return <PaintMixer isMobile={isMobile} />;
     return null;
-  }, [path, isMobile]);
+  }, [path, isMobile, progress]);
 
   return (
     <Center position={position}>
@@ -121,15 +127,15 @@ const ProductModelCanvas = (props: ModelProps) => {
 
   const modelOpacity = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
-    [0.0, 0.6, 0.9, 1.0],
-    [0, 0.5, 1, 0]
+    [0.0, 0.6, 0.9, 1, 1.2],
+    [0, 0.5, 1, 1, 0]
   );
 
   return (
     <div className="relative w-full h-full min-h-[400px]">
       {/* Space Glow Aura — Set to neutral white/low opacity */}
       <motion.div
-        className="absolute inset-x-0 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-[60%] h-[60%] bg-white/5 blur-[130px] rounded-full pointer-events-none"
+        className="absolute inset-x-0 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-[60%] h-[60%] bg-white/2 blur-[130px] rounded-full pointer-events-none"
         style={{
           scale: auraScale,
           opacity: auraOpacity

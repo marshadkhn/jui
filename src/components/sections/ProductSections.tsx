@@ -5,6 +5,7 @@ import { motion, useInView, type Variants, useScroll, useTransform } from 'frame
 
 import ProductModelCanvas from '../shared-3d/ProductModelCanvas';
 import Image from 'next/image';
+import CTAButtons from '../shared/CTAButtons';
 
 interface SectionData {
   number: string;
@@ -48,7 +49,7 @@ const sections: SectionData[] = [
       'We are a global logistics and investment firm, creating connections that power the future of trade.',
     modelPath: '/models/Paint_mixer.glb',
     modelScale: 0.8,
-    modelPosition: [3, 1, -11], // Fixed depth
+    modelPosition: [3.5, 1, -10], // Fixed depth
     rotationOffset: [0.5, 0, -Math.PI / 4],
     spinSpeed: 0.2,
   },
@@ -148,7 +149,7 @@ const ProductSections = () => {
               </motion.div>
 
               {/* Text Content Overlay */}
-              <div className="max-w-7xl mx-auto w-full h-full z-10 flex flex-col md:flex-row items-center justify-between px-6 sm:px-16 ">
+              <div className="w-full h-full  flex flex-col md:flex-row items-center justify-start px-6 md:px-12 lg:px-20">
                 <motion.div
                   className="relative max-w-lg pointer-events-auto"
                   style={{ opacity: textOpacity, y: textY }}
@@ -156,7 +157,7 @@ const ProductSections = () => {
                   {/* Number */}
                   <div className="mb-6">
                     <span
-                      className="font-mono font-bold leading-none select-none text-[22px] md:text-[28px] text-white/95"
+                      className=" font-bold leading-none select-none text-[28px] md:text-[46px] text-white/95"
                       style={{ letterSpacing: '0.04em' }}
                     >
                       {data.number}
@@ -166,33 +167,24 @@ const ProductSections = () => {
                   {/* Title */}
                   <h2
                     className="text-white font-bold mb-4 tracking-[-0.01em]"
-                    style={{ fontSize: 'clamp(1.6rem, 2.5vw, 2.2rem)' }}
+                    style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)' }}
                   >
                     {data.title}
                   </h2>
 
                   {/* Description */}
                   <p
-                    className="text-white/90 text-base leading-relaxed mb-8"
-                    style={{ maxWidth: '340px' }}
+                    className="text-white/90 text-lg leading-relaxed mb-8"
+                    style={{ maxWidth: '420px' }}
                   >
                     {data.description}
                   </p>
 
                   {/* CTA row */}
-                  <div className="flex items-center gap-4 group cursor-pointer inline-flex">
-                    <span className="text-[11px] font-bold tracking-[0.15em] uppercase text-white/80 group-hover:text-white transition-colors">
-                      Lorem Ipsum
-                    </span>
-                    <div className="w-6 h-6 rounded-full border border-white/40 flex items-center justify-center group-hover:border-white transition-colors">
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                        <path d="M1 5H9M9 5L6 2M9 5L6 8" stroke="white" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    </div>
-                  </div>
+                  <CTAButtons className="mt-4" arrowDirection="right" reverseOrder={true} />
 
                   {data.number === '1' && (
-                    <div className="mt-10  z-30">
+                    <div className="mt-5  z-50">
                       <Image
                         src="/auth.png"
                         alt="Auth Certificate"

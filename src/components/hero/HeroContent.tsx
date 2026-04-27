@@ -44,7 +44,7 @@ const HeroContent = () => {
       {/* Main headline */}
       <div style={{ perspective: '900px' }}>
         <motion.h1
-          className="text-[clamp(2rem,6.5vw,5.5rem)] font-bold leading-[1.02] tracking-[-0.025em] text-white mb-2"
+          className="text-[clamp(1.6rem,5vw,4.2rem)] font-bold leading-[1.02] tracking-[-0.025em] text-white mb-2"
           variants={container}
           initial="hidden"
           animate="visible"

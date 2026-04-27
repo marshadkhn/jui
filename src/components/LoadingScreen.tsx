@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProgress } from '@react-three/drei';
+import Image from 'next/image';
 
 interface Props {
   onComplete: () => void;
@@ -135,8 +136,14 @@ const LoadingScreen = ({ onComplete }: Props) => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              <span className="text-[#EAF6FF] text-3xl font-bold tracking-tight leading-none">JUI</span>
-              <span className="text-[#00D1FF] text-[10px] font-bold tracking-[0.35em] uppercase">Global</span>
+              <Image
+                src="/logo.png"
+                alt="JUI Global"
+                width={80}
+                height={80}
+                className="object-contain"
+                priority
+              />
               <span className="text-[#7FA6B8] text-[11px] tabular-nums mt-1">{progress}%</span>
             </motion.div>
           </div>

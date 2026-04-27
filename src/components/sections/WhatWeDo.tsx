@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import { Environment, Float, ContactShadows, Center } from '@react-three/drei';
 import { Model as EmblemModel } from '../shared-3d/models/Emblem';
+import CTAButtons from '../shared/CTAButtons';
 
 const WhatWeDo = () => {
   const sectionRef = React.useRef<HTMLDivElement>(null);
@@ -46,8 +47,8 @@ const WhatWeDo = () => {
           className="relative w-full  lg:w-1/2 flex justify-center lg:justify-start items-center mb-12 lg:mb-0 pointer-events-none"
         >
           {/* Cyan Glow Effect */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] lg:w-[450px] h-[300px] lg:h-[450px] bg-cyan-500/20 blur-[100px] rounded-full" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150px] lg:w-[250px] h-[150px] lg:h-[250px] bg-cyan-400/10 blur-[60px] rounded-full" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] lg:w-[450px] h-[300px] lg:h-[450px] bg-cyan-500/8 blur-[100px] rounded-full" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150px] lg:w-[250px] h-[150px] lg:h-[250px] bg-cyan-400/5 blur-[60px] rounded-full" />
 
           <div className="w-full h-[300px] lg:h-[600px] relative z-10 flex justify-center items-center">
             <Canvas
@@ -57,11 +58,11 @@ const WhatWeDo = () => {
             >
               <Suspense fallback={null}>
                 <ambientLight intensity={0.5} />
-                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1.5} />
-                <pointLight position={[-1, 0.5, 0]} intensity={1} color="#00f2ff" />
+                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
+                <pointLight position={[-1, 0.5, 0]} intensity={0.2} color="#00f2ff" />
 
 
-                <Center position={[-1, 0.5, 0]}>
+                <Center position={[0, 0.5, 0]}>
                   <Float
                     speed={0.5}
                     rotationIntensity={0} // Reduced from 0.5 to keep it straighter
@@ -70,7 +71,7 @@ const WhatWeDo = () => {
                   >
                     <EmblemModel
                       scale={1}
-                      rotation={[0, 0.5, 0]} // Rotate Y to center the lion, Z to straighten
+                      rotation={[0, 0, 0]} // Rotate Y to center the lion, Z to straighten
                     />
                   </Float>
                 </Center>
@@ -118,31 +119,7 @@ const WhatWeDo = () => {
             We provide diversified solutions specializing in currency & security printing materials, card industry technologies, and high-performance industrial coatings
           </p>
 
-          <div className="flex items-center gap-4">
-            <motion.button
-              whileHover={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
-              className="w-14 h-14 border border-white/40 flex items-center justify-center transition-colors group"
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="white"
-                strokeWidth="1.5"
-                className="group-hover:-translate-x-1 transition-transform"
-              >
-                <path d="M19 12H5M5 12L12 19M5 12L12 5" />
-              </svg>
-            </motion.button>
-
-            <motion.button
-              whileHover={{ backgroundColor: 'rgba(255,255,255,0.05)' }}
-              className="h-14 px-10 border border-white/50 text-white text-xs font-bold uppercase tracking-[0.2em] transition-colors"
-            >
-              Contact Us
-            </motion.button>
-          </div>
+          <CTAButtons />
         </motion.div>
       </motion.div>
     </section>
