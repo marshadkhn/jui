@@ -9,7 +9,7 @@ const Footer = () => {
   const footerLinks = {
     company: [
       { name: 'About Us', href: '#' },
-      { name: 'JUI Globals', href: '#' },
+      { name: 'JUI Global', href: '#' },
 
     ],
     expertise: [

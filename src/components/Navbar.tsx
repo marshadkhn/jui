@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const menuItems = [
-  { name: 'JUI GLOBALS', href: '#' },
+  { name: 'JUI GLOBAL', href: '#' },
   { name: 'CURRENCY', href: '#' },
   { name: 'CARD', href: '#' },
   { name: 'PAINT', href: '#' },
