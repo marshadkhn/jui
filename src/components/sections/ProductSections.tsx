@@ -78,9 +78,10 @@ const ProductSections = () => {
     return [start, end];
   };
 
-  // Fast Global Exit: Vanish by 0.92 to make room for Earth
-  const globalExitOpacity = useTransform(globalScroll, [0.88, 0.92], [1, 0]);
-  const globalExitY = useTransform(globalScroll, [0.88, 0.92], [0, -30]);
+  // Global Exit logic (applies to the entire sticky container at the very end)
+  // Fade out completely before the container un-sticks
+  const globalExitOpacity = useTransform(globalScroll, [0.85, 0.95], [1, 0]);
+  const globalExitY = 0; // Remove upward translation so it stays perfectly stationary
 
   return (
     <div ref={containerRef} className="relative z-20 w-full h-[600vh] bg-transparent">
@@ -96,8 +97,9 @@ const ProductSections = () => {
         {sections.map((data, index) => {
           const [start, end] = getLocalProgress(index);
 
-          // Fast Exit Safety: Section 3 finishes its warp earlier
-          const adjustedEnd = index === sections.length - 1 ? end - 0.12 : end;
+          // Force the last section to finish its local animation before 1.0 (at 0.9)
+          // This avoids the browser bug where sticky parent opacity is ignored for WebGL
+          const adjustedEnd = index === sections.length - 1 ? 0.9 : end;
 
           // Define a snappier focal window (Hold for 45% of its section)
           const mid = (start + adjustedEnd) / 2;
@@ -105,30 +107,31 @@ const ProductSections = () => {
 
           // Visibility: Faster transitions
           const opacity = useTransform(globalScroll,
-            [start, mid - window / 4, mid + window / 4, adjustedEnd],
+            [start, index === 0 ? 0.04 : mid - window / 4, mid + window / 4, adjustedEnd],
             [0, 1, 1, 0]
           );
 
 
-          // Fly-By Z: Moves through center focus more actively
+          // Fly-By Z: Restored the fly-out effect so it gracefully exits into the camera
           const z = useTransform(globalScroll,
-            [start, mid - window / 2, mid + window / 2, adjustedEnd],
+            [start, index === 0 ? 0.04 : mid - window / 2, mid + window / 2, adjustedEnd],
             [-100, 0, 0, 1500]
           );
 
           // Text movement: Fades in/out snappier
           const textOpacity = useTransform(globalScroll,
-            [start + (adjustedEnd - start) * 0.08, mid - window / 2, mid + window / 2, adjustedEnd - (adjustedEnd - start) * 0.08],
+            [start + (index === 0 ? 0.01 : (adjustedEnd - start) * 0.08), index === 0 ? 0.04 : mid - window / 2, mid + window / 2, adjustedEnd - (adjustedEnd - start) * 0.08],
             [0, 1, 1, 0]
           );
 
+          // Do not translate Y for the last section so it stays stationary (no jerking up)
           const textY = useTransform(globalScroll,
-            [start, mid - window / 2, mid + window / 2, adjustedEnd],
-            [25, 0, 0, -25]
+            [start, index === 0 ? 0.04 : mid - window / 2, mid + window / 2, adjustedEnd],
+            [25, 0, 0, index === sections.length - 1 ? 0 : -25]
           );
 
           return (
-            <div key={data.number} className="absolute inset-0 h-full w-full pointer-events-none">
+            <motion.div key={data.number} className="absolute inset-0 h-full w-full pointer-events-none" style={{ zIndex: useTransform(textOpacity, (v) => typeof v === 'number' && v > 0.05 ? 50 : 0) }}>
 
               {/* 3D Model Environment for this item — No Clipping */}
               <motion.div
@@ -143,13 +146,13 @@ const ProductSections = () => {
                     rotationOffset={data.rotationOffset}
                     shouldSpin={data.shouldSpin}
                     spinSpeed={data.spinSpeed}
-                    progress={useTransform(globalScroll, [start, end], [0, 1])} // Normalize progress
+                    progress={useTransform(globalScroll, [start, end], [0, 1])}
                   />
                 </div>
               </motion.div>
 
               {/* Text Content Overlay */}
-              <div className="w-full h-full  flex flex-col md:flex-row items-center justify-start px-6 md:px-12 lg:px-20">
+              <div className="w-full h-full relative z-10 flex flex-col md:flex-row items-center justify-start px-6 md:px-12 lg:px-20">
                 <motion.div
                   className="relative max-w-lg pointer-events-auto"
                   style={{ opacity: textOpacity, y: textY }}
@@ -196,7 +199,7 @@ const ProductSections = () => {
                   )}
                 </motion.div>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </motion.div>
