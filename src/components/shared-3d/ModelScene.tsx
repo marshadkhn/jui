@@ -199,7 +199,7 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
 // EarthMesh — normalized synchronously via useMemo
 const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any; debugRotX: number; debugRotY: number }) => {
   const rotRef = useRef<THREE.Group>(null);
-  const { scene } = useGLTF('/Earth5.glb');
+  const { scene } = useGLTF('/AnimatedModels/Earth1_locations.glb');
 
   // Start with India facing the camera so it's visible in the hero
   useEffect(() => {
@@ -289,11 +289,15 @@ const GlobeModel = ({ globalScroll, indiaProgress, debugRotX, debugRotY }: { glo
   const meshGroupRef = useRef<THREE.Group>(null);
 
   // Use raw transform mappers for robust HMR / real-time updates
-  const getPosX = transform([0, 0.1, 0.16, 0.80, 0.86], [1.2, 0, 0, 0, 0]);
+  const getPosX = transform([0, 0.1, 0.16, 0.80, 0.86], [1.2, 0, 0, -15, 0]);
   const getPosY = transform([0, 0.1, 0.16, 0.80, 0.86], [-4.7, 0, 0, 0, 0]);
   const getOpacity = transform([0.12, 0.16, 0.80, 0.84], [1, 0, 0, 1]);
   const getScale = transform([0, 0.1, 0.16, 0.80, 0.86], [3.5, 5, 35, 0.4, 1.2]);
-  const getPosZ = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 5, 28, -15, 2]);
+  const getPosZ = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 5, 28, 0, 2]);
+
+  // Rotations for a dynamic "roll in" entrance
+  const getRotY = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 0, 0, -Math.PI / 2, 0]);
+  const getRotZ = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 0, 0, Math.PI / 4, 0]);
 
   useFrame(() => {
     if (!containerRef.current || !meshGroupRef.current) return;
@@ -312,6 +316,10 @@ const GlobeModel = ({ globalScroll, indiaProgress, debugRotX, debugRotY }: { glo
     // Scale
     const s = getScale(scroll);
     containerRef.current.scale.set(s, s, s);
+
+    // Rotation (rolling entrance)
+    containerRef.current.rotation.y = getRotY(scroll);
+    containerRef.current.rotation.z = getRotZ(scroll);
   });
 
   return (

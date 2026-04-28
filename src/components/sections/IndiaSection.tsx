@@ -4,7 +4,7 @@ const IndiaSection = forwardRef<HTMLDivElement, {}>((props, ref) => {
   return (
     <section
       ref={ref}
-      className="relative w-full h-[150vh] overflow-hidden flex items-center justify-center pt-20 snap-start"
+      className="relative w-full h-[80vh] overflow-hidden flex items-center justify-center pt-20 snap-start"
     >
       {/* 
         Removed bg-black so the fixed Earth from Hero/ModelScene can show through.
