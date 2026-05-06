@@ -201,11 +201,11 @@ const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any
   const rotRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF('/AnimatedModels/Earth1_locations.glb');
 
-  // Start with India facing the camera so it's visible in the hero
+  // Start with India facing the camera — matches India section target (y=-1, x=0.2)
   useEffect(() => {
     if (rotRef.current) {
-      rotRef.current.rotation.y = -1.520;
-      rotRef.current.rotation.x = -0.520;
+      rotRef.current.rotation.y = -1.2;
+      rotRef.current.rotation.x = 0.2;
     }
   }, []);
 
@@ -262,9 +262,9 @@ const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any
       rotRef.current.rotation.y = THREE.MathUtils.lerp(rotRef.current.rotation.y, getIndiaRotY(iProgress), 0.1);
       rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, getIndiaRotX(iProgress), 0.1);
     } else {
-      // Natural slow background rotation
+      // Natural slow background rotation — keep x stable at India tilt (0.2)
       rotRef.current.rotation.y += delta * 0.01;
-      rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, 0, 0.1);
+      rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, 0.2, 0.05);
     }
   });
 
