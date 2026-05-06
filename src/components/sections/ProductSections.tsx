@@ -85,38 +85,44 @@ const ProductSectionItem = ({
   const mid = (start + adjustedEnd) / 2;
   const window = (adjustedEnd - start) * 0.45;
 
-  // Visibility: Faster transitions
+  // Crossfade: next section starts revealing BEFORE the current one fully fades out
+  // Overlap = 12% of section width — creates seamless handoff, zero dead time
+  const sectionWidth = adjustedEnd - start;
+  const overlap = sectionWidth * 0.12;
+  const revealStart = index === 0 ? 0.03 : start - overlap;
+  const revealFull  = index === 0 ? 0.06 : start + sectionWidth * 0.14;
+  const holdEnd     = mid + window / 3;
+
   const opacity = useTransform(
     globalScroll,
-    [start, index === 0 ? 0.04 : mid - window / 4, mid + window / 4, adjustedEnd],
+    [revealStart, revealFull, holdEnd, adjustedEnd],
     [0, 1, 1, 0]
   );
   const display = useTransform(opacity, (v) => (v < 0.01 ? 'none' : 'block'));
 
-  // Fly-By Z: Moves through center focus more actively
+  // Fly-By Z: Starts from -20 right at the section boundary — no gap
   const z = useTransform(
     globalScroll,
-    [start, index === 0 ? 0.04 : mid - window / 2, mid + window / 2, adjustedEnd],
-    [-100, 0, 0, 1500]
+    [revealStart, revealFull, holdEnd, adjustedEnd],
+    [-20, 0, 0, 800]
   );
 
-  // Text movement: Fades in/out snappier
+  // Text movement: Smooth fade in/out timed with model (same crossfade overlap)
+  const textRevealStart = index === 0 ? 0.01 : start - overlap;
+  const textRevealFull  = index === 0 ? 0.04 : start + sectionWidth * 0.20;
+  const textHoldEnd     = mid + window / 2.5;
+
   const textOpacity = useTransform(
     globalScroll,
-    [
-      start + (index === 0 ? 0.01 : (adjustedEnd - start) * 0.08),
-      index === 0 ? 0.04 : mid - window / 2,
-      mid + window / 2,
-      adjustedEnd - (adjustedEnd - start) * 0.08,
-    ],
+    [textRevealStart, textRevealFull, textHoldEnd, adjustedEnd - (adjustedEnd - start) * 0.05],
     [0, 1, 1, 0]
   );
   const textDisplay = useTransform(textOpacity, (v) => (v < 0.01 ? 'none' : 'block'));
 
   const textY = useTransform(
     globalScroll,
-    [start, index === 0 ? 0.04 : mid - window / 2, mid + window / 2, adjustedEnd],
-    [25, 0, 0, -25]
+    [revealStart, revealFull, textHoldEnd, adjustedEnd],
+    [18, 0, 0, -18]
   );
 
   const zIndex = useTransform(textOpacity, (v) => (typeof v === 'number' && v > 0.05 ? 50 : 0));

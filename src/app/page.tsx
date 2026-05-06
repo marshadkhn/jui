@@ -5,6 +5,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 import IndiaSection from "@/components/sections/IndiaSection";
 import Footer from "@/components/Footer";
 import { useScroll } from "framer-motion";
+import { ModelPreloader } from "@/components/shared-3d/ModelPreloader";
 
 const Hero = dynamic(() => import("@/components/hero/Hero"), { ssr: false });
 const ProductSections = dynamic(() => import("@/components/sections/ProductSections"), { ssr: false });
@@ -22,6 +23,9 @@ export default function Home() {
 
   return (
     <main ref={mainRef} className="relative w-full flex flex-col bg-black">
+      {/* Preload all 3D models early */}
+      <ModelPreloader />
+
       {/* Global 3D Background */}
       <ModelScene globalScroll={scrollYProgress} indiaRef={indiaSectionRef} />
 

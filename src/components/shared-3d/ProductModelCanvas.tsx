@@ -35,8 +35,8 @@ interface ModelProps {
 const AtmosphericLights = ({ progress }: { progress?: MotionValue<number> }) => {
   const reveal = useTransform(
     progress || new THREE.Vector3(0.5, 0, 0) as any,
-    [0.0, 0.4, 0.6, 1.0],
-    [0, 1, 1, 0]
+    [0.0, 0.08, 0.5, 0.85, 1.0],
+    [0, 0.3, 1, 1, 0]
   );
 
   const intensity = useRef(0);
@@ -106,29 +106,30 @@ const ProductModelCanvas = (props: ModelProps) => {
     setIsMobile(window.innerWidth < 768);
   }, []);
 
-  // Ultra-Fast synchronized reveal: Hits full size by 0.2 progress
+  // Scale starts at 80% of full size — model is already big when it fades in (no ant-size reveal)
   const modelDynamicScale = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
-    [0.0, 0.15, 0.85, 1.0],
-    [0.6, 0.8, props.scale || 1, (props.scale || 1) * 12]
+    [0.0, 0.15, 0.80, 1.0],
+    [(props.scale || 1) * 0.8, props.scale || 1, props.scale || 1, (props.scale || 1) * 10]
   );
 
   const auraScale = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
-    [0.0, 0.2, 0.9, 1.0],
-    [0, 1.2, 1.2, 5]
+    [0.0, 0.15, 0.85, 1.0],
+    [0.8, 1.2, 1.2, 5]
   );
 
   const auraOpacity = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
-    [0.0, 0.08, 0.9, 1.0],
-    [0, 0, 1, 0]
+    [0.0, 0.08, 0.85, 1.0],
+    [0, 0.6, 1, 0]
   );
 
+  // Opacity stays at 0 at start — decoupled from scale so it fades in already big
   const modelOpacity = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
-    [0.0, 0.6, 0.9, 1, 1.2],
-    [0, 0.5, 1, 1, 0]
+    [0.0, 0.08, 0.40, 0.82, 1.0],
+    [0, 0, 1, 1, 0]
   );
 
   return (

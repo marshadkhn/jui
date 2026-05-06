@@ -1,6 +1,6 @@
 'use client';
 
-import React, { Suspense } from 'react';
+import React, { Suspense, useRef } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import { Environment, Float, ContactShadows, Center } from '@react-three/drei';
@@ -15,12 +15,24 @@ const WhatWeDo = () => {
     setIsMobile(window.innerWidth < 1024);
   }, []);
 
-  // Track scroll progress specifically for this section
+  const emblemRef = useRef<HTMLDivElement>(null);
 
+  // Track scroll progress specifically for this section
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end start"]
   });
+
+  // Track emblem reveal progress (triggers as emblem enters viewport)
+  const { scrollYProgress: emblemProgress } = useScroll({
+    target: emblemRef,
+    offset: ["start end", "center center"]
+  });
+
+  // Smooth emblem reveal driven by scroll — no whileInView jerk
+  const emblemOpacity  = useTransform(emblemProgress, [0, 0.35, 0.7], [0, 1, 1]);
+  const emblemScale    = useTransform(emblemProgress, [0, 0.45], [0.82, 1]);
+  const emblemX        = useTransform(emblemProgress, [0, 0.45], [-60, 0]);
 
   // Fade out as we scroll deep into the section or towards the next one
   const opacity = useTransform(scrollYProgress, [0.6, 0.9], [1, 0]);
@@ -40,10 +52,8 @@ const WhatWeDo = () => {
 
         {/* Ashoka Emblem on the Left */}
         <motion.div
-          initial={{ opacity: 0, x: -100, scale: 0.8 }}
-          whileInView={{ opacity: 1, x: 0, scale: 1 }}
-          transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
-          viewport={{ amount: 0.5, once: false }}
+          ref={emblemRef}
+          style={{ opacity: emblemOpacity, scale: emblemScale, x: emblemX }}
           className="relative w-full  lg:w-1/2 flex justify-center lg:justify-start items-center mb-12 lg:mb-0 pointer-events-none"
         >
           {/* Cyan Glow Effect */}
@@ -62,7 +72,7 @@ const WhatWeDo = () => {
                 <pointLight position={[-1, 0.5, 0]} intensity={0.2} color="#00f2ff" />
 
 
-                <Center position={[0, 0.5, 0]}>
+                <Center position={[-1, 0.5, 0]}>
                   <Float
                     speed={0.5}
                     rotationIntensity={0} // Reduced from 0.5 to keep it straighter
