@@ -243,7 +243,7 @@ const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any
   // India is 20N 78E. To bring it to visual center, we need a strong forward tilt.
   // India Pointing logic using fresh mappers
   const getIndiaRotX = transform([0, 1], [0, 0.2]);
-  const getIndiaRotY = transform([0, 1], [0, -1]);
+  const getIndiaRotY = transform([0, 1], [0, -1.2]);
 
   useFrame((state, delta) => {
     if (!rotRef.current) return;
