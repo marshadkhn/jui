@@ -29,13 +29,13 @@ const CustomCursor = () => {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const isClickable = 
-        target.tagName === 'A' || 
-        target.tagName === 'BUTTON' || 
-        target.closest('a') || 
+      const isClickable =
+        target.tagName === 'A' ||
+        target.tagName === 'BUTTON' ||
+        target.closest('a') ||
         target.closest('button') ||
         window.getComputedStyle(target).cursor === 'pointer';
-      
+
       setIsHovered(!!isClickable);
     };
 
@@ -68,7 +68,7 @@ const CustomCursor = () => {
           willChange: "transform",
         }}
         animate={{
-          scale: isHovered ? 0.7 : 0.45,
+          scale: isHovered ? 0.5 : 0.3,
           rotate: isHovered ? [0, 45, 0] : 0, // Quick tilt on hover
         }}
         transition={{
@@ -79,7 +79,7 @@ const CustomCursor = () => {
         }}
         className="flex items-center justify-center"
       >
-        <motion.div 
+        <motion.div
           className="relative w-[168px] h-[168px]"
           style={{ willChange: "transform" }}
           animate={{
@@ -99,9 +99,9 @@ const CustomCursor = () => {
             }
           }}
         >
-          <img 
-            src="/cursor.svg" 
-            alt="Custom Cursor" 
+          <img
+            src="/cursor.svg"
+            alt="Custom Cursor"
             className="w-full h-full object-contain filter brightness-[1.8] contrast-[1.2] drop-shadow-[0_0_15px_rgba(0,209,255,0.6)]"
           />
         </motion.div>
