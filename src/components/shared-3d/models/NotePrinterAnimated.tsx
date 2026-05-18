@@ -51,12 +51,19 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
   useFrame(() => {
     if (props.progress) {
       const p = props.progress.get()
-      Object.values(actions).forEach((action) => {
-        if (action) {
-          const duration = action.getClip().duration
-          action.time = p * duration
-        }
-      })
+      
+      const topAction = actions['TopAction']
+      const bottomAction = actions['BottomAction']
+      
+      if (topAction) {
+        const duration = topAction.getClip().duration
+        topAction.time = (1 - p) * duration
+      }
+      
+      if (bottomAction) {
+        const duration = bottomAction.getClip().duration
+        bottomAction.time = p * duration
+      }
     }
   })
 

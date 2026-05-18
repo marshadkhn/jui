@@ -93,37 +93,34 @@ const ProductSectionItem = ({
   const revealFull  = index === 0 ? 0.06 : start + sectionWidth * 0.14;
   const holdEnd     = mid + window / 3;
 
-  const opacity = useTransform(
-    globalScroll,
-    [revealStart, revealFull, holdEnd, adjustedEnd],
-    [0, 1, 1, 0]
-  );
+  const opacity = index === 0
+    ? useTransform(globalScroll, [0, 0.08, 0.28, 0.3333], [0, 1, 1, 0])
+    : useTransform(globalScroll, [revealStart, revealFull, holdEnd, adjustedEnd], [0, 1, 1, 0]);
+
   const display = useTransform(opacity, (v) => (v < 0.01 ? 'none' : 'block'));
 
   // Fly-By Z: Starts from -20 right at the section boundary — no gap
-  const z = useTransform(
-    globalScroll,
-    [revealStart, revealFull, holdEnd, adjustedEnd],
-    [-20, 0, 0, 800]
-  );
+  // For section 1 (index 0), it stays at z = 0 and "just disappears" by fading
+  const z = index === 0
+    ? useTransform(globalScroll, [0, 0.3333], [0, 0])
+    : useTransform(globalScroll, [revealStart, revealFull, holdEnd, adjustedEnd], [-20, 0, 0, 800]);
+
+  const x = 0;
 
   // Text movement: Smooth fade in/out timed with model (same crossfade overlap)
   const textRevealStart = index === 0 ? 0.01 : start - overlap;
   const textRevealFull  = index === 0 ? 0.04 : start + sectionWidth * 0.20;
   const textHoldEnd     = mid + window / 2.5;
 
-  const textOpacity = useTransform(
-    globalScroll,
-    [textRevealStart, textRevealFull, textHoldEnd, adjustedEnd - (adjustedEnd - start) * 0.05],
-    [0, 1, 1, 0]
-  );
+  const textOpacity = index === 0
+    ? useTransform(globalScroll, [0, 0.08, 0.28, 0.3333], [0, 1, 1, 0])
+    : useTransform(globalScroll, [textRevealStart, textRevealFull, textHoldEnd, adjustedEnd - (adjustedEnd - start) * 0.05], [0, 1, 1, 0]);
+
   const textDisplay = useTransform(textOpacity, (v) => (v < 0.01 ? 'none' : 'block'));
 
-  const textY = useTransform(
-    globalScroll,
-    [revealStart, revealFull, textHoldEnd, adjustedEnd],
-    [18, 0, 0, -18]
-  );
+  const textY = index === 0
+    ? useTransform(globalScroll, [0, 0.28, 0.3333], [0, 0, -18])
+    : useTransform(globalScroll, [revealStart, revealFull, textHoldEnd, adjustedEnd], [18, 0, 0, -18]);
 
   const zIndex = useTransform(textOpacity, (v) => (typeof v === 'number' && v > 0.05 ? 50 : 0));
 
@@ -135,7 +132,7 @@ const ProductSectionItem = ({
       {/* 3D Model Environment for this item — No Clipping */}
       <motion.div
         className="absolute inset-0 z-0"
-        style={{ z, opacity, perspective: 1500, display }}
+        style={{ x, z, opacity, perspective: 1500, display }}
       >
         <div className="w-full h-full">
           <ProductModelCanvas
