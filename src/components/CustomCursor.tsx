@@ -11,8 +11,8 @@ const CustomCursor = () => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Snappier spring for less "lag"
-  const springConfig = { damping: 30, stiffness: 400, mass: 0.1 };
+  // Stable and smooth spring config to absorb rendering frames
+  const springConfig = { damping: 35, stiffness: 220, mass: 0.15 };
   const cursorX = useSpring(mouseX, springConfig);
   const cursorY = useSpring(mouseY, springConfig);
 
@@ -65,9 +65,10 @@ const CustomCursor = () => {
           translateX: "-50%",
           translateY: "-50%",
           opacity: isVisible ? 1 : 0,
+          willChange: "transform",
         }}
         animate={{
-          scale: isHovered ? 0.4 : 0.25,
+          scale: isHovered ? 0.7 : 0.45,
           rotate: isHovered ? [0, 45, 0] : 0, // Quick tilt on hover
         }}
         transition={{
@@ -80,6 +81,7 @@ const CustomCursor = () => {
       >
         <motion.div 
           className="relative w-[168px] h-[168px]"
+          style={{ willChange: "transform" }}
           animate={{
             rotate: 360, // Constant slow rotation
             scale: [1, 1.05, 1], // Subtle breathing effect
@@ -100,7 +102,7 @@ const CustomCursor = () => {
           <img 
             src="/cursor.svg" 
             alt="Custom Cursor" 
-            className="w-full h-full object-contain filter drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]"
+            className="w-full h-full object-contain filter brightness-[1.8] contrast-[1.2] drop-shadow-[0_0_15px_rgba(0,209,255,0.6)]"
           />
         </motion.div>
       </motion.div>
