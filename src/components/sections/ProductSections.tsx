@@ -36,7 +36,7 @@ const sections: SectionData[] = [
     title: 'Card Industry Technology',
     description:
       'We are a global logistics and investment firm, creating connections that power the future of trade.',
-    modelPath: '/models/Card.glb',
+    modelPath: '/AnimatedModels/Card-transformed.glb',
     modelScale: 2,
     modelPosition: [2, 0, -12], // Same depth for consistency
     rotationOffset: [0.5, 0.7, 0],

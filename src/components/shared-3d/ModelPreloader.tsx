@@ -9,6 +9,7 @@ const MODELS = [
   '/AnimatedModels/Note_printer2-transformed.glb',
   '/models/Note_printer_draco.glb',
   '/models/Card-transformed.glb',
+  '/AnimatedModels/Card-transformed.glb',
   '/models/Paint_mixer-transformed.glb',
   '/AnimatedModels/Earth1_locations.glb',
   '/models/Card.glb',

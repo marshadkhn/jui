@@ -13,7 +13,7 @@ import { Model as PaintMixer } from './models/PaintMixer';
 // Preload transformed models
 useGLTF.preload('/AnimatedModels/Note_printer2-transformed.glb');
 useGLTF.preload('/models/Note_printer_draco.glb');
-useGLTF.preload('/models/Card-transformed.glb');
+useGLTF.preload('/AnimatedModels/Card-transformed.glb');
 useGLTF.preload('/models/Paint_mixer-transformed.glb');
 
 import { MotionValue, useTransform, motion, useMotionTemplate } from 'framer-motion';
@@ -83,7 +83,7 @@ const GltfModel = ({
   const SelectedModel = useMemo(() => {
     if (path.includes('AnimatedModels/Note_printer')) return <NotePrinterAnimated progress={progress} />;
     if (path.includes('Note_printer')) return <NotePrinter isMobile={isMobile} />;
-    if (path.includes('Card')) return <Card isMobile={isMobile} />;
+    if (path.includes('Card')) return <Card isMobile={isMobile} progress={progress} />;
     if (path.includes('Paint_mixer')) return <PaintMixer isMobile={isMobile} />;
     return null;
   }, [path, isMobile, progress]);
