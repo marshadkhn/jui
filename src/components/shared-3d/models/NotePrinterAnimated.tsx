@@ -62,7 +62,7 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
       
       if (bottomAction) {
         const duration = bottomAction.getClip().duration
-        bottomAction.time = p * duration
+        bottomAction.time = (1 - p) * duration
       }
     }
   })

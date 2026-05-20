@@ -7,6 +7,7 @@ const DEBUG_ROTATION = false;
 import { Canvas, useFrame } from '@react-three/fiber';
 import { PerspectiveCamera, Float, Stars, useGLTF, Environment, Points, PointMaterial, useTexture } from '@react-three/drei';
 import * as THREE from 'three';
+import { ModelPreloader } from './ModelPreloader';
 import { transform, useScroll, MotionValue } from 'framer-motion';
 
 // Kick off GLB download in a more controlled manner if needed
@@ -373,6 +374,7 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
           <spotLight position={[0, 20, 10]} angle={0.25} penumbra={1} intensity={0.8} color="#ffffff" />
 
           <Suspense fallback={null}>
+            <ModelPreloader />
             <SpaceParticles globalScroll={globalScroll} indiaProgress={indiaProgress} isMobile={isMobile} />
             <GlobeModel globalScroll={globalScroll} indiaProgress={indiaProgress} debugRotX={debugRotX} debugRotY={debugRotY} />
             <Environment preset="night" />
