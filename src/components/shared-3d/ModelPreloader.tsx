@@ -11,7 +11,7 @@ export function ModelPreloader() {
   useGLTF('/models/Note_printer_draco.glb');
   useGLTF('/AnimatedModels/Card-transformed.glb');
   useGLTF('/models/Paint_mixer-transformed.glb');
-  useGLTF('/AnimatedModels/Earth1_locations.glb');
+  useGLTF('/models/Earth1_.2.glb');
 
   // Preload textures inside the Canvas context
   useTexture('/smoke.png');
