@@ -198,7 +198,7 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
 
 
 // EarthMesh — normalized synchronously via useMemo
-const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any; debugRotX: number; debugRotY: number }) => {
+const EarthMesh = ({ globalScroll, indiaProgress, debugRotX, debugRotY }: { globalScroll: MotionValue<number>; indiaProgress: any; debugRotX: number; debugRotY: number }) => {
   const rotRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF('/AnimatedModels/Earth1_locations.glb');
 
@@ -239,13 +239,6 @@ const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any
     return { normScale, offset: center };
   }, [scene]);
 
-  // India Pointing logic:
-  // We want to smoothly interpolate from "Natural rotation" to "India front"
-  // India is 20N 78E. To bring it to visual center, we need a strong forward tilt.
-  // India Pointing logic using fresh mappers
-  const getIndiaRotX = transform([0, 1], [0, 0.2]);
-  const getIndiaRotY = transform([0, 1], [0, -1.2]);
-
   useFrame((state, delta) => {
     if (!rotRef.current) return;
 
@@ -256,12 +249,26 @@ const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any
       return;
     }
 
-    const iProgress = indiaProgress.get();
+    const scroll = globalScroll.get();
 
-    if (iProgress > 0.01) {
-      // Point towards India
-      rotRef.current.rotation.y = THREE.MathUtils.lerp(rotRef.current.rotation.y, getIndiaRotY(iProgress), 0.1);
-      rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, getIndiaRotX(iProgress), 0.1);
+    if (scroll >= 0.80) {
+      // India Section: Smooth rolling entry rotation to target (y = -1.2, x = 0.2)
+      // At scroll = 0.80, target is y = -1.8, x = 0.0 (India rotated slightly to the left)
+      // At scroll = 0.90, target is y = -1.2, x = 0.2 (India facing center front)
+      const entryProgress = Math.max(0, Math.min(1, (scroll - 0.80) / 0.10)); // 0 to 1
+      const targetY = -1.8 + entryProgress * 0.6; // rolls slowly from -1.8 to -1.2
+      const targetX = 0.0 + entryProgress * 0.2;  // tilts slowly from 0.0 to 0.2
+
+      rotRef.current.rotation.y = THREE.MathUtils.lerp(rotRef.current.rotation.y, targetY, 0.15);
+      rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, targetX, 0.15);
+    } else if (scroll > 0.65) {
+      // While invisible, prepare the rotation for the rolling entry (y = -1.8, x = 0.0)
+      rotRef.current.rotation.y = THREE.MathUtils.lerp(rotRef.current.rotation.y, -1.8, 0.08);
+      rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, 0.0, 0.08);
+    } else if (scroll > 0.08 && scroll < 0.22) {
+      // Smoothly rotate to bring India to the front for the "What We Do" section (y = -1.2, x = 0.2)
+      rotRef.current.rotation.y = THREE.MathUtils.lerp(rotRef.current.rotation.y, -1.2, 0.08);
+      rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, 0.2, 0.08);
     } else {
       // Natural slow background rotation — keep x stable at India tilt (0.2)
       rotRef.current.rotation.y += delta * 0.01;
@@ -290,15 +297,15 @@ const GlobeModel = ({ globalScroll, indiaProgress, debugRotX, debugRotY }: { glo
   const meshGroupRef = useRef<THREE.Group>(null);
 
   // Use raw transform mappers for robust HMR / real-time updates
-  const getPosX = transform([0, 0.1, 0.16, 0.80, 0.86], [1.2, 0, 0, -15, 0]);
-  const getPosY = transform([0, 0.1, 0.16, 0.80, 0.86], [-4.7, 0, 0, 0, 0]);
-  const getOpacity = transform([0.12, 0.16, 0.80, 0.84], [1, 0, 0, 1]);
-  const getScale = transform([0, 0.1, 0.16, 0.80, 0.86], [3.5, 5, 35, 0.4, 1.2]);
-  const getPosZ = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 5, 28, 0, 2]);
+  const getPosX = transform([0, 0.11, 0.18, 0.22, 0.80, 0.90], [0.6, 0, 0, 0, -5.5, 0]);
+  const getPosY = transform([0, 0.11, 0.18, 0.22, 0.80, 0.90], [-4.7, 0, 0, 0, 0, 0]);
+  const getOpacity = transform([0, 0.18, 0.22, 0.81, 0.86], [1, 1, 0, 0, 1]);
+  const getScale = transform([0, 0.11, 0.18, 0.22, 0.80, 0.90], [3.5, 2, 2, 2, 1.8, 1.8]);
+  const getPosZ = transform([0, 0.11, 0.18, 0.22, 0.80, 0.90], [0, 0, 0, 0, 0, 0]);
 
-  // Rotations for a dynamic "roll in" entrance
-  const getRotY = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 0, 0, -Math.PI / 2, 0]);
-  const getRotZ = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 0, 0, Math.PI / 4, 0]);
+  // Rotations for a dynamic scroll-driven rotation
+  const getRotY = transform([0, 1], [0, 0]);
+  const getRotZ = transform([0, 1], [0, 0]);
 
   useFrame(() => {
     if (!containerRef.current || !meshGroupRef.current) return;
@@ -327,7 +334,7 @@ const GlobeModel = ({ globalScroll, indiaProgress, debugRotX, debugRotY }: { glo
     <group ref={containerRef}>
       <group ref={meshGroupRef}>
         <Float speed={1.5} rotationIntensity={0.05} floatIntensity={0.1}>
-          <EarthMesh indiaProgress={indiaProgress} debugRotX={debugRotX} debugRotY={debugRotY} />
+          <EarthMesh globalScroll={globalScroll} indiaProgress={indiaProgress} debugRotX={debugRotX} debugRotY={debugRotY} />
         </Float>
       </group>
     </group>

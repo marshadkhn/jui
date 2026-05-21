@@ -81,6 +81,8 @@ const ProductSectionItem = ({
   // This avoids the browser bug where sticky parent opacity is ignored for WebGL
   const adjustedEnd = index === sectionsLength - 1 ? 0.96 : end;
 
+  const [isActive, setIsActive] = React.useState(index === 0);
+
   // Define a snappier focal window (Hold for 45% of its section)
   const mid = (start + adjustedEnd) / 2;
   const window = (adjustedEnd - start) * 0.45;
@@ -89,15 +91,21 @@ const ProductSectionItem = ({
   // Overlap = 12% of section width — creates seamless handoff, zero dead time
   const sectionWidth = adjustedEnd - start;
   const overlap = sectionWidth * 0.12;
-  const revealStart = index === 0 ? 0.03 : start - overlap;
-  const revealFull  = index === 0 ? 0.06 : start + sectionWidth * 0.14;
-  const holdEnd     = mid + window / 3;
+  const revealStart = index === 0 ? 0.01 : start - overlap;
+  const revealFull  = index === 0 ? 0.02 : start + sectionWidth * 0.03;
+  const holdEnd     = mid + window / 2.5;
 
   const opacity = index === 0
-    ? useTransform(globalScroll, [0, 0.08, 0.28, 0.3333], [0, 1, 1, 0])
+    ? useTransform(globalScroll, [0, 0.02, 0.28, 0.3333], [0, 1, 1, 0])
     : useTransform(globalScroll, [revealStart, revealFull, holdEnd, adjustedEnd], [0, 1, 1, 0]);
 
   const display = useTransform(opacity, (v) => (v < 0.01 ? 'none' : 'block'));
+
+  React.useEffect(() => {
+    return opacity.on("change", (v) => {
+      setIsActive(v > 0.01);
+    });
+  }, [opacity]);
 
   // Fly-By Z: Starts from -20 right at the section boundary — no gap
   // For section 1 (index 0), it stays at z = 0 and "just disappears" by fading
@@ -109,11 +117,11 @@ const ProductSectionItem = ({
 
   // Text movement: Smooth fade in/out timed with model (same crossfade overlap)
   const textRevealStart = index === 0 ? 0.01 : start - overlap;
-  const textRevealFull  = index === 0 ? 0.04 : start + sectionWidth * 0.20;
-  const textHoldEnd     = mid + window / 2.5;
+  const textRevealFull  = index === 0 ? 0.02 : start + sectionWidth * 0.04;
+  const textHoldEnd     = mid + window / 2.2;
 
   const textOpacity = index === 0
-    ? useTransform(globalScroll, [0, 0.08, 0.28, 0.3333], [0, 1, 1, 0])
+    ? useTransform(globalScroll, [0, 0.02, 0.28, 0.3333], [0, 1, 1, 0])
     : useTransform(globalScroll, [textRevealStart, textRevealFull, textHoldEnd, adjustedEnd - (adjustedEnd - start) * 0.05], [0, 1, 1, 0]);
 
   const textDisplay = useTransform(textOpacity, (v) => (v < 0.01 ? 'none' : 'block'));
@@ -123,6 +131,7 @@ const ProductSectionItem = ({
     : useTransform(globalScroll, [revealStart, revealFull, textHoldEnd, adjustedEnd], [18, 0, 0, -18]);
 
   const zIndex = useTransform(textOpacity, (v) => (typeof v === 'number' && v > 0.05 ? 50 : 0));
+  const progress = useTransform(globalScroll, [start, end], [0, 1]);
 
   return (
     <motion.div
@@ -135,15 +144,17 @@ const ProductSectionItem = ({
         style={{ x, z, opacity, perspective: 1500, display }}
       >
         <div className="w-full h-full">
-          <ProductModelCanvas
-            path={data.modelPath || ''}
-            scale={data.modelScale || 4}
-            position={data.modelPosition || [0, 0, 0]}
-            rotationOffset={data.rotationOffset || [0, 0, 0]}
-            shouldSpin={data.shouldSpin !== false}
-            spinSpeed={data.spinSpeed || 0.15}
-            progress={useTransform(globalScroll, [start, end], [0, 1])}
-          />
+          {isActive && (
+            <ProductModelCanvas
+              path={data.modelPath || ''}
+              scale={data.modelScale || 4}
+              position={data.modelPosition || [0, 0, 0]}
+              rotationOffset={data.rotationOffset || [0, 0, 0]}
+              shouldSpin={data.shouldSpin !== false}
+              spinSpeed={data.spinSpeed || 0.15}
+              progress={progress}
+            />
+          )}
         </div>
       </motion.div>
 

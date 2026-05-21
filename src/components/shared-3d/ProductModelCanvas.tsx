@@ -32,11 +32,15 @@ interface ModelProps {
  * AtmosphericLights - Creates a dynamic "Lighting Reveal" 
  * as the model centers in the viewport.
  */
-const AtmosphericLights = ({ progress }: { progress?: MotionValue<number> }) => {
+const AtmosphericLights = ({ progress, isFirstSection }: { progress?: MotionValue<number>; isFirstSection?: boolean }) => {
   const reveal = useTransform(
     progress || new THREE.Vector3(0.5, 0, 0) as any,
-    [0.0, 0.08, 0.5, 0.85, 1.0],
-    [0, 0.3, 1, 1, 0]
+    isFirstSection 
+      ? [0.0, 0.85, 1.0]
+      : [0.0, 0.10, 0.85, 1.0],
+    isFirstSection
+      ? [1, 1, 0]
+      : [0, 1, 1, 0]
   );
 
   const intensity = useRef(0);
@@ -106,17 +110,17 @@ const ProductModelCanvas = (props: ModelProps) => {
     setIsMobile(window.innerWidth < 768);
   }, []);
 
-  const isFirstSection = props.path && props.path.includes('Note_printer');
+  const isFirstSection = !!(props.path && props.path.includes('Note_printer'));
 
   // Scale starts at 80% of full size — model is already big when it fades in (no ant-size reveal)
   const modelDynamicScale = useTransform(
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
     isFirstSection 
       ? [0.0, 1.0]
-      : [0.0, 0.15, 0.80, 1.0],
+      : [0.0, 0.10, 0.85, 1.0],
     isFirstSection
       ? [props.scale || 1, props.scale || 1]
-      : [(props.scale || 1) * 0.8, props.scale || 1, props.scale || 1, (props.scale || 1) * 10]
+      : [(props.scale || 1) * 0.8, props.scale || 1, props.scale || 1, (props.scale || 1) * 3]
   );
 
   const auraScale = useTransform(
@@ -136,10 +140,10 @@ const ProductModelCanvas = (props: ModelProps) => {
     props.progress || new THREE.Vector3(0.5, 0, 0) as any,
     isFirstSection
       ? [0.0, 1.0]
-      : [0.0, 0.08, 0.40, 0.82, 1.0],
+      : [0.0, 0.10, 0.85, 1.0],
     isFirstSection
       ? [1, 1]
-      : [0, 0, 1, 1, 0]
+      : [0, 1, 1, 0]
   );
 
   return (
@@ -171,7 +175,7 @@ const ProductModelCanvas = (props: ModelProps) => {
           <AdaptiveDpr pixelated />
           <AdaptiveEvents />
 
-          <AtmosphericLights progress={props.progress} />
+          <AtmosphericLights progress={props.progress} isFirstSection={isFirstSection} />
 
           <Float speed={0.3} rotationIntensity={0.2} floatIntensity={0.2}>
             {/* Pass the animated scale and opacity values here */}
