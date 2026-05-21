@@ -57,11 +57,13 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
       
       if (topAction) {
         const duration = topAction.getClip().duration
-        topAction.time = (1 - p) * duration
+        // Make Top cylinder rotate anti-clockwise on scroll down
+        topAction.time = p * duration
       }
       
       if (bottomAction) {
         const duration = bottomAction.getClip().duration
+        // Make Bottom cylinder rotate anti-clockwise on scroll down (compensates for opposite rotation)
         bottomAction.time = (1 - p) * duration
       }
     }
