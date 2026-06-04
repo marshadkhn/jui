@@ -83,15 +83,9 @@ const CustomCursor = () => {
           className="relative w-[168px] h-[168px]"
           style={{ willChange: "transform" }}
           animate={{
-            rotate: 360, // Constant slow rotation
             scale: [1, 1.05, 1], // Subtle breathing effect
           }}
           transition={{
-            rotate: {
-              duration: 15,
-              repeat: Infinity,
-              ease: "linear"
-            },
             scale: {
               duration: 3,
               repeat: Infinity,
@@ -99,10 +93,25 @@ const CustomCursor = () => {
             }
           }}
         >
+          {/* Outer circle (rotates) */}
+          <motion.img
+            src="/cursor-circle.svg"
+            alt="Custom Cursor Circle"
+            className="absolute inset-0 w-full h-full object-contain filter brightness-[1.8] contrast-[1.2] drop-shadow-[0_0_15px_rgba(0,209,255,0.6)]"
+            animate={{ rotate: 360 }}
+            transition={{
+              rotate: {
+                duration: 15,
+                repeat: Infinity,
+                ease: "linear"
+              }
+            }}
+          />
+          {/* Inner needle (static, no rotation) */}
           <img
-            src="/cursor.svg"
-            alt="Custom Cursor"
-            className="w-full h-full object-contain filter brightness-[1.8] contrast-[1.2] drop-shadow-[0_0_15px_rgba(0,209,255,0.6)]"
+            src="/cursor-needle.svg"
+            alt="Custom Cursor Needle"
+            className="absolute inset-0 w-full h-full object-contain filter brightness-[1.8] contrast-[1.2] drop-shadow-[0_0_15px_rgba(0,209,255,0.6)]"
           />
         </motion.div>
       </motion.div>
