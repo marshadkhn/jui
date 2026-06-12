@@ -198,15 +198,23 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
 
 
 // EarthMesh — normalized synchronously via useMemo
-const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any; debugRotX: number; debugRotY: number }) => {
+const EarthMesh = ({
+  indiaProgress,
+  debugRotX,
+  debugRotY
+}: {
+  indiaProgress: MotionValue<number>;
+  debugRotX: number;
+  debugRotY: number;
+}) => {
   const rotRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF('/models/Earth1_.2.glb');
 
-  // Start with India facing the camera — matches India section target (y=-1, x=0.2)
+  // Start with India facing the camera — matches India section target
   useEffect(() => {
     if (rotRef.current) {
-      rotRef.current.rotation.y = -1.2;
-      rotRef.current.rotation.x = 0.2;
+      rotRef.current.rotation.y = -1.170;
+      rotRef.current.rotation.x = -0.320;
     }
   }, []);
 
@@ -239,13 +247,6 @@ const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any
     return { normScale, offset: center };
   }, [scene]);
 
-  // India Pointing logic:
-  // We want to smoothly interpolate from "Natural rotation" to "India front"
-  // India is 20N 78E. To bring it to visual center, we need a strong forward tilt.
-  // India Pointing logic using fresh mappers
-  const getIndiaRotX = transform([0, 1], [0, 0.2]);
-  const getIndiaRotY = transform([0, 1], [0, -1.2]);
-
   useFrame((state, delta) => {
     if (!rotRef.current) return;
 
@@ -258,15 +259,12 @@ const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any
 
     const iProgress = indiaProgress.get();
 
-    if (iProgress > 0.01) {
-      // Point towards India
-      rotRef.current.rotation.y = THREE.MathUtils.lerp(rotRef.current.rotation.y, getIndiaRotY(iProgress), 0.1);
-      rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, getIndiaRotX(iProgress), 0.1);
-    } else {
-      // Natural slow background rotation — keep x stable at India tilt (0.2)
-      rotRef.current.rotation.y += delta * 0.01;
-      rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, 0.2, 0.05);
-    }
+    // Smoothly rotate on axis from Hero initial values to original India target values
+    const targetY = THREE.MathUtils.lerp(-1.170, -1.2, iProgress);
+    const targetX = THREE.MathUtils.lerp(-0.320, 0.2, iProgress);
+
+    rotRef.current.rotation.y = THREE.MathUtils.lerp(rotRef.current.rotation.y, targetY, 0.2);
+    rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, targetX, 0.2);
   });
 
   return (
@@ -285,16 +283,28 @@ const EarthMesh = ({ indiaProgress, debugRotX, debugRotY }: { indiaProgress: any
 };
 
 // Outer group — handles scroll-driven position and scale
-const GlobeModel = ({ globalScroll, indiaProgress, debugRotX, debugRotY }: { globalScroll: MotionValue<number>, indiaProgress: MotionValue<number>, debugRotX: number, debugRotY: number }) => {
+const GlobeModel = ({
+  globalScroll,
+  indiaProgress,
+  debugRotX,
+  debugRotY,
+  debugPosZ
+}: {
+  globalScroll: MotionValue<number>,
+  indiaProgress: MotionValue<number>,
+  debugRotX: number,
+  debugRotY: number,
+  debugPosZ: number
+}) => {
   const containerRef = useRef<THREE.Group>(null);
   const meshGroupRef = useRef<THREE.Group>(null);
 
   // Use raw transform mappers for robust HMR / real-time updates
-  const getPosX = transform([0, 0.1, 0.16, 0.80, 0.86], [1.2, 0, 0, -15, 0]);
-  const getPosY = transform([0, 0.1, 0.16, 0.80, 0.86], [-4.7, 0, 0, 0, 0]);
+  const getPosX = transform([0, 0.1, 0.16, 0.80, 0.86], [1.5, 0, 0, -15, 0]);
+  const getPosY = transform([0, 0.1, 0.16, 0.80, 0.86], [-4, 0, 0, 0, 0]);
   const getOpacity = transform([0.12, 0.16, 0.80, 0.84], [1, 0, 0, 1]);
-  const getScale = transform([0, 0.1, 0.16, 0.80, 0.86], [3.2, 5, 35, 0.4, 1.2]);
-  const getPosZ = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 5, 28, 0, 2]);
+  const getScale = transform([0, 0.1, 0.16, 0.80, 0.86], [3, 5, 35, 0.4, 1.2]);
+  const getPosZ = transform([0, 0.1, 0.16, 0.80, 0.86], [-2.5, 5, 28, 0, 2.4]);
 
   // Rotations for a dynamic "roll in" entrance
   const getRotY = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 0, 0, -Math.PI / 2, 0]);
@@ -312,7 +322,7 @@ const GlobeModel = ({ globalScroll, indiaProgress, debugRotX, debugRotY }: { glo
     // Position
     containerRef.current.position.x = getPosX(scroll);
     containerRef.current.position.y = getPosY(scroll);
-    containerRef.current.position.z = getPosZ(scroll);
+    containerRef.current.position.z = DEBUG_ROTATION ? debugPosZ : getPosZ(scroll);
 
     // Scale
     const s = getScale(scroll);
@@ -327,7 +337,11 @@ const GlobeModel = ({ globalScroll, indiaProgress, debugRotX, debugRotY }: { glo
     <group ref={containerRef}>
       <group ref={meshGroupRef}>
         <Float speed={1.5} rotationIntensity={0.05} floatIntensity={0.1}>
-          <EarthMesh indiaProgress={indiaProgress} debugRotX={debugRotX} debugRotY={debugRotY} />
+          <EarthMesh
+            indiaProgress={indiaProgress}
+            debugRotX={debugRotX}
+            debugRotY={debugRotY}
+          />
         </Float>
       </group>
     </group>
@@ -336,8 +350,9 @@ const GlobeModel = ({ globalScroll, indiaProgress, debugRotX, debugRotY }: { glo
 
 const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<number>; indiaRef: React.RefObject<HTMLDivElement | null> }) => {
   const [isMobile, setIsMobile] = React.useState(false);
-  const [debugRotX, setDebugRotX] = useState(-0.520);
-  const [debugRotY, setDebugRotY] = useState(-1.520);
+  const [debugRotX, setDebugRotX] = useState(-0.320);
+  const [debugRotY, setDebugRotY] = useState(-1.170);
+  const [debugPosZ, setDebugPosZ] = useState(-2.500);
 
 
   React.useEffect(() => {
@@ -351,7 +366,7 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
 
   const { scrollYProgress: indiaProgress } = useScroll({
     target: indiaRef,
-    offset: ["start end", "center center"]
+    offset: ["start end", "center 75%"]
   });
 
   return (
@@ -376,7 +391,13 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
           <Suspense fallback={null}>
             <ModelPreloader />
             <SpaceParticles globalScroll={globalScroll} indiaProgress={indiaProgress} isMobile={isMobile} />
-            <GlobeModel globalScroll={globalScroll} indiaProgress={indiaProgress} debugRotX={debugRotX} debugRotY={debugRotY} />
+            <GlobeModel
+              globalScroll={globalScroll}
+              indiaProgress={indiaProgress}
+              debugRotX={debugRotX}
+              debugRotY={debugRotY}
+              debugPosZ={debugPosZ}
+            />
             <Environment preset="night" />
           </Suspense>
 
@@ -422,7 +443,7 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
             />
           </label>
 
-          <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '16px' }}>
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
             <span>rotation.y (spin left/right): <strong style={{ color: '#facc15' }}>{debugRotY.toFixed(3)}</strong></span>
             <input
               type="range" min="-4" max="4" step="0.01"
@@ -432,10 +453,21 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
             />
           </label>
 
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '16px' }}>
+            <span>position.z (distance): <strong style={{ color: '#facc15' }}>{debugPosZ.toFixed(3)}</strong></span>
+            <input
+              type="range" min="-15" max="30" step="0.1"
+              value={debugPosZ}
+              onChange={e => setDebugPosZ(parseFloat(e.target.value))}
+              style={{ accentColor: '#4ade80', cursor: 'pointer' }}
+            />
+          </label>
+
           <div style={{ background: 'rgba(255,255,255,0.07)', borderRadius: '6px', padding: '8px 10px', fontSize: '12px', lineHeight: '1.8' }}>
             📋 Copy these values:<br />
             <span style={{ color: '#86efac' }}>rotation.x = {debugRotX.toFixed(3)}</span><br />
-            <span style={{ color: '#86efac' }}>rotation.y = {debugRotY.toFixed(3)}</span>
+            <span style={{ color: '#86efac' }}>rotation.y = {debugRotY.toFixed(3)}</span><br />
+            <span style={{ color: '#86efac' }}>position.z = {debugPosZ.toFixed(3)}</span>
           </div>
         </div>
       )}
