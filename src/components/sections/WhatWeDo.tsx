@@ -41,8 +41,7 @@ const WhatWeDo = () => {
         <div
           className="relative w-full  lg:w-1/2 flex justify-center lg:justify-start items-center mb-12 lg:mb-0 pointer-events-none"
         >
-          {/* Cyan Glow Effect */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] lg:w-[450px] h-[300px] lg:h-[450px] bg-cyan-500/8 blur-[100px] rounded-full" />
+          {/* <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] lg:w-[450px] h-[300px] lg:h-[450px] bg-cyan-500/8 blur-[100px] rounded-full" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150px] lg:w-[250px] h-[150px] lg:h-[250px] bg-cyan-400/5 blur-[60px] rounded-full" />
 
           <div className="w-full h-[300px] lg:h-[600px] relative z-10 flex justify-center items-center">
@@ -84,8 +83,8 @@ const WhatWeDo = () => {
               </Suspense>
             </Canvas>
 
-          </div>
-        </div>
+          </div>*/}
+        </div> 
 
         <div
           className="max-w-xl z-10 text-center  lg:text-right flex flex-col items-center lg:items-end w-full lg:w-1/2"
