@@ -89,7 +89,7 @@ const NebulaMaterial = {
   `
 };
 
-const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScroll: any, indiaProgress: any, isMobile: boolean }) => {
+const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScroll: MotionValue<number>; indiaProgress: MotionValue<number>; isMobile: boolean }) => {
   const pointsRef = useRef<THREE.Points>(null);
   const cloudRef = useRef<THREE.Points>(null);
   const smokeMap = useTexture('/smoke.png');
@@ -98,13 +98,18 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
   const dustCount = isMobile ? 5000 : 15000;
   const dustPositions = useMemo(() => {
     const pos = new Float32Array(dustCount * 3);
+    let seed = 1.0;
+    const random = () => {
+      const x = Math.sin(seed++) * 10000;
+      return x - Math.floor(x);
+    };
     for (let i = 0; i < dustCount; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 80;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 80;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 140 - 70;
+      pos[i * 3] = (random() - 0.5) * 80;
+      pos[i * 3 + 1] = (random() - 0.5) * 80;
+      pos[i * 3 + 2] = (random() - 0.5) * 140 - 70;
     }
     return pos;
-  }, []);
+  }, [dustCount]);
 
   // Nebula Clouds - Strategic distribution
   const cloudCount = isMobile ? 60 : 180;
@@ -113,21 +118,26 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
     const sizes = new Float32Array(cloudCount);
     const rotations = new Float32Array(cloudCount);
     const drifts = new Float32Array(cloudCount * 3);
+    let seed = 42.0;
+    const random = () => {
+      const x = Math.sin(seed++) * 10000;
+      return x - Math.floor(x);
+    };
 
     for (let i = 0; i < cloudCount; i++) {
       // Randomly cover the screen area
-      pos[i * 3] = (Math.random() - 0.5) * 140;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 140;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 120 - 40;
+      pos[i * 3] = (random() - 0.5) * 140;
+      pos[i * 3 + 1] = (random() - 0.5) * 140;
+      pos[i * 3 + 2] = (random() - 0.5) * 120 - 40;
 
-      sizes[i] = isMobile ? (35 + Math.random() * 50) : (80 + Math.random() * 140);
-      rotations[i] = Math.random() * Math.PI * 2;
-      drifts[i * 3] = (Math.random() - 0.5) * 3;
-      drifts[i * 3 + 1] = (Math.random() - 0.5) * 3;
-      drifts[i * 3 + 2] = (Math.random() - 0.5) * 5; // Z Speed variation
+      sizes[i] = isMobile ? (35 + random() * 50) : (80 + random() * 140);
+      rotations[i] = random() * Math.PI * 2;
+      drifts[i * 3] = (random() - 0.5) * 3;
+      drifts[i * 3 + 1] = (random() - 0.5) * 3;
+      drifts[i * 3 + 2] = (random() - 0.5) * 5; // Z Speed variation
     }
     return { pos, sizes, rotations, drifts };
-  }, [cloudCount]);
+  }, [cloudCount, isMobile]);
 
   useFrame((state, delta) => {
     const scroll = globalScroll.get();
@@ -247,7 +257,7 @@ const EarthMesh = ({
     return { normScale, offset: center };
   }, [scene]);
 
-  useFrame((state, delta) => {
+  useFrame(() => {
     if (!rotRef.current) return;
 
     // 🔧 DEBUG: override rotation with slider values

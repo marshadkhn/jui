@@ -3,10 +3,7 @@
 import React, { useRef } from 'react';
 import HeroContent from './HeroContent';
 import WhatWeDo from '../sections/WhatWeDo';
-import { useScroll } from 'framer-motion';
-import ModelScene from '../shared-3d/ModelScene';
-
-const Hero = ({ indiaRef }: { indiaRef: React.RefObject<HTMLDivElement | null> }) => {
+const Hero = () => {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (

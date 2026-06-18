@@ -27,7 +27,7 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[]
 }
 
-export function Model({ isMobile, ...props }: React.JSX.IntrinsicElements['group'] & { isMobile?: boolean }) {
+export function Model(props: React.JSX.IntrinsicElements['group']) {
   const group = React.useRef<THREE.Group>(null)
   const { nodes, materials, animations } = useGLTF('/models/Paint_mixer-transformed.glb') as unknown as GLTFResult
   const { actions } = useAnimations(animations, group)

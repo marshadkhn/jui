@@ -100,7 +100,7 @@ const HeroContent = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
       >
-        Connecting world-class innovation with India's Banknote, Mint, and Smart Card industries.
+        Connecting world-class innovation with India&apos;s Banknote, Mint, and Smart Card industries.
         Trusted by governments and enterprises across 30+ countries.
       </motion.p>
 
