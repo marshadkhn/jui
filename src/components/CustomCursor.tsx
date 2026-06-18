@@ -17,11 +17,7 @@ const CustomCursor = () => {
   const cursorY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
-    const handle = requestAnimationFrame(() => setMounted(true));
-    return () => cancelAnimationFrame(handle);
-  }, []);
-
-  useEffect(() => {
+    setMounted(true);
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     if (isTouchDevice) return;
 
@@ -112,7 +108,6 @@ const CustomCursor = () => {
             }}
           />
           {/* Inner needle (static, no rotation) */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/cursor-needle.svg"
             alt="Custom Cursor Needle"
