@@ -51,42 +51,42 @@ const WhatWeDo = () => {
     offset: ["start start", "end end"]
   });
 
-  // Entrance and exit opacity (mapped to the sticky phase [0.0 - 0.5])
+  // Entrance and exit opacity (mapped to the sticky phase [0.0 - 1.0])
   const opacity = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.18) return latest / 0.18;
-    if (latest < 0.42) return 1;
-    if (latest < 0.50) return 1 - (latest - 0.42) / 0.08;
+    if (latest < 0.25) return latest / 0.25;
+    if (latest < 0.75) return 1;
+    if (latest < 1.0) return 1 - (latest - 0.75) / 0.25;
     return 0;
   });
 
   // Translate-in from left and rotate-in to target values:
   // Target position is -1.0. Target rotation is [0.340, -0.770, 0.010].
   const modelX = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.18) return -4.5 + (latest / 0.18) * 3.5;
+    if (latest < 0.25) return -4.5 + (latest / 0.25) * 3.5;
     return -1.0;
   });
   const modelRotX = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.18) return (latest / 0.18) * 0.340;
+    if (latest < 0.25) return (latest / 0.25) * 0.340;
     return 0.340;
   });
   const modelRotY = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.18) return -2.8 + (latest / 0.18) * 2.03; // -2.8 to -0.77
+    if (latest < 0.25) return -2.8 + (latest / 0.25) * 2.03; // -2.8 to -0.77
     return -0.770;
   });
   const modelRotZ = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.18) return -0.1 + (latest / 0.18) * 0.11; // -0.1 to 0.010
+    if (latest < 0.25) return -0.1 + (latest / 0.25) * 0.11; // -0.1 to 0.010
     return 0.010;
   });
 
   // Exit animation for text
   const yOffset = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.42) return 0;
-    if (latest < 0.50) return ((latest - 0.42) / 0.08) * -100;
+    if (latest < 0.75) return 0;
+    if (latest < 1.0) return ((latest - 0.75) / 0.25) * -100;
     return -100;
   });
   const scaleEffect = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.42) return 1;
-    if (latest < 0.50) return 1 - ((latest - 0.42) / 0.08) * 0.2;
+    if (latest < 0.75) return 1;
+    if (latest < 1.0) return 1 - ((latest - 0.75) / 0.25) * 0.2;
     return 0.8;
   });
 
@@ -95,7 +95,7 @@ const WhatWeDo = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative h-[200vh] w-full bg-transparent"
+      className="relative h-[120vh] w-full bg-transparent"
     >
       <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden">
         {/* 3D Model Canvas Container - Spans absolute left-0 to 60vw and 100% height to avoid box clipping */}

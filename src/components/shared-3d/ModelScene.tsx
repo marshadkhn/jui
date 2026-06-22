@@ -206,6 +206,185 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
   );
 };
 
+const NumberShaderMaterialDef = {
+  uniforms: {
+    uMap: { value: null },
+    uTime: { value: 0 },
+    uScroll: { value: 0 },
+    uColor: { value: new THREE.Color('#ffffff') },
+    uOpacity: { value: 0.95 }
+  },
+  vertexShader: `
+    uniform float uTime;
+    uniform float uScroll;
+    attribute float size;
+    attribute float numberIndex;
+    attribute vec3 drift;
+    varying float vNumberIndex;
+    varying float vOpacity;
+
+    void main() {
+      vNumberIndex = numberIndex;
+      
+      // Compute drifting position
+      vec3 pos = position;
+      pos.x += sin(uTime * 0.15 + drift.x * 20.0) * 4.0;
+      pos.y += cos(uTime * 0.15 + drift.y * 20.0) * 4.0;
+      pos.z += sin(uTime * 0.10 + drift.z * 20.0) * 4.0;
+      
+      // Travel on scroll (subtle parallax)
+      pos.z += uScroll * 20.0;
+      
+      vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+      float dist = -mvPosition.z;
+      
+        gl_PointSize = size * (180.0 / dist);
+      gl_Position = projectionMatrix * mvPosition;
+      
+      // Fade out logic when too close or far to mimic background star field depth
+      vOpacity = smoothstep(10.0, 50.0, dist) * smoothstep(400.0, 280.0, dist);
+    }
+  `,
+  fragmentShader: `
+    uniform sampler2D uMap;
+    uniform vec3 uColor;
+    uniform float uOpacity;
+    varying float vNumberIndex;
+    varying float vOpacity;
+
+    void main() {
+      // Map UV to one of the 10 horizontal numbers in atlas, correcting mirroring and keeping vertical uprightness
+      vec2 uv = vec2(
+        (gl_PointCoord.x + vNumberIndex) / 10.0,
+        1.0 - gl_PointCoord.y
+      );
+      
+      vec4 tex = texture2D(uMap, uv);
+      float mask = tex.r;
+      if (mask < 0.15) discard;
+      
+      // White core with subtle cyan tint
+      vec3 finalColor = mix(uColor, vec3(0.7, 0.95, 1.0), 0.3);
+      gl_FragColor = vec4(finalColor, mask * uOpacity * vOpacity);
+    }
+  `
+};
+
+const NumberParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue<number>; isMobile: boolean }) => {
+  const pointsRef = useRef<THREE.Points>(null);
+
+  // Dynamic CanvasTexture generation containing numbers 0-9
+  const numbersTexture = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.clearRect(0, 0, 1024, 128);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 110px Courier New, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (let i = 0; i < 10; i++) {
+        const x = (i + 0.5) * 102.4;
+        ctx.fillText(i.toString(), x, 64);
+      }
+    }
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  }, []);
+
+  const count = isMobile ? 1000 : 3500;
+
+  const data = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    const numberIndexes = new Float32Array(count);
+    const drifts = new Float32Array(count * 3);
+    let seed = 888.0;
+    const random = () => {
+      const x = Math.sin(seed++) * 10000;
+      return x - Math.floor(x);
+    };
+
+    for (let i = 0; i < count; i++) {
+      // Spherical distribution with radius from 60 to 280 to blend in with Stars
+      const u = random();
+      const v = random();
+      const theta = u * 2.0 * Math.PI;
+      const phi = Math.acos(2.0 * v - 1.0);
+      const r = 60 + random() * 220;
+
+      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+      pos[i * 3 + 2] = r * Math.cos(phi);
+
+      // Star particle sizes (increased so number shapes are clearly distinguishable)
+      sizes[i] = isMobile ? (2.0 + random() * 2.0) : (3.5 + random() * 4.5);
+
+      // Random integer from 0 to 9
+      numberIndexes[i] = Math.floor(random() * 10);
+
+      // Drift attributes
+      drifts[i * 3] = random();
+      drifts[i * 3 + 1] = random();
+      drifts[i * 3 + 2] = random();
+    }
+    return { pos, sizes, numberIndexes, drifts };
+  }, [count, isMobile]);
+
+  useFrame((state) => {
+    const scroll = globalScroll.get();
+    if (pointsRef.current) {
+      // Slow background rotation just like the Stars component
+      pointsRef.current.rotation.y = state.clock.elapsedTime * 0.015;
+      pointsRef.current.rotation.x = state.clock.elapsedTime * 0.005;
+
+      const mat = pointsRef.current.material as THREE.ShaderMaterial;
+      if (mat.uniforms) {
+        mat.uniforms.uTime.value = state.clock.elapsedTime;
+        mat.uniforms.uScroll.value = scroll;
+      }
+    }
+  });
+
+  if (!numbersTexture) return null;
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[data.pos, 3]}
+        />
+        <bufferAttribute
+          attach="attributes-size"
+          args={[data.sizes, 1]}
+        />
+        <bufferAttribute
+          attach="attributes-numberIndex"
+          args={[data.numberIndexes, 1]}
+        />
+        <bufferAttribute
+          attach="attributes-drift"
+          args={[data.drifts, 3]}
+        />
+      </bufferGeometry>
+      <shaderMaterial
+        args={[NumberShaderMaterialDef]}
+        transparent
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+        uniforms-uMap-value={numbersTexture}
+      />
+    </points>
+  );
+};
+
 
 // EarthMesh — normalized synchronously via useMemo
 const EarthMesh = ({
@@ -401,6 +580,7 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
           <Suspense fallback={null}>
             <ModelPreloader />
             <SpaceParticles globalScroll={globalScroll} indiaProgress={indiaProgress} isMobile={isMobile} />
+            <NumberParticles globalScroll={globalScroll} isMobile={isMobile} />
             <GlobeModel
               globalScroll={globalScroll}
               indiaProgress={indiaProgress}

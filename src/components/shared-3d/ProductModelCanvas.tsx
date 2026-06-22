@@ -121,6 +121,27 @@ const ProductModelCanvas = (props: ModelProps) => {
   const fallbackProgress = useMotionValue(0.5);
   const activeProgress = props.progress || fallbackProgress;
 
+  // Active section visibility tracking to unmount inactive WebGL contexts
+  const [isVisible, setIsVisible] = React.useState(isFirstSection);
+
+  React.useEffect(() => {
+    if (isFirstSection) {
+      setIsVisible(true);
+      return;
+    }
+    
+    if (!props.progress) {
+      setIsVisible(true);
+      return;
+    }
+
+    return props.progress.on('change', (val) => {
+      // Render canvas when it's active in the viewport scroll window
+      const visible = val > 0.001 && val < 0.999;
+      setIsVisible(visible);
+    });
+  }, [props.progress, isFirstSection]);
+
   // Scale starts at 80% of full size — model is already big when it fades in (no ant-size reveal)
   const modelDynamicScale = useTransform(
     activeProgress,
@@ -166,19 +187,20 @@ const ProductModelCanvas = (props: ModelProps) => {
         }}
       />
 
-      <Canvas
-        dpr={isMobile ? 1 : [1, 1.5]}
-        shadows={!isMobile}
-        performance={{ min: 0.5 }}
-        gl={{
-          antialias: !isMobile,
-          alpha: true,
-          powerPreference: "high-performance",
-          stencil: false,
-          depth: true
-        }}
-      >
-        <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={22} />
+      {isVisible ? (
+        <Canvas
+          dpr={isMobile ? 1 : [1, 1.5]}
+          shadows={!isMobile}
+          performance={{ min: 0.5 }}
+          gl={{
+            antialias: !isMobile,
+            alpha: true,
+            powerPreference: "high-performance",
+            stencil: false,
+            depth: true
+          }}
+        >
+          <PerspectiveCamera makeDefault position={[0, 0, 10]} fov={22} />
 
         <Suspense fallback={null}>
           <AdaptiveDpr pixelated />
@@ -207,7 +229,8 @@ const ProductModelCanvas = (props: ModelProps) => {
           )}
 
         </Suspense>
-      </Canvas>
+        </Canvas>
+      ) : null}
 
     </div>
   );

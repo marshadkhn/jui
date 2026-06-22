@@ -47,7 +47,7 @@ const sections: SectionData[] = [
     title: 'Paints',
     description:
       'We are a global logistics and investment firm, creating connections that power the future of trade.',
-    modelPath: '/models/Paint_mixer.glb',
+    modelPath: '/models/Paint_mixer-transformed.glb',
     modelScale: 1,
     modelPosition: [3.5, 1, -6], // Fixed depth
     rotationOffset: [0.5, 0, -Math.PI / 4],
@@ -160,7 +160,11 @@ const ProductSectionItem = ({
             rotationOffset={data.rotationOffset || [0, 0, 0]}
             shouldSpin={data.shouldSpin !== false}
             spinSpeed={data.spinSpeed || 0.15}
-            progress={useTransform(globalScroll, [start, end], [0, 1])}
+            progress={useTransform(
+              globalScroll,
+              index === 0 ? [0, 0.3333] : [revealStart, adjustedEnd],
+              [0, 1]
+            )}
           />
         </div>
       </motion.div>
