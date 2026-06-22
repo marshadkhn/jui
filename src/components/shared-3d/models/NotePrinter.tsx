@@ -3,7 +3,7 @@ import React from 'react'
 import { useGLTF } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 
-type GLTFAction = any
+type GLTFAction = THREE.AnimationClip
 type GLTFResult = GLTF & {
   nodes: {
     Cylinder034: THREE.Mesh
@@ -22,10 +22,16 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[]
 }
 
-const BlueprintMesh = ({ geometry, material, isMobile, ...props }: any) => (
+type BlueprintMeshProps = React.JSX.IntrinsicElements['mesh'] & {
+  geometry: THREE.BufferGeometry
+  material: THREE.MeshStandardMaterial
+  isMobile?: boolean
+}
+
+const BlueprintMesh = ({ geometry, material, isMobile, ...props }: BlueprintMeshProps) => (
   <mesh geometry={geometry} {...props}>
     {/* Base Material (True Texture) */}
-    <meshStandardMaterial {...material} transparent opacity={0.8} />
+    <meshStandardMaterial {...(material as unknown as React.ComponentProps<'meshStandardMaterial'>)} transparent opacity={0.8} />
     {/* Technical Wireframe Overlay - SKIP ON MOBILE */}
     {!isMobile && (
       <mesh geometry={geometry}>

@@ -16,7 +16,7 @@ useGLTF.preload('/models/Note_printer_draco.glb');
 useGLTF.preload('/AnimatedModels/Card-transformed.glb');
 useGLTF.preload('/models/Paint_mixer-transformed.glb');
 
-import { MotionValue, useTransform, motion, useMotionTemplate } from 'framer-motion';
+import { MotionValue, useTransform, motion, useMotionValue } from 'framer-motion';
 
 interface ModelProps {
   path: string;
@@ -33,21 +33,31 @@ interface ModelProps {
  * as the model centers in the viewport.
  */
 const AtmosphericLights = ({ progress }: { progress?: MotionValue<number> }) => {
+  const fallback = useMotionValue(0.5);
+  const activeProgress = progress || fallback;
   const reveal = useTransform(
-    progress || new THREE.Vector3(0.5, 0, 0) as any,
+    activeProgress,
     [0.0, 0.08, 0.5, 0.85, 1.0],
     [0, 0.3, 1, 1, 0]
   );
 
-  const intensity = useRef(0);
-  useFrame(() => { intensity.current = reveal.get(); });
+  const ambientRef = useRef<THREE.AmbientLight>(null);
+  const dirLightRef = useRef<THREE.DirectionalLight>(null);
+  const pointLightRef = useRef<THREE.PointLight>(null);
+
+  useFrame(() => {
+    const val = reveal.get();
+    if (ambientRef.current) ambientRef.current.intensity = 0.3 * val;
+    if (dirLightRef.current) dirLightRef.current.intensity = 1.5 * val;
+    if (pointLightRef.current) pointLightRef.current.intensity = val * 1.5;
+  });
 
   return (
     <>
-      <ambientLight intensity={0.3 * intensity.current} />
-      <directionalLight position={[10, 10, 10]} intensity={1.5 * intensity.current} />
+      <ambientLight ref={ambientRef} intensity={0} />
+      <directionalLight ref={dirLightRef} position={[10, 10, 10]} intensity={0} />
       {/* Neutral highlight instead of blue */}
-      <pointLight position={[-10, 5, 2]} intensity={intensity.current * 1.5} color="#ffffff" />
+      <pointLight ref={pointLightRef} position={[-10, 5, 2]} intensity={0} color="#ffffff" />
     </>
   );
 };
@@ -84,7 +94,7 @@ const GltfModel = ({
     if (path.includes('AnimatedModels/Note_printer')) return <NotePrinterAnimated progress={progress} />;
     if (path.includes('Note_printer')) return <NotePrinter isMobile={isMobile} />;
     if (path.includes('Card')) return <Card isMobile={isMobile} progress={progress} />;
-    if (path.includes('Paint_mixer')) return <PaintMixer isMobile={isMobile} />;
+    if (path.includes('Paint_mixer')) return <PaintMixer />;
     return null;
   }, [path, isMobile, progress]);
 
@@ -108,9 +118,12 @@ const ProductModelCanvas = (props: ModelProps) => {
 
   const isFirstSection = props.path && props.path.includes('Note_printer');
 
+  const fallbackProgress = useMotionValue(0.5);
+  const activeProgress = props.progress || fallbackProgress;
+
   // Scale starts at 80% of full size — model is already big when it fades in (no ant-size reveal)
   const modelDynamicScale = useTransform(
-    props.progress || new THREE.Vector3(0.5, 0, 0) as any,
+    activeProgress,
     isFirstSection 
       ? [0.0, 1.0]
       : [0.0, 0.15, 0.80, 1.0],
@@ -120,20 +133,20 @@ const ProductModelCanvas = (props: ModelProps) => {
   );
 
   const auraScale = useTransform(
-    props.progress || new THREE.Vector3(0.5, 0, 0) as any,
+    activeProgress,
     [0.0, 0.15, 0.85, 1.0],
     [0.8, 1.2, 1.2, 5]
   );
 
   const auraOpacity = useTransform(
-    props.progress || new THREE.Vector3(0.5, 0, 0) as any,
+    activeProgress,
     [0.0, 0.08, 0.85, 1.0],
     [0, 0.6, 1, 0]
   );
 
   // Opacity stays at 0 at start — decoupled from scale so it fades in already big
   const modelOpacity = useTransform(
-    props.progress || new THREE.Vector3(0.5, 0, 0) as any,
+    activeProgress,
     isFirstSection
       ? [0.0, 1.0]
       : [0.0, 0.08, 0.40, 0.82, 1.0],

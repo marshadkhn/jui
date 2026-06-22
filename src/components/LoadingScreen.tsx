@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useProgress } from '@react-three/drei';
-import Image from 'next/image';
 
 interface Props {
   onComplete: () => void;

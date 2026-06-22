@@ -26,7 +26,7 @@ export default function Home() {
       <ModelScene globalScroll={scrollYProgress} indiaRef={indiaSectionRef} />
 
       {/* Sections */}
-      <Hero indiaRef={indiaSectionRef} />
+      <Hero />
       <ProductSections />
       <IndiaSection ref={indiaSectionRef} />
       <Footer />

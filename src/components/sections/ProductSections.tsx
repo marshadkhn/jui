@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef } from 'react';
-import { motion, useInView, type Variants, useScroll, useTransform, MotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
 
 import ProductModelCanvas from '../shared-3d/ProductModelCanvas';
 import Image from 'next/image';
@@ -55,8 +55,6 @@ const sections: SectionData[] = [
   },
 ];
 
-const EASE = [0.22, 1, 0.36, 1] as [number, number, number, number];
-
 const ProductSectionItem = ({
   data,
   index,
@@ -93,17 +91,27 @@ const ProductSectionItem = ({
   const revealFull  = index === 0 ? 0.06 : start + sectionWidth * 0.14;
   const holdEnd     = mid + window / 3;
 
-  const opacity = index === 0
-    ? useTransform(globalScroll, [0, 0.08, 0.28, 0.3333], [0, 1, 1, 0])
-    : useTransform(globalScroll, [revealStart, revealFull, holdEnd, adjustedEnd], [0, 1, 1, 0]);
+  const opacity = useTransform(
+    globalScroll,
+    index === 0
+      ? [0, 0.08, 0.28, 0.3333]
+      : [revealStart, revealFull, holdEnd, adjustedEnd],
+    [0, 1, 1, 0]
+  );
 
   const display = useTransform(opacity, (v) => (v < 0.01 ? 'none' : 'block'));
 
   // Fly-By Z: Starts from -20 right at the section boundary — no gap
   // For section 1 (index 0), it stays at z = 0 and "just disappears" by fading
-  const z = index === 0
-    ? useTransform(globalScroll, [0, 0.3333], [0, 0])
-    : useTransform(globalScroll, [revealStart, revealFull, holdEnd, adjustedEnd], [-20, 0, 0, 800]);
+  const z = useTransform(
+    globalScroll,
+    index === 0
+      ? [0, 0.3333]
+      : [revealStart, revealFull, holdEnd, adjustedEnd],
+    index === 0
+      ? [0, 0]
+      : [-20, 0, 0, 800]
+  );
 
   const x = 0;
 
@@ -112,15 +120,25 @@ const ProductSectionItem = ({
   const textRevealFull  = index === 0 ? 0.04 : start + sectionWidth * 0.20;
   const textHoldEnd     = mid + window / 2.5;
 
-  const textOpacity = index === 0
-    ? useTransform(globalScroll, [0, 0.08, 0.28, 0.3333], [0, 1, 1, 0])
-    : useTransform(globalScroll, [textRevealStart, textRevealFull, textHoldEnd, adjustedEnd - (adjustedEnd - start) * 0.05], [0, 1, 1, 0]);
+  const textOpacity = useTransform(
+    globalScroll,
+    index === 0
+      ? [0, 0.08, 0.28, 0.3333]
+      : [textRevealStart, textRevealFull, textHoldEnd, adjustedEnd - (adjustedEnd - start) * 0.05],
+    [0, 1, 1, 0]
+  );
 
   const textDisplay = useTransform(textOpacity, (v) => (v < 0.01 ? 'none' : 'block'));
 
-  const textY = index === 0
-    ? useTransform(globalScroll, [0, 0.28, 0.3333], [0, 0, -18])
-    : useTransform(globalScroll, [revealStart, revealFull, textHoldEnd, adjustedEnd], [18, 0, 0, -18]);
+  const textY = useTransform(
+    globalScroll,
+    index === 0
+      ? [0, 0.28, 0.3333]
+      : [revealStart, revealFull, textHoldEnd, adjustedEnd],
+    index === 0
+      ? [0, 0, -18]
+      : [18, 0, 0, -18]
+  );
 
   const zIndex = useTransform(textOpacity, (v) => (typeof v === 'number' && v > 0.05 ? 50 : 0));
 

@@ -35,7 +35,7 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[]
 }
 
-export function Model({ isMobile, progress, ...props }: React.JSX.IntrinsicElements['group'] & { isMobile?: boolean, progress?: MotionValue<number> }) {
+export function Model({ progress, ...props }: React.JSX.IntrinsicElements['group'] & { isMobile?: boolean, progress?: MotionValue<number> }) {
   const group = React.useRef<THREE.Group>(null)
   const { nodes, materials, animations } = useGLTF('/AnimatedModels/Card-transformed.glb') as unknown as GLTFResult
   const { actions } = useAnimations(animations, group)

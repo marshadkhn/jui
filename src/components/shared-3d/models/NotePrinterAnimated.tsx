@@ -58,6 +58,7 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
       if (topAction) {
         const duration = topAction.getClip().duration
         // Make Top cylinder rotate anti-clockwise on scroll down
+        // eslint-disable-next-line react-hooks/immutability
         topAction.time = p * duration
       }
       

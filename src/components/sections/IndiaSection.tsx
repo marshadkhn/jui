@@ -1,6 +1,10 @@
-import React, { forwardRef } from 'react';
+import React from 'react';
 
-const IndiaSection = forwardRef<HTMLDivElement, {}>((props, ref) => {
+interface IndiaSectionProps {
+  ref?: React.Ref<HTMLDivElement>;
+}
+
+const IndiaSection = ({ ref }: IndiaSectionProps) => {
   return (
     <section
       ref={ref}
@@ -20,8 +24,6 @@ const IndiaSection = forwardRef<HTMLDivElement, {}>((props, ref) => {
       {/* <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent z-20" /> */}
     </section>
   );
-});
-
-IndiaSection.displayName = 'IndiaSection';
+};
 
 export default IndiaSection;
