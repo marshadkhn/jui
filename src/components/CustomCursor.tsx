@@ -98,7 +98,7 @@ const CustomCursor = () => {
             src="/cursor-circle.svg"
             alt="Custom Cursor Circle"
             className="absolute inset-0 w-full h-full object-contain filter brightness-[1.8] contrast-[1.2] drop-shadow-[0_0_15px_rgba(0,209,255,0.6)]"
-            animate={{ rotate: 360 }}
+            animate={{ rotate: -360 }}
             transition={{
               rotate: {
                 duration: 15,

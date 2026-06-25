@@ -1,7 +1,7 @@
 'use client';
 
-import React, { Suspense } from 'react';
-import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
+import React, { Suspense, useState, useEffect } from 'react';
+import { motion, useScroll, useTransform, useSpring, MotionValue } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Environment, Float, ContactShadows, Center } from '@react-three/drei';
 import { Model as WhatWeDoModel } from '../shared-3d/models/WhatWeDo';
@@ -40,62 +40,74 @@ const AnimatingModelWrapper = ({
 const WhatWeDo = () => {
   const sectionRef = React.useRef<HTMLDivElement>(null);
 
-  const [isMobile, setIsMobile] = React.useState(false);
-  React.useEffect(() => {
+  const [isMobile, setIsMobile] = useState(false);
+  const [mounted, setMounted]   = useState(false);
+
+  useEffect(() => {
     setIsMobile(window.innerWidth < 1024);
+    setMounted(true);
   }, []);
 
-  // Track scroll progress over a 200vh range from top to bottom
+  // Track scroll progress over a 250vh range
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"]
   });
 
-  // Entrance and exit opacity (mapped to the sticky phase [0.0 - 1.0])
-  const opacity = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.25) return latest / 0.25;
-    if (latest < 0.75) return 1;
-    if (latest < 1.0) return 1 - (latest - 0.75) / 0.25;
+  const springOpts = { damping: 30, stiffness: 90, mass: 0.6 };
+
+  // Entrance and exit opacity — wider windows = more gradual
+  const rawOpacity = useTransform(scrollYProgress, (latest) => {
+    if (latest < 0.30) return latest / 0.30;
+    if (latest < 0.70) return 1;
+    if (latest < 1.0)  return 1 - (latest - 0.70) / 0.30;
     return 0;
   });
+  const opacity = useSpring(rawOpacity, springOpts);
 
-  // Translate-in from left and rotate-in to target values:
-  // Target position is -1.0. Target rotation is [0.340, -0.770, 0.010].
-  const modelX = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.25) return -4.5 + (latest / 0.25) * 3.5;
+  // Entry: glide in from the left between 0 → 0.35
+  const rawModelX = useTransform(scrollYProgress, (latest) => {
+    if (latest < 0.35) return -4.5 + (latest / 0.35) * 3.5;
     return -1.0;
   });
-  const modelRotX = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.25) return (latest / 0.25) * 0.340;
+  const rawModelRotX = useTransform(scrollYProgress, (latest) => {
+    if (latest < 0.35) return (latest / 0.35) * 0.340;
     return 0.340;
   });
-  const modelRotY = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.25) return -2.8 + (latest / 0.25) * 2.03; // -2.8 to -0.77
+  const rawModelRotY = useTransform(scrollYProgress, (latest) => {
+    if (latest < 0.35) return -2.8 + (latest / 0.35) * 2.03;
     return -0.770;
   });
-  const modelRotZ = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.25) return -0.1 + (latest / 0.25) * 0.11; // -0.1 to 0.010
+  const rawModelRotZ = useTransform(scrollYProgress, (latest) => {
+    if (latest < 0.35) return -0.1 + (latest / 0.35) * 0.11;
     return 0.010;
   });
 
-  // Exit animation for text
-  const yOffset = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.75) return 0;
-    if (latest < 1.0) return ((latest - 0.75) / 0.25) * -100;
+  // Spring-smooth every model transform so motion is silky
+  const modelX    = useSpring(rawModelX,    springOpts);
+  const modelRotX = useSpring(rawModelRotX, springOpts);
+  const modelRotY = useSpring(rawModelRotY, springOpts);
+  const modelRotZ = useSpring(rawModelRotZ, springOpts);
+
+  // Exit animation for text (wider window)
+  const rawYOffset = useTransform(scrollYProgress, (latest) => {
+    if (latest < 0.70) return 0;
+    if (latest < 1.0)  return ((latest - 0.70) / 0.30) * -100;
     return -100;
   });
-  const scaleEffect = useTransform(scrollYProgress, (latest) => {
-    if (latest < 0.75) return 1;
-    if (latest < 1.0) return 1 - ((latest - 0.75) / 0.25) * 0.2;
+  const rawScale = useTransform(scrollYProgress, (latest) => {
+    if (latest < 0.70) return 1;
+    if (latest < 1.0)  return 1 - ((latest - 0.70) / 0.30) * 0.2;
     return 0.8;
   });
-
+  const yOffset     = useSpring(rawYOffset, springOpts);
+  const scaleEffect = useSpring(rawScale,   springOpts);
 
 
   return (
     <section
       ref={sectionRef}
-      className="relative h-[120vh] w-full bg-transparent"
+      className="relative h-[220vh] w-full bg-transparent"
     >
       <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden">
         {/* 3D Model Canvas Container - Spans absolute left-0 to 60vw and 100% height to avoid box clipping */}
@@ -107,6 +119,7 @@ const WhatWeDo = () => {
           <div className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[150px] lg:w-[250px] h-[150px] lg:h-[250px] bg-cyan-400/5 blur-[60px] rounded-full" />
 
           <div className="w-full h-full relative z-10 flex justify-center items-center">
+            {mounted && (
             <Canvas
               dpr={isMobile ? [1, 1] : [1, 2]}
               camera={{ position: [0, 0, 8], fov: 35 }}
@@ -147,6 +160,7 @@ const WhatWeDo = () => {
                 )}
               </Suspense>
             </Canvas>
+            )}
           </div>
         </motion.div>
 

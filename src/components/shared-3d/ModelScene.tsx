@@ -219,30 +219,42 @@ const NumberShaderMaterialDef = {
     uniform float uScroll;
     attribute float size;
     attribute float numberIndex;
-    attribute vec3 drift;
+    attribute vec3 drift;   // drift.x = x lane, drift.y = y lane, drift.z = phase offset (0-1)
     varying float vNumberIndex;
     varying float vOpacity;
 
     void main() {
       vNumberIndex = numberIndex;
-      
-      // Compute drifting position
-      vec3 pos = position;
-      pos.x += sin(uTime * 0.15 + drift.x * 20.0) * 4.0;
-      pos.y += cos(uTime * 0.15 + drift.y * 20.0) * 4.0;
-      pos.z += sin(uTime * 0.10 + drift.z * 20.0) * 4.0;
-      
-      // Travel on scroll (subtle parallax)
-      pos.z += uScroll * 20.0;
-      
+
+      // -- Hyperspace tunnel: numbers fly from far Z toward camera --
+      // Each particle has a phase (drift.z) so they are staggered in depth.
+      // Z travels from -600 (far) to +30 (just past camera) continuously.
+      float zRange  = 630.0;                          // total tunnel length
+      float zFar    = -600.0;
+      float zNear   =   30.0;
+      float speed   = 6.0;                            // very slow idle drift
+      float phase   = drift.z;                        // 0..1 stagger
+      float zOffset = mod(phase * zRange + uTime * speed + uScroll * 400.0, zRange);
+      float zPos    = zFar + zOffset;                 // loops zFar -> zNear
+
+      // Spread particles in a wide X/Y cone that narrows as they approach
+      // so far particles are tightly packed and near ones fan out.
+      float spread = 80.0;
+      vec3 pos = vec3(
+        drift.x * spread,
+        drift.y * spread,
+        zPos
+      );
+
       vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
       float dist = -mvPosition.z;
-      
-        gl_PointSize = size * (180.0 / dist);
-      gl_Position = projectionMatrix * mvPosition;
-      
-      // Fade out logic when too close or far to mimic background star field depth
-      vOpacity = smoothstep(10.0, 50.0, dist) * smoothstep(400.0, 280.0, dist);
+
+      // Grow point size as they get closer (perspective-like)
+      gl_PointSize = clamp(size * (260.0 / max(dist, 1.0)), 1.0, 80.0);
+      gl_Position  = projectionMatrix * mvPosition;
+
+      // Fade in from far, fade out just as they pass through camera
+      vOpacity = smoothstep(0.0, 60.0, dist) * smoothstep(0.0, 25.0, dist - 2.0);
     }
   `,
   fragmentShader: `
@@ -253,18 +265,18 @@ const NumberShaderMaterialDef = {
     varying float vOpacity;
 
     void main() {
-      // Map UV to one of the 10 horizontal numbers in atlas, correcting mirroring and keeping vertical uprightness
+      // Map UV to one of the 10 horizontal numbers in atlas
       vec2 uv = vec2(
         (gl_PointCoord.x + vNumberIndex) / 10.0,
         1.0 - gl_PointCoord.y
       );
-      
-      vec4 tex = texture2D(uMap, uv);
+
+      vec4 tex  = texture2D(uMap, uv);
       float mask = tex.r;
       if (mask < 0.15) discard;
-      
-      // White core with subtle cyan tint
-      vec3 finalColor = mix(uColor, vec3(0.7, 0.95, 1.0), 0.3);
+
+      // Cyan-white glow tint
+      vec3 finalColor = mix(uColor, vec3(0.55, 0.95, 1.0), 0.45);
       gl_FragColor = vec4(finalColor, mask * uOpacity * vOpacity);
     }
   `
@@ -298,13 +310,17 @@ const NumberParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue
     return texture;
   }, []);
 
-  const count = isMobile ? 1000 : 3500;
+  const count = isMobile ? 600 : 1800;
 
   const data = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    const sizes = new Float32Array(count);
+    // Position buffer is mostly unused since the shader computes Z from phase.
+    // We store x/y lane and phase in the drift attribute.
+    const pos          = new Float32Array(count * 3); // kept as origin placeholders
+    const sizes        = new Float32Array(count);
     const numberIndexes = new Float32Array(count);
-    const drifts = new Float32Array(count * 3);
+    // drift.x = normalised x lane (-1..1), drift.y = normalised y lane (-1..1), drift.z = phase 0..1
+    const drifts       = new Float32Array(count * 3);
+
     let seed = 888.0;
     const random = () => {
       const x = Math.sin(seed++) * 10000;
@@ -312,27 +328,22 @@ const NumberParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue
     };
 
     for (let i = 0; i < count; i++) {
-      // Spherical distribution with radius from 60 to 280 to blend in with Stars
-      const u = random();
-      const v = random();
-      const theta = u * 2.0 * Math.PI;
-      const phi = Math.acos(2.0 * v - 1.0);
-      const r = 60 + random() * 220;
+      // All positions at origin — shader drives actual placement via drift
+      pos[i * 3]     = 0;
+      pos[i * 3 + 1] = 0;
+      pos[i * 3 + 2] = 0;
 
-      pos[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      pos[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      pos[i * 3 + 2] = r * Math.cos(phi);
+      // X/Y lane: spread in a circle so the tunnel feels round
+      const angle = random() * Math.PI * 2;
+      const radius = Math.sqrt(random()); // sqrt for uniform disc distribution
+      drifts[i * 3]     = Math.cos(angle) * radius; // -1..1
+      drifts[i * 3 + 1] = Math.sin(angle) * radius; // -1..1
+      drifts[i * 3 + 2] = random();                  // phase 0..1
 
-      // Star particle sizes (increased so number shapes are clearly distinguishable)
-      sizes[i] = isMobile ? (2.0 + random() * 2.0) : (3.5 + random() * 4.5);
+      // Number size — bigger near camera handled by shader, base size controls detail
+      sizes[i] = isMobile ? (1.8 + random() * 1.5) : (2.5 + random() * 3.0);
 
-      // Random integer from 0 to 9
       numberIndexes[i] = Math.floor(random() * 10);
-
-      // Drift attributes
-      drifts[i * 3] = random();
-      drifts[i * 3 + 1] = random();
-      drifts[i * 3 + 2] = random();
     }
     return { pos, sizes, numberIndexes, drifts };
   }, [count, isMobile]);
@@ -340,13 +351,12 @@ const NumberParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue
   useFrame((state) => {
     const scroll = globalScroll.get();
     if (pointsRef.current) {
-      // Slow background rotation just like the Stars component
-      pointsRef.current.rotation.y = state.clock.elapsedTime * 0.015;
-      pointsRef.current.rotation.x = state.clock.elapsedTime * 0.005;
+      // No world-space rotation — the tunnel moves along Z, not around Y
+      pointsRef.current.rotation.set(0, 0, 0);
 
       const mat = pointsRef.current.material as THREE.ShaderMaterial;
       if (mat.uniforms) {
-        mat.uniforms.uTime.value = state.clock.elapsedTime;
+        mat.uniforms.uTime.value  = state.clock.elapsedTime;
         mat.uniforms.uScroll.value = scroll;
       }
     }

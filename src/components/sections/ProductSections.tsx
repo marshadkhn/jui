@@ -79,68 +79,69 @@ const ProductSectionItem = ({
   // This avoids the browser bug where sticky parent opacity is ignored for WebGL
   const adjustedEnd = index === sectionsLength - 1 ? 0.96 : end;
 
-  // Define a snappier focal window (Hold for 45% of its section)
+  // Define a longer focal window (Hold for 65% of its section)
   const mid = (start + adjustedEnd) / 2;
-  const window = (adjustedEnd - start) * 0.45;
+  const window = (adjustedEnd - start) * 0.65;
 
-  // Crossfade: next section starts revealing BEFORE the current one fully fades out
-  // Overlap = 12% of section width — creates seamless handoff, zero dead time
-  const sectionWidth = adjustedEnd - start;
-  const overlap = sectionWidth * 0.12;
-  const revealStart = index === 0 ? 0.03 : start - overlap;
-  const revealFull  = index === 0 ? 0.06 : start + sectionWidth * 0.14;
-  const holdEnd     = mid + window / 3;
+  // Explicit custom transforms — no keyframe extrapolation, no ghost values.
+  // Each function returns exactly 0 outside the section's active window.
+  const holdEnd     = mid + (adjustedEnd - start) * 0.65 / 3;
+  const textHoldEnd = mid + (adjustedEnd - start) * 0.65 / 2.5;
 
-  const opacity = useTransform(
-    globalScroll,
-    index === 0
-      ? [0, 0.08, 0.28, 0.3333]
-      : [revealStart, revealFull, holdEnd, adjustedEnd],
-    [0, 1, 1, 0]
-  );
+  // Section 0: always visible from scroll=0, fades 0.30→0.3333, then strictly 0.
+  // Sections 1+: strictly 0 before start, full at start, fade at end.
+  const opacity = useTransform(globalScroll, (v: number) => {
+    if (index === 0) {
+      if (v >= 0.3333) return 0;
+      if (v >= 0.30)   return 1 - (v - 0.30) / (0.3333 - 0.30);
+      return 1;
+    }
+    if (v < start)         return 0;
+    if (v >= adjustedEnd)  return 0;
+    if (v >= holdEnd)      return 1 - (v - holdEnd) / (adjustedEnd - holdEnd);
+    return 1;
+  });
 
-  const display = useTransform(opacity, (v) => (v < 0.01 ? 'none' : 'block'));
+  const display = useTransform(opacity, (v: number) => (v < 0.01 ? 'none' : 'block'));
 
-  // Fly-By Z: Starts from -20 right at the section boundary — no gap
-  // For section 1 (index 0), it stays at z = 0 and "just disappears" by fading
-  const z = useTransform(
-    globalScroll,
-    index === 0
-      ? [0, 0.3333]
-      : [revealStart, revealFull, holdEnd, adjustedEnd],
-    index === 0
-      ? [0, 0]
-      : [-20, 0, 0, 800]
-  );
+  const z = useTransform(globalScroll, (v: number) => {
+    if (index === 0) return 0;
+    if (v < start)        return 0;
+    if (v >= adjustedEnd) return 800;
+    if (v >= holdEnd)     return ((v - holdEnd) / (adjustedEnd - holdEnd)) * 800;
+    return 0;
+  });
 
   const x = 0;
 
-  // Text movement: Smooth fade in/out timed with model (same crossfade overlap)
-  const textRevealStart = index === 0 ? 0.01 : start - overlap;
-  const textRevealFull  = index === 0 ? 0.04 : start + sectionWidth * 0.20;
-  const textHoldEnd     = mid + window / 2.5;
+  const textOpacity = useTransform(globalScroll, (v: number) => {
+    const te = adjustedEnd - (adjustedEnd - start) * 0.05;
+    if (index === 0) {
+      if (v >= 0.3333) return 0;
+      if (v >= 0.30)   return 1 - (v - 0.30) / (0.3333 - 0.30);
+      return 1;
+    }
+    if (v < start)   return 0;
+    if (v >= te)     return 0;
+    if (v >= textHoldEnd) return 1 - (v - textHoldEnd) / (te - textHoldEnd);
+    return 1;
+  });
 
-  const textOpacity = useTransform(
-    globalScroll,
-    index === 0
-      ? [0, 0.08, 0.28, 0.3333]
-      : [textRevealStart, textRevealFull, textHoldEnd, adjustedEnd - (adjustedEnd - start) * 0.05],
-    [0, 1, 1, 0]
-  );
+  const textDisplay = useTransform(textOpacity, (v: number) => (v < 0.01 ? 'none' : 'block'));
 
-  const textDisplay = useTransform(textOpacity, (v) => (v < 0.01 ? 'none' : 'block'));
+  const textY = useTransform(globalScroll, (v: number) => {
+    if (index === 0) {
+      if (v >= 0.3333)     return -18;
+      if (v >= 0.30)       return ((v - 0.30) / (0.3333 - 0.30)) * -18;
+      return 0;
+    }
+    if (v < start)         return 0;
+    if (v >= adjustedEnd)  return -18;
+    if (v >= textHoldEnd)  return ((v - textHoldEnd) / (adjustedEnd - textHoldEnd)) * -18;
+    return 0;
+  });
 
-  const textY = useTransform(
-    globalScroll,
-    index === 0
-      ? [0, 0.28, 0.3333]
-      : [revealStart, revealFull, textHoldEnd, adjustedEnd],
-    index === 0
-      ? [0, 0, -18]
-      : [18, 0, 0, -18]
-  );
-
-  const zIndex = useTransform(textOpacity, (v) => (typeof v === 'number' && v > 0.05 ? 50 : 0));
+  const zIndex = useTransform(textOpacity, (v: number) => (v > 0.05 ? 50 : 0));
 
   return (
     <motion.div
@@ -162,7 +163,7 @@ const ProductSectionItem = ({
             spinSpeed={data.spinSpeed || 0.15}
             progress={useTransform(
               globalScroll,
-              index === 0 ? [0, 0.3333] : [revealStart, adjustedEnd],
+              index === 0 ? [0, 0.3333] : [start, adjustedEnd],
               [0, 1]
             )}
           />
@@ -233,7 +234,7 @@ const ProductSections = () => {
   const globalExitY = useTransform(globalScroll, [0.96, 0.98], [0, -30]);
 
   return (
-    <div ref={containerRef} className="relative z-20 w-full h-[600vh] bg-transparent">
+    <div ref={containerRef} className="relative z-20 w-full h-[900vh] bg-transparent">
       {/* 
         Sticky Stage: This stays on screen while the background Ref scrolls.
         All models and text morph INSIDE this one container.
