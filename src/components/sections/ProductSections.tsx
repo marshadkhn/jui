@@ -92,6 +92,8 @@ const ProductSectionItem = ({
   // Sections 1+: strictly 0 before start, full at start, fade at end.
   const opacity = useTransform(globalScroll, (v: number) => {
     if (index === 0) {
+      if (v <= 0) return 0;
+      if (v < 0.06) return v / 0.06;
       if (v >= 0.3333) return 0;
       if (v >= 0.30)   return 1 - (v - 0.30) / (0.3333 - 0.30);
       return 1;

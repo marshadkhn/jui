@@ -177,7 +177,13 @@ const ProductModelCanvas = (props: ModelProps) => {
   );
 
   return (
-    <div className="relative w-full h-full min-h-[400px]">
+    <div 
+      className="relative w-full h-full min-h-[400px]"
+      style={{
+        maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
+        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)'
+      }}
+    >
       {/* Space Glow Aura — Set to neutral white/low opacity */}
       <motion.div
         className="absolute inset-x-0 top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 w-[60%] h-[60%] bg-white/2 blur-[130px] rounded-full pointer-events-none"
