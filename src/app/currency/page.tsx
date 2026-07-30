@@ -6,7 +6,10 @@ import PartnerProductsGrid, { ProductItem } from "@/components/currency/PartnerP
 import CoinMintingSection from "@/components/currency/CoinMintingSection";
 import SecurityPrintingSection from "@/components/currency/SecurityPrintingSection";
 
-const PaperWindMesh = dynamic(() => import("@/components/shared-3d/PaperWindMesh"), { ssr: false });
+const PaperWindMesh = dynamic(() => import("@/components/shared-3d/PaperWindMesh"), {
+  ssr: false,
+  loading: () => <div className="relative w-full aspect-[16/9] max-h-[820px] min-h-[400px] sm:min-h-[500px] bg-transparent" />
+});
 
 const coinMintingProducts: ProductItem[] = [
   { id: 'cm1', title: 'NUMBERING SYSTEM', imageSrc: '/currency page/logo1.png' },
@@ -26,7 +29,7 @@ export default function CurrencyPage() {
   return (
     <main className="relative w-full flex flex-col bg-transparent min-h-screen pb-16">
       {/* Hero Section — 3D Unclipped Paper Wind Mesh Floating in Space */}
-      <section className="relative w-full px-0 z-10 mb-0 flex flex-col items-center">
+      <section className="relative w-full px-0 z-10 mb-0 flex flex-col items-center min-h-[400px] sm:min-h-[500px]">
         <PaperWindMesh />
       </section>
 

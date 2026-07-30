@@ -153,12 +153,10 @@ export default function PaperWindMesh() {
     setMouseWorld(new THREE.Vector2(xNorm * 14, yNorm * 7.875));
   };
 
-  if (!mounted) return null;
-
   return (
     <div
       ref={containerRef}
-      className="relative w-full aspect-[16/9] max-h-[820px] my-0 cursor-pointer bg-transparent overflow-visible flex items-center justify-center"
+      className="relative w-full aspect-[16/9] max-h-[820px] min-h-[400px] sm:min-h-[500px] my-0 cursor-pointer bg-transparent overflow-visible flex items-center justify-center"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);
@@ -166,16 +164,18 @@ export default function PaperWindMesh() {
       }}
       onMouseMove={handleMouseMove}
     >
-      <Canvas
-        events={noopEvents as any}
-        camera={{ position: [0, 0, 11], fov: 42 }}
-        gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
-        style={{ overflow: 'visible', width: '100%', height: '100%' }}
-      >
-        <Suspense fallback={null}>
-          <MeshContent isHovered={isHovered} mouseWorld={mouseWorld} />
-        </Suspense>
-      </Canvas>
+      {mounted && (
+        <Canvas
+          events={noopEvents as any}
+          camera={{ position: [0, 0, 11], fov: 42 }}
+          gl={{ alpha: true, antialias: true, powerPreference: 'high-performance' }}
+          style={{ overflow: 'visible', width: '100%', height: '100%' }}
+        >
+          <Suspense fallback={null}>
+            <MeshContent isHovered={isHovered} mouseWorld={mouseWorld} />
+          </Suspense>
+        </Canvas>
+      )}
     </div>
   );
 }
