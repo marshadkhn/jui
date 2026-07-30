@@ -85,7 +85,7 @@ const ProductSectionItem = ({
 
   // Explicit custom transforms — no keyframe extrapolation, no ghost values.
   // Each function returns exactly 0 outside the section's active window.
-  const holdEnd     = mid + (adjustedEnd - start) * 0.65 / 3;
+  const holdEnd = mid + (adjustedEnd - start) * 0.65 / 3;
   const textHoldEnd = mid + (adjustedEnd - start) * 0.65 / 2.5;
 
   // Section 0: always visible from scroll=0, fades 0.30→0.3333, then strictly 0.
@@ -95,12 +95,12 @@ const ProductSectionItem = ({
       if (v <= 0) return 0;
       if (v < 0.06) return v / 0.06;
       if (v >= 0.3333) return 0;
-      if (v >= 0.30)   return 1 - (v - 0.30) / (0.3333 - 0.30);
+      if (v >= 0.30) return 1 - (v - 0.30) / (0.3333 - 0.30);
       return 1;
     }
-    if (v < start)         return 0;
-    if (v >= adjustedEnd)  return 0;
-    if (v >= holdEnd)      return 1 - (v - holdEnd) / (adjustedEnd - holdEnd);
+    if (v < start) return 0;
+    if (v >= adjustedEnd) return 0;
+    if (v >= holdEnd) return 1 - (v - holdEnd) / (adjustedEnd - holdEnd);
     return 1;
   });
 
@@ -108,9 +108,9 @@ const ProductSectionItem = ({
 
   const z = useTransform(globalScroll, (v: number) => {
     if (index === 0) return 0;
-    if (v < start)        return 0;
+    if (v < start) return 0;
     if (v >= adjustedEnd) return 800;
-    if (v >= holdEnd)     return ((v - holdEnd) / (adjustedEnd - holdEnd)) * 800;
+    if (v >= holdEnd) return ((v - holdEnd) / (adjustedEnd - holdEnd)) * 800;
     return 0;
   });
 
@@ -120,11 +120,11 @@ const ProductSectionItem = ({
     const te = adjustedEnd - (adjustedEnd - start) * 0.05;
     if (index === 0) {
       if (v >= 0.3333) return 0;
-      if (v >= 0.30)   return 1 - (v - 0.30) / (0.3333 - 0.30);
+      if (v >= 0.30) return 1 - (v - 0.30) / (0.3333 - 0.30);
       return 1;
     }
-    if (v < start)   return 0;
-    if (v >= te)     return 0;
+    if (v < start) return 0;
+    if (v >= te) return 0;
     if (v >= textHoldEnd) return 1 - (v - textHoldEnd) / (te - textHoldEnd);
     return 1;
   });
@@ -133,13 +133,13 @@ const ProductSectionItem = ({
 
   const textY = useTransform(globalScroll, (v: number) => {
     if (index === 0) {
-      if (v >= 0.3333)     return -18;
-      if (v >= 0.30)       return ((v - 0.30) / (0.3333 - 0.30)) * -18;
+      if (v >= 0.3333) return -18;
+      if (v >= 0.30) return ((v - 0.30) / (0.3333 - 0.30)) * -18;
       return 0;
     }
-    if (v < start)         return 0;
-    if (v >= adjustedEnd)  return -18;
-    if (v >= textHoldEnd)  return ((v - textHoldEnd) / (adjustedEnd - textHoldEnd)) * -18;
+    if (v < start) return 0;
+    if (v >= adjustedEnd) return -18;
+    if (v >= textHoldEnd) return ((v - textHoldEnd) / (adjustedEnd - textHoldEnd)) * -18;
     return 0;
   });
 
@@ -175,7 +175,7 @@ const ProductSectionItem = ({
       {/* Text Content Overlay */}
       <div className="w-full h-full relative z-10 flex flex-col md:flex-row items-center justify-start px-6 md:px-12 lg:px-20">
         <motion.div
-          className="relative max-w-lg pointer-events-auto"
+          className={`relative pointer-events-auto ${data.number === '1' ? 'max-w-2xl' : 'max-w-lg'}`}
           style={{ opacity: textOpacity, y: textY, display: textDisplay }}
         >
           {/* Number */}
@@ -198,23 +198,37 @@ const ProductSectionItem = ({
 
           {/* Description */}
           <p
-            className="text-white/90 text-lg leading-relaxed mb-8"
+            className="text-white/90 text-lg leading-relaxed mb-6"
             style={{ maxWidth: '420px' }}
           >
             {data.description}
           </p>
 
           {/* CTA row */}
-          <CTAButtons className="mt-4" arrowDirection="right" reverseOrder={true} />
+          {data.number === '1' ? (
+            <div className="mt-8   py-1 space-y-4 max-w-lg">
+              <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
+                Core Capabilities
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <CTAButtons label="Currency" arrowDirection="right" reverseOrder={true} size="sm" fullWidth={true} />
+                <CTAButtons label="Security" arrowDirection="right" reverseOrder={true} size="sm" fullWidth={true} />
+                <CTAButtons label="Mint" arrowDirection="right" reverseOrder={true} size="sm" fullWidth={true} />
+                <CTAButtons label="Paper" arrowDirection="right" reverseOrder={true} size="sm" fullWidth={true} />
+              </div>
+            </div>
+          ) : (
+            <CTAButtons className="mt-4" arrowDirection="right" reverseOrder={true} />
+          )}
 
           {data.number === '1' && (
-            <div className="mt-5 z-50">
+            <div className="mt-6 pl-6 z-50">
               <Image
                 src="/auth.png"
                 alt="Auth Certificate"
-                width={240}
-                height={140}
-                className="object-contain"
+                width={180}
+                height={100}
+                className="object-contain brightness-0 invert opacity-50 hover:opacity-90 transition-all duration-300"
               />
             </div>
           )}

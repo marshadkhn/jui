@@ -78,12 +78,25 @@ const GltfModel = ({
   progress
 }: ModelProps & { isMobile?: boolean }) => {
   const modelRef = useRef<THREE.Group>(null);
+  const lastP = useRef<number | null>(null);
+  const targetY = useRef(0);
 
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (modelRef.current && shouldSpin) {
       if (progress) {
-        // Rotate based on scroll progress (e.g. 2 full rotations)
-        modelRef.current.rotation.y = progress.get() * Math.PI * 4;
+        const p = progress.get();
+        if (lastP.current !== null) {
+          const dp = Math.abs(p - lastP.current);
+          targetY.current += dp * Math.PI * 4;
+        }
+        lastP.current = p;
+
+        // Smooth 60FPS rotation in the same forward direction whether scrolling UP or DOWN
+        modelRef.current.rotation.y = THREE.MathUtils.lerp(
+          modelRef.current.rotation.y,
+          targetY.current,
+          Math.min(delta * 12, 1)
+        );
       } else {
         modelRef.current.rotation.y = state.clock.getElapsedTime() * spinSpeed;
       }
@@ -109,6 +122,13 @@ const GltfModel = ({
   );
 };
 
+const noopEvents = () => ({
+  enabled: false,
+  priority: 0,
+  connect: () => {},
+  disconnect: () => {},
+  compute: () => {},
+});
 
 const ProductModelCanvas = (props: ModelProps) => {
   const [isMobile, setIsMobile] = React.useState(false);
@@ -195,6 +215,7 @@ const ProductModelCanvas = (props: ModelProps) => {
 
       {isVisible ? (
         <Canvas
+          events={noopEvents as any}
           dpr={isMobile ? 1 : [1, 1.5]}
           shadows={!isMobile}
           performance={{ min: 0.5 }}
@@ -210,7 +231,6 @@ const ProductModelCanvas = (props: ModelProps) => {
 
         <Suspense fallback={null}>
           <AdaptiveDpr pixelated />
-          <AdaptiveEvents />
 
           <AtmosphericLights progress={props.progress} />
 

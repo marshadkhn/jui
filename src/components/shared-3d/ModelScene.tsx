@@ -5,7 +5,7 @@ import React, { useRef, Suspense, useMemo, useEffect, useState } from 'react';
 // 🔧 DEBUG — set to false (or remove) once you've found the right values
 const DEBUG_ROTATION = false;
 import { Canvas, useFrame } from '@react-three/fiber';
-import { PerspectiveCamera, Float, Stars, useGLTF, Environment, Points, PointMaterial, useTexture } from '@react-three/drei';
+import { PerspectiveCamera, Float, Stars, useGLTF, Environment, useTexture, Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 import { ModelPreloader } from './ModelPreloader';
 import { transform, useScroll, MotionValue } from 'framer-motion';
@@ -89,27 +89,110 @@ const NebulaMaterial = {
   `
 };
 
-const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScroll: MotionValue<number>; indiaProgress: MotionValue<number>; isMobile: boolean }) => {
-  const pointsRef = useRef<THREE.Points>(null);
-  const cloudRef = useRef<THREE.Points>(null);
-  const smokeMap = useTexture('/smoke.png');
+// ── Dust-number shader: renders digit glyphs instead of plain round dots ──
+const DustNumberMaterialDef = {
+  uniforms: {
+    uMap:     { value: null },
+    uTime:    { value: 0 },
+    uColor:   { value: new THREE.Color('#00D1FF') },
+    uOpacity: { value: 0.45 }
+  },
+  vertexShader: `
+    uniform float uTime;
+    attribute float size;
+    attribute float numberIndex;
+    varying float vNumberIndex;
+    varying float vOpacity;
+    void main() {
+      vNumberIndex = numberIndex;
+      vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+      float dist = -mvPosition.z;
+      // Glyph size: small in outer environment, readable during Earth zoom pass-through
+      gl_PointSize = clamp(size * (220.0 / max(dist, 1.0)), 1.0, 22.0);
+      gl_Position  = projectionMatrix * mvPosition;
+      // Fade out when very close to camera
+      vOpacity = smoothstep(0.5, 4.0, dist);
+    }
+  `,
+  fragmentShader: `
+    uniform sampler2D uMap;
+    uniform vec3 uColor;
+    uniform float uOpacity;
+    varying float vNumberIndex;
+    varying float vOpacity;
+    void main() {
+      vec2 uv = vec2(
+        (gl_PointCoord.x + vNumberIndex) / 10.0,
+        1.0 - gl_PointCoord.y
+      );
+      vec4 tex = texture2D(uMap, uv);
+      float mask = tex.r;
+      if (mask < 0.15) discard;
+      vec3 col = mix(uColor, vec3(0.85, 0.98, 1.0), 0.3);
+      gl_FragColor = vec4(col, mask * uOpacity * vOpacity);
+    }
+  `
+};
 
-  // Background Dust
-  const dustCount = isMobile ? 5000 : 15000;
-  const dustPositions = useMemo(() => {
-    const pos = new Float32Array(dustCount * 3);
+const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScroll: MotionValue<number>; indiaProgress: MotionValue<number>; isMobile: boolean }) => {
+  const dustRef    = useRef<THREE.Points>(null);
+  const dotDustRef = useRef<THREE.Points>(null);
+  const cloudRef   = useRef<THREE.Points>(null);
+  const smokeMap   = useTexture('/smoke.png');
+
+  // Number atlas texture for dust glyphs
+  const numbersTexture = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024; canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.clearRect(0, 0, 1024, 128);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 110px Courier New, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (let i = 0; i < 10; i++) ctx.fillText(i.toString(), (i + 0.5) * 102.4, 64);
+    }
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.minFilter = THREE.LinearFilter;
+    tex.magFilter = THREE.LinearFilter;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }, []);
+
+  // Background Dust — moderate density; clearly visible during Earth zoom pass-through
+  const dustCount = isMobile ? 3500 : 9000;
+  const dustData = useMemo(() => {
+    const pos          = new Float32Array(dustCount * 3);
+    const sizes        = new Float32Array(dustCount);
+    const numberIndexes = new Float32Array(dustCount);
     let seed = 1.0;
-    const random = () => {
-      const x = Math.sin(seed++) * 10000;
-      return x - Math.floor(x);
-    };
+    const random = () => { const x = Math.sin(seed++) * 10000; return x - Math.floor(x); };
     for (let i = 0; i < dustCount; i++) {
-      pos[i * 3] = (random() - 0.5) * 80;
+      pos[i * 3]     = (random() - 0.5) * 80;
+      pos[i * 3 + 1] = (random() - 0.5) * 80;
+      pos[i * 3 + 2] = (random() - 0.5) * 140 - 70;
+      // Size comparable to original 0.06 world-units with sizeAttenuation
+      sizes[i] = isMobile ? (0.6 + random() * 0.7) : (0.9 + random() * 1.0);
+      numberIndexes[i] = Math.floor(random() * 10);
+    }
+    return { pos, sizes, numberIndexes };
+  }, [dustCount, isMobile]);
+
+  // Ambient Dot Dust — fine white/cyan stars inside the Earth pass-through
+  const dotDustCount = isMobile ? 3000 : 8000;
+  const dotDustPositions = useMemo(() => {
+    const pos = new Float32Array(dotDustCount * 3);
+    let seed = 100.0;
+    const random = () => { const x = Math.sin(seed++) * 10000; return x - Math.floor(x); };
+    for (let i = 0; i < dotDustCount; i++) {
+      pos[i * 3]     = (random() - 0.5) * 80;
       pos[i * 3 + 1] = (random() - 0.5) * 80;
       pos[i * 3 + 2] = (random() - 0.5) * 140 - 70;
     }
     return pos;
-  }, [dustCount]);
+  }, [dotDustCount]);
 
   // Nebula Clouds - Strategic distribution
   const cloudCount = isMobile ? 60 : 180;
@@ -144,9 +227,16 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
     const indiaVal = indiaProgress.get();
 
     // Constant slow travel for dust
-    if (pointsRef.current) {
-      pointsRef.current.position.z = (scroll * 120) % 60;
-      pointsRef.current.rotation.z += delta * 0.01;
+    if (dustRef.current) {
+      dustRef.current.position.z = (scroll * 120) % 60;
+      dustRef.current.rotation.z += delta * 0.01;
+      const mat = dustRef.current.material as THREE.ShaderMaterial;
+      if (mat.uniforms) mat.uniforms.uTime.value = state.clock.elapsedTime;
+    }
+
+    if (dotDustRef.current) {
+      dotDustRef.current.position.z = (scroll * 120) % 60;
+      dotDustRef.current.rotation.z += delta * 0.01;
     }
 
     // Update nebula uniforms
@@ -160,9 +250,28 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
     }
   });
 
+  if (!numbersTexture) return null;
+
   return (
     <>
-      <Points ref={pointsRef} positions={dustPositions} stride={3}>
+      {/* Number Dust — digit glyphs */}
+      <points ref={dustRef}>
+        <bufferGeometry>
+          <bufferAttribute attach="attributes-position"    args={[dustData.pos, 3]} />
+          <bufferAttribute attach="attributes-size"        args={[dustData.sizes, 1]} />
+          <bufferAttribute attach="attributes-numberIndex" args={[dustData.numberIndexes, 1]} />
+        </bufferGeometry>
+        <shaderMaterial
+          args={[DustNumberMaterialDef]}
+          transparent
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          uniforms-uMap-value={numbersTexture}
+        />
+      </points>
+
+      {/* Ambient Dot Dust — fine stardust particles */}
+      <Points ref={dotDustRef} positions={dotDustPositions} stride={3}>
         <PointMaterial
           transparent
           color="#ffffff"
@@ -170,7 +279,7 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
           sizeAttenuation={true}
           depthWrite={false}
           blending={THREE.AdditiveBlending}
-          opacity={0.8}
+          opacity={0.65}
         />
       </Points>
 
@@ -212,7 +321,7 @@ const NumberShaderMaterialDef = {
     uTime: { value: 0 },
     uScroll: { value: 0 },
     uColor: { value: new THREE.Color('#ffffff') },
-    uOpacity: { value: 0.95 }
+    uOpacity: { value: 0.55 }
   },
   vertexShader: `
     uniform float uTime;
@@ -310,7 +419,7 @@ const NumberParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue
     return texture;
   }, []);
 
-  const count = isMobile ? 600 : 1800;
+  const count = isMobile ? 300 : 700;
 
   const data = useMemo(() => {
     // Position buffer is mostly unused since the shader computes Z from phase.
@@ -547,6 +656,16 @@ const GlobeModel = ({
   );
 };
 
+
+
+const noopEvents = () => ({
+  enabled: false,
+  priority: 0,
+  connect: () => {},
+  disconnect: () => {},
+  compute: () => {},
+});
+
 const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<number>; indiaRef: React.RefObject<HTMLDivElement | null> }) => {
   const [isMobile, setIsMobile] = React.useState(false);
   const [debugRotX, setDebugRotX] = useState(-0.320);
@@ -554,7 +673,10 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
   const [debugPosZ, setDebugPosZ] = useState(-2.500);
 
 
+  const [mounted, setMounted] = useState(false);
+
   React.useEffect(() => {
+    setMounted(true);
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
@@ -568,10 +690,13 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
     offset: ["start end", "center 75%"]
   });
 
+  if (!mounted) return null;
+
   return (
     <>
       <div className="fixed inset-0 w-full h-full pointer-events-none z-[5]">
         <Canvas
+          events={noopEvents as any}
           shadows={!isMobile}
           gl={{
             antialias: !isMobile,

@@ -49,14 +49,24 @@ export function Model({ progress, ...props }: React.JSX.IntrinsicElements['group
     })
   }, [actions])
 
-  // Sync animation time with scroll progress
+  const lastP = React.useRef<number | null>(null)
+  const accumulatedP = React.useRef(0)
+
+  // Sync animation time with scroll progress in the same direction on scroll up or down
   useFrame(() => {
     if (progress) {
       const p = progress.get()
+      if (lastP.current !== null) {
+        const delta = Math.abs(p - lastP.current)
+        accumulatedP.current += delta
+      }
+      lastP.current = p
+
+      const acc = accumulatedP.current
       Object.values(actions).forEach((action) => {
         if (action) {
           const duration = action.getClip().duration
-          action.time = p * duration
+          action.time = (acc * duration) % duration
         }
       })
     }

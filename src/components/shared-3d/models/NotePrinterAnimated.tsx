@@ -38,35 +38,44 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
   const { nodes, materials, animations } = useGLTF('/AnimatedModels/Note_printer2-transformed.glb') as unknown as GLTFResult
   const { actions } = useAnimations(animations, group)
 
-  // Initialize animations but keep them paused
+  // Stop GLTF clip actions to allow direct smooth rotation control
   useEffect(() => {
     Object.values(actions).forEach((action) => {
       if (action) {
-        action.play().paused = true
+        action.stop()
       }
     })
   }, [actions])
 
-  // Sync animation time with scroll progress
-  useFrame(() => {
+  const topCylinderRef = useRef<THREE.Group>(null)
+  const bottomCylinderRef = useRef<THREE.Group>(null)
+  const targetRotation = useRef(0)
+  const currentRotation = useRef(0)
+  const lastP = useRef<number | null>(null)
+
+  // 60FPS smooth lerped rotation for both cylinders in the forward direction on scroll
+  useFrame((_, delta) => {
     if (props.progress) {
       const p = props.progress.get()
-      
-      const topAction = actions['TopAction']
-      const bottomAction = actions['BottomAction']
-      
-      if (topAction) {
-        const duration = topAction.getClip().duration
-        // Make Top cylinder rotate anti-clockwise on scroll down
-        // eslint-disable-next-line react-hooks/immutability
-        topAction.time = p * duration
+      if (lastP.current !== null) {
+        const dp = Math.abs(p - lastP.current)
+        targetRotation.current += dp * 12
       }
-      
-      if (bottomAction) {
-        const duration = bottomAction.getClip().duration
-        // Make Bottom cylinder rotate anti-clockwise on scroll down (compensates for opposite rotation)
-        bottomAction.time = (1 - p) * duration
-      }
+      lastP.current = p
+    }
+
+    // Smooth lerp to eliminate all frame lag and scroll jitter
+    currentRotation.current = THREE.MathUtils.lerp(
+      currentRotation.current,
+      targetRotation.current,
+      Math.min(delta * 12, 1)
+    )
+
+    if (topCylinderRef.current) {
+      topCylinderRef.current.rotation.x = currentRotation.current
+    }
+    if (bottomCylinderRef.current) {
+      bottomCylinderRef.current.rotation.x = currentRotation.current
     }
   })
 
@@ -74,7 +83,7 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
     <group ref={group} {...props} dispose={null}>
       <group name="Scene">
         <group name="Top" position={[-0.255, 2.587, 0]} scale={1.514}>
-          <group name="Cylinder036" position={[0.198, -0.02, -0.001]} scale={0.66}>
+          <group ref={topCylinderRef} name="Cylinder036" position={[0.198, -0.02, -0.001]} scale={0.66}>
             <mesh name="Cylinder035" castShadow receiveShadow geometry={nodes.Cylinder035.geometry} material={materials.Black_Metal} />
             <mesh name="Cylinder035_1" castShadow receiveShadow geometry={nodes.Cylinder035_1.geometry}>
               <meshStandardMaterial
@@ -101,7 +110,7 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
           </group>
         </group>
         <group name="Bottom" position={[-0.255, -0.542, 0]} scale={1.514}>
-          <group name="Cylinder034" position={[-0.003, -0.004, 0]} scale={0.66}>
+          <group ref={bottomCylinderRef} name="Cylinder034" position={[-0.003, -0.004, 0]} scale={0.66}>
             <mesh name="Cylinder038" castShadow receiveShadow geometry={nodes.Cylinder038.geometry} material={materials.Black_Metal} />
             <mesh name="Cylinder038_1" castShadow receiveShadow geometry={nodes.Cylinder038_1.geometry}>
               <meshStandardMaterial

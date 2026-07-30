@@ -10,6 +10,8 @@ interface CTAButtonsProps {
   className?: string;
   arrowDirection?: 'left' | 'right';
   reverseOrder?: boolean;
+  size?: 'sm' | 'md';
+  fullWidth?: boolean;
 }
 
 const CTAButtons = ({ 
@@ -17,10 +19,13 @@ const CTAButtons = ({
   onActionClick, 
   onContactClick, 
   className = '', 
-  arrowDirection = 'left',
-  reverseOrder = false
+  arrowDirection = 'right',
+  reverseOrder = true,
+  size = 'md',
+  fullWidth = false
 }: CTAButtonsProps) => {
   const isRight = arrowDirection === 'right';
+  const isSm = size === 'sm';
 
   // Shared variants for the group hover effect
   const containerVariants = {
@@ -30,27 +35,27 @@ const CTAButtons = ({
 
   const buttonVariants = {
     initial: {
-      backgroundColor: 'rgba(255,20,147,0)',
-      boxShadow: 'inset 0 0 0px rgba(255,20,147,0)',
+      backgroundColor: 'rgba(255,0,0,0)',
+      boxShadow: 'inset 0 0 0px rgba(255,0,0,0)',
       borderColor: 'rgba(255,255,255,0.4)',
       scale: 1
     },
     hover: {
-      backgroundColor: 'rgba(255,20,147,0.05)',
-      boxShadow: 'inset 0 0 20px rgba(255,20,147,0.3)',
-      borderColor: 'rgba(255,20,147,0.5)',
+      backgroundColor: 'rgba(255,0,0,0.08)',
+      boxShadow: 'inset 0 0 20px rgba(255,0,0,0.35)',
+      borderColor: 'rgba(255,0,0,0.6)',
       scale: 1.05
     }
   };
 
   const arrowVariants = {
     initial: { x: 0 },
-    hover: { x: isRight ? 8 : -8 }
+    hover: { x: isRight ? (isSm ? 5 : 8) : (isSm ? -5 : -8) }
   };
 
   return (
     <motion.div 
-      className={`flex items-center gap-4 group cursor-pointer ${reverseOrder ? 'flex-row-reverse justify-end' : ''} ${className}`}
+      className={`flex items-center ${isSm ? 'gap-2' : 'gap-4'} group cursor-pointer ${reverseOrder ? 'flex-row-reverse justify-end' : ''} ${fullWidth ? 'w-full' : ''} ${className}`}
       initial="initial"
       whileHover="hover"
       variants={containerVariants}
@@ -60,15 +65,15 @@ const CTAButtons = ({
         onClick={onActionClick}
         variants={buttonVariants}
         transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-        className="w-14 h-14 border flex items-center justify-center transition-colors pointer-events-none"
+        className={`${isSm ? 'w-10 h-10' : 'w-14 h-14'} border flex items-center justify-center transition-colors pointer-events-none shrink-0`}
       >
         <motion.svg
-          width="24"
-          height="24"
+          width={isSm ? "16" : "24"}
+          height={isSm ? "16" : "24"}
           viewBox="0 0 24 24"
           fill="none"
           stroke="white"
-          strokeWidth="1.5"
+          strokeWidth={isSm ? "2" : "1.5"}
           variants={arrowVariants}
           transition={{ duration: 0.3 }}
         >
@@ -84,7 +89,7 @@ const CTAButtons = ({
         onClick={onContactClick}
         variants={buttonVariants}
         transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-        className="h-14 px-10 border text-white text-xs font-bold uppercase tracking-[0.2em] transition-colors pointer-events-none"
+        className={`${fullWidth ? 'flex-1 text-center' : ''} ${isSm ? 'h-10 px-5 text-[10px] tracking-[0.15em]' : 'h-14 px-10 text-xs tracking-[0.2em]'} border text-white font-bold uppercase transition-colors pointer-events-none`}
       >
         {label}
       </motion.button>

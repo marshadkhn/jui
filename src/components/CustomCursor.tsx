@@ -107,11 +107,12 @@ const CustomCursor = () => {
               }
             }}
           />
-          {/* Inner needle (static, no rotation) */}
+          {/* Inner needle — scaled independently via CSS transform */}
           <img
             src="/cursor-needle.svg"
             alt="Custom Cursor Needle"
             className="absolute inset-0 w-full h-full object-contain filter brightness-[1.8] contrast-[1.2] drop-shadow-[0_0_15px_rgba(0,209,255,0.6)]"
+            style={{ transform: 'scale(1.5)', transformOrigin: 'center' }}
           />
         </motion.div>
       </motion.div>
