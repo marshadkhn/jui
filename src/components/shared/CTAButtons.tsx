@@ -14,11 +14,11 @@ interface CTAButtonsProps {
   fullWidth?: boolean;
 }
 
-const CTAButtons = ({ 
-  label = 'Contact Us', 
-  onActionClick, 
-  onContactClick, 
-  className = '', 
+const CTAButtons = ({
+  label = 'Contact Us',
+  onActionClick,
+  onContactClick,
+  className = '',
   arrowDirection = 'right',
   reverseOrder = true,
   size = 'md',
@@ -54,7 +54,7 @@ const CTAButtons = ({
   };
 
   return (
-    <motion.div 
+    <motion.div
       className={`flex items-center ${isSm ? 'gap-2' : 'gap-4'} group cursor-pointer ${reverseOrder ? 'flex-row-reverse justify-end' : ''} ${fullWidth ? 'w-full' : ''} ${className}`}
       initial="initial"
       whileHover="hover"
@@ -65,7 +65,7 @@ const CTAButtons = ({
         onClick={onActionClick}
         variants={buttonVariants}
         transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-        className={`${isSm ? 'w-10 h-10' : 'w-14 h-14'} border flex items-center justify-center transition-colors pointer-events-none shrink-0`}
+        className={`${isSm ? 'w-10 h-10' : 'w-14 h-14'} rounded-lg border flex items-center justify-center transition-colors pointer-events-none shrink-0`}
       >
         <motion.svg
           width={isSm ? "16" : "24"}
@@ -78,9 +78,9 @@ const CTAButtons = ({
           transition={{ duration: 0.3 }}
         >
           {isRight ? (
-             <path d="M5 12H19M19 12L12 5M19 12L12 19" />
+            <path d="M5 12H19M19 12L12 5M19 12L12 19" />
           ) : (
-             <path d="M19 12H5M5 12L12 19M5 12L12 5" />
+            <path d="M19 12H5M5 12L12 19M5 12L12 5" />
           )}
         </motion.svg>
       </motion.button>
@@ -89,7 +89,7 @@ const CTAButtons = ({
         onClick={onContactClick}
         variants={buttonVariants}
         transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-        className={`${fullWidth ? 'flex-1 text-center' : ''} ${isSm ? 'h-10 px-5 text-[10px] tracking-[0.15em]' : 'h-14 px-10 text-xs tracking-[0.2em]'} border text-white font-bold uppercase transition-colors pointer-events-none`}
+        className={`${fullWidth ? 'flex-1 text-center' : ''} ${isSm ? 'h-10 px-5 text-[10px] tracking-[0.15em]' : 'h-14 px-10 text-xs tracking-[0.2em]'} rounded-lg border text-white font-bold uppercase transition-colors pointer-events-none`}
       >
         {label}
       </motion.button>
