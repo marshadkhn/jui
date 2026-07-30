@@ -5,10 +5,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const menuItems = [
-  { name: 'CURRENCY', href: '#' },
+  { name: 'JUI GLOBALS', href: '/' },
+  { name: 'CURRENCY', href: '/currency' },
   { name: 'CARD', href: '#' },
   { name: 'PAINT', href: '#' },
-  { name: 'CONTACT US', href: '#' },
+  { name: 'CONTACT US', href: '#contact' },
 ];
 
 const Navbar = () => {

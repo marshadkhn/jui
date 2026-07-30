@@ -1,19 +1,30 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import LoadingScreen from "@/components/LoadingScreen";
 import IndiaSection from "@/components/sections/IndiaSection";
-import Footer from "@/components/Footer";
 import { useScroll } from "framer-motion";
 
 const Hero = dynamic(() => import("@/components/hero/Hero"), { ssr: false });
 const ProductSections = dynamic(() => import("@/components/sections/ProductSections"), { ssr: false });
-const ModelScene = dynamic(() => import("@/components/shared-3d/ModelScene"), { ssr: false });
 
 export default function Home() {
-  const [loadingDone, setLoadingDone] = useState(false);
+  const [loadingDone, setLoadingDone] = useState(true);
   const mainRef = useRef<HTMLDivElement>(null);
   const indiaSectionRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // Check if site loader has already completed in this browser session
+    const hasLoadedInSession = sessionStorage.getItem("jui_has_loaded");
+    if (!hasLoadedInSession) {
+      setLoadingDone(false); // Show loader only on first visit in session
+    }
+  }, []);
+
+  const handleLoadingComplete = () => {
+    sessionStorage.setItem("jui_has_loaded", "true");
+    setLoadingDone(true);
+  };
 
   const { scrollYProgress } = useScroll({
     target: mainRef,
@@ -22,18 +33,14 @@ export default function Home() {
 
   return (
     <main ref={mainRef} className="relative w-full flex flex-col bg-black">
-      {/* Global 3D Background */}
-      <ModelScene globalScroll={scrollYProgress} indiaRef={indiaSectionRef} />
-
       {/* Sections */}
       <Hero />
       <ProductSections />
       <IndiaSection ref={indiaSectionRef} />
-      <Footer />
 
-      {/* Loader */}
+      {/* Loader — Shows only ONCE per browser session */}
       {!loadingDone && (
-        <LoadingScreen onComplete={() => setLoadingDone(true)} />
+        <LoadingScreen onComplete={handleLoadingComplete} />
       )}
     </main>
   );

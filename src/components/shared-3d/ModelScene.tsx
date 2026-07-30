@@ -8,7 +8,8 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { PerspectiveCamera, Float, Stars, useGLTF, Environment, useTexture, Points, PointMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 import { ModelPreloader } from './ModelPreloader';
-import { transform, useScroll, MotionValue } from 'framer-motion';
+import { transform, useScroll, MotionValue, useMotionValue } from 'framer-motion';
+import { usePathname } from 'next/navigation';
 
 // Kick off GLB download in a more controlled manner if needed
 // useGLTF.preload('/Earth5.glb');
@@ -666,12 +667,20 @@ const noopEvents = () => ({
   compute: () => {},
 });
 
-const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<number>; indiaRef: React.RefObject<HTMLDivElement | null> }) => {
+const ModelScene = ({
+  globalScroll,
+  indiaRef,
+  showEarth
+}: {
+  globalScroll?: MotionValue<number>;
+  indiaRef?: React.RefObject<HTMLDivElement | null>;
+  showEarth?: boolean;
+}) => {
+  const pathname = usePathname();
   const [isMobile, setIsMobile] = React.useState(false);
   const [debugRotX, setDebugRotX] = useState(-0.320);
   const [debugRotY, setDebugRotY] = useState(-1.170);
   const [debugPosZ, setDebugPosZ] = useState(-2.500);
-
 
   const [mounted, setMounted] = useState(false);
 
@@ -685,10 +694,18 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const { scrollYProgress: indiaProgress } = useScroll({
-    target: indiaRef,
+  const { scrollYProgress: defaultScroll } = useScroll();
+  const activeGlobalScroll = globalScroll || defaultScroll;
+
+  const { scrollYProgress: indiaProgressFallback } = useScroll({
+    target: indiaRef && indiaRef.current ? indiaRef : undefined,
     offset: ["start end", "center 75%"]
   });
+
+  const activeIndiaProgress = (indiaRef && indiaRef.current) ? indiaProgressFallback : activeGlobalScroll;
+
+  const isCurrencyPage = pathname === '/currency';
+  const shouldShowEarth = showEarth !== undefined ? showEarth : !isCurrencyPage;
 
   if (!mounted) return null;
 
@@ -714,15 +731,17 @@ const ModelScene = ({ globalScroll, indiaRef }: { globalScroll: MotionValue<numb
 
           <Suspense fallback={null}>
             <ModelPreloader />
-            <SpaceParticles globalScroll={globalScroll} indiaProgress={indiaProgress} isMobile={isMobile} />
-            <NumberParticles globalScroll={globalScroll} isMobile={isMobile} />
-            <GlobeModel
-              globalScroll={globalScroll}
-              indiaProgress={indiaProgress}
-              debugRotX={debugRotX}
-              debugRotY={debugRotY}
-              debugPosZ={debugPosZ}
-            />
+            <SpaceParticles globalScroll={activeGlobalScroll} indiaProgress={activeIndiaProgress} isMobile={isMobile} />
+            <NumberParticles globalScroll={activeGlobalScroll} isMobile={isMobile} />
+            {shouldShowEarth && (
+              <GlobeModel
+                globalScroll={activeGlobalScroll}
+                indiaProgress={activeIndiaProgress}
+                debugRotX={debugRotX}
+                debugRotY={debugRotY}
+                debugPosZ={debugPosZ}
+              />
+            )}
             <Environment preset="night" />
           </Suspense>
 

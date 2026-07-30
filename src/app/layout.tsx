@@ -16,6 +16,8 @@ export const metadata: Metadata = {
 
 import SmoothScroll from "@/components/providers/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
+import Footer from "@/components/Footer";
+import GlobalModelScene from "@/components/GlobalModelScene";
 
 export default function RootLayout({
   children,
@@ -29,9 +31,11 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-background text-foreground overflow-x-hidden">
         <CustomCursor />
+        <GlobalModelScene />
         <SmoothScroll>
           <Navbar />
           {children}
+          <Footer />
         </SmoothScroll>
       </body>
     </html>
