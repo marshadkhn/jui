@@ -90,10 +90,9 @@ const NebulaMaterial = {
   `
 };
 
-// ── Dust-number shader: renders digit glyphs instead of plain round dots ──
-const DustNumberMaterialDef = {
+// ── Ambient Star Dust Shader: renders glowing circular star point particles ──
+const StarDustMaterialDef = {
   uniforms: {
-    uMap:     { value: null },
     uTime:    { value: 0 },
     uColor:   { value: new THREE.Color('#00D1FF') },
     uOpacity: { value: 0.45 }
@@ -101,14 +100,11 @@ const DustNumberMaterialDef = {
   vertexShader: `
     uniform float uTime;
     attribute float size;
-    attribute float numberIndex;
-    varying float vNumberIndex;
     varying float vOpacity;
     void main() {
-      vNumberIndex = numberIndex;
       vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
       float dist = -mvPosition.z;
-      // Glyph size: small in outer environment, readable during Earth zoom pass-through
+      // Star point size: small in outer environment, soft during Earth zoom pass-through
       gl_PointSize = clamp(size * (220.0 / max(dist, 1.0)), 1.0, 22.0);
       gl_Position  = projectionMatrix * mvPosition;
       // Fade out when very close to camera
@@ -116,21 +112,15 @@ const DustNumberMaterialDef = {
     }
   `,
   fragmentShader: `
-    uniform sampler2D uMap;
     uniform vec3 uColor;
     uniform float uOpacity;
-    varying float vNumberIndex;
     varying float vOpacity;
     void main() {
-      vec2 uv = vec2(
-        (gl_PointCoord.x + vNumberIndex) / 10.0,
-        1.0 - gl_PointCoord.y
-      );
-      vec4 tex = texture2D(uMap, uv);
-      float mask = tex.r;
-      if (mask < 0.15) discard;
-      vec3 col = mix(uColor, vec3(0.85, 0.98, 1.0), 0.3);
-      gl_FragColor = vec4(col, mask * uOpacity * vOpacity);
+      float dist = length(gl_PointCoord - vec2(0.5));
+      float alpha = smoothstep(0.5, 0.0, dist);
+      if (alpha < 0.01) discard;
+      vec3 col = mix(uColor, vec3(0.85, 0.98, 1.0), alpha * 0.4);
+      gl_FragColor = vec4(col, alpha * uOpacity * vOpacity);
     }
   `
 };
@@ -141,44 +131,20 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
   const cloudRef   = useRef<THREE.Points>(null);
   const smokeMap   = useTexture('/smoke.png');
 
-  // Number atlas texture for dust glyphs
-  const numbersTexture = useMemo(() => {
-    if (typeof window === 'undefined') return null;
-    const canvas = document.createElement('canvas');
-    canvas.width = 1024; canvas.height = 128;
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.clearRect(0, 0, 1024, 128);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 110px Courier New, monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      for (let i = 0; i < 10; i++) ctx.fillText(i.toString(), (i + 0.5) * 102.4, 64);
-    }
-    const tex = new THREE.CanvasTexture(canvas);
-    tex.minFilter = THREE.LinearFilter;
-    tex.magFilter = THREE.LinearFilter;
-    tex.colorSpace = THREE.SRGBColorSpace;
-    return tex;
-  }, []);
-
   // Background Dust — moderate density; clearly visible during Earth zoom pass-through
   const dustCount = isMobile ? 3500 : 9000;
   const dustData = useMemo(() => {
-    const pos          = new Float32Array(dustCount * 3);
-    const sizes        = new Float32Array(dustCount);
-    const numberIndexes = new Float32Array(dustCount);
+    const pos   = new Float32Array(dustCount * 3);
+    const sizes = new Float32Array(dustCount);
     let seed = 1.0;
     const random = () => { const x = Math.sin(seed++) * 10000; return x - Math.floor(x); };
     for (let i = 0; i < dustCount; i++) {
       pos[i * 3]     = (random() - 0.5) * 80;
       pos[i * 3 + 1] = (random() - 0.5) * 80;
       pos[i * 3 + 2] = (random() - 0.5) * 140 - 70;
-      // Size comparable to original 0.06 world-units with sizeAttenuation
       sizes[i] = isMobile ? (0.6 + random() * 0.7) : (0.9 + random() * 1.0);
-      numberIndexes[i] = Math.floor(random() * 10);
     }
-    return { pos, sizes, numberIndexes };
+    return { pos, sizes };
   }, [dustCount, isMobile]);
 
   // Ambient Dot Dust — fine white/cyan stars inside the Earth pass-through
@@ -251,23 +217,19 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
     }
   });
 
-  if (!numbersTexture) return null;
-
   return (
     <>
-      {/* Number Dust — digit glyphs */}
+      {/* Star Dust — glowing point particles */}
       <points ref={dustRef}>
         <bufferGeometry>
-          <bufferAttribute attach="attributes-position"    args={[dustData.pos, 3]} />
-          <bufferAttribute attach="attributes-size"        args={[dustData.sizes, 1]} />
-          <bufferAttribute attach="attributes-numberIndex" args={[dustData.numberIndexes, 1]} />
+          <bufferAttribute attach="attributes-position" args={[dustData.pos, 3]} />
+          <bufferAttribute attach="attributes-size"     args={[dustData.sizes, 1]} />
         </bufferGeometry>
         <shaderMaterial
-          args={[DustNumberMaterialDef]}
+          args={[StarDustMaterialDef]}
           transparent
           depthWrite={false}
           blending={THREE.AdditiveBlending}
-          uniforms-uMap-value={numbersTexture}
         />
       </points>
 
@@ -316,39 +278,31 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
   );
 };
 
-const NumberShaderMaterialDef = {
+const TunnelDustShaderMaterialDef = {
   uniforms: {
-    uMap: { value: null },
     uTime: { value: 0 },
     uScroll: { value: 0 },
-    uColor: { value: new THREE.Color('#ffffff') },
+    uColor: { value: new THREE.Color('#00D1FF') },
     uOpacity: { value: 0.55 }
   },
   vertexShader: `
     uniform float uTime;
     uniform float uScroll;
     attribute float size;
-    attribute float numberIndex;
     attribute vec3 drift;   // drift.x = x lane, drift.y = y lane, drift.z = phase offset (0-1)
-    varying float vNumberIndex;
     varying float vOpacity;
 
     void main() {
-      vNumberIndex = numberIndex;
-
-      // -- Hyperspace tunnel: numbers fly from far Z toward camera --
-      // Each particle has a phase (drift.z) so they are staggered in depth.
-      // Z travels from -600 (far) to +30 (just past camera) continuously.
+      // -- Hyperspace tunnel: star point dust particles fly from far Z toward camera --
       float zRange  = 630.0;                          // total tunnel length
       float zFar    = -600.0;
       float zNear   =   30.0;
-      float speed   = 6.0;                            // very slow idle drift
+      float speed   = 6.0;                            // slow drift
       float phase   = drift.z;                        // 0..1 stagger
       float zOffset = mod(phase * zRange + uTime * speed + uScroll * 400.0, zRange);
       float zPos    = zFar + zOffset;                 // loops zFar -> zNear
 
       // Spread particles in a wide X/Y cone that narrows as they approach
-      // so far particles are tightly packed and near ones fan out.
       float spread = 80.0;
       vec3 pos = vec3(
         drift.x * spread,
@@ -359,7 +313,7 @@ const NumberShaderMaterialDef = {
       vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
       float dist = -mvPosition.z;
 
-      // Grow point size as they get closer (perspective-like)
+      // Grow point size as they get closer
       gl_PointSize = clamp(size * (260.0 / max(dist, 1.0)), 1.0, 80.0);
       gl_Position  = projectionMatrix * mvPosition;
 
@@ -368,68 +322,31 @@ const NumberShaderMaterialDef = {
     }
   `,
   fragmentShader: `
-    uniform sampler2D uMap;
     uniform vec3 uColor;
     uniform float uOpacity;
-    varying float vNumberIndex;
     varying float vOpacity;
 
     void main() {
-      // Map UV to one of the 10 horizontal numbers in atlas
-      vec2 uv = vec2(
-        (gl_PointCoord.x + vNumberIndex) / 10.0,
-        1.0 - gl_PointCoord.y
-      );
+      float dist = length(gl_PointCoord - vec2(0.5));
+      float alpha = smoothstep(0.5, 0.0, dist);
+      if (alpha < 0.01) discard;
 
-      vec4 tex  = texture2D(uMap, uv);
-      float mask = tex.r;
-      if (mask < 0.15) discard;
-
-      // Cyan-white glow tint
-      vec3 finalColor = mix(uColor, vec3(0.55, 0.95, 1.0), 0.45);
-      gl_FragColor = vec4(finalColor, mask * uOpacity * vOpacity);
+      // Cyan-white star glow tint
+      vec3 finalColor = mix(uColor, vec3(0.55, 0.95, 1.0), alpha * 0.5);
+      gl_FragColor = vec4(finalColor, alpha * uOpacity * vOpacity);
     }
   `
 };
 
-const NumberParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue<number>; isMobile: boolean }) => {
+const TunnelDustParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue<number>; isMobile: boolean }) => {
   const pointsRef = useRef<THREE.Points>(null);
-
-  // Dynamic CanvasTexture generation containing numbers 0-9
-  const numbersTexture = useMemo(() => {
-    if (typeof window === 'undefined') return null;
-    const canvas = document.createElement('canvas');
-    canvas.width = 1024;
-    canvas.height = 128;
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.clearRect(0, 0, 1024, 128);
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 110px Courier New, monospace';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      for (let i = 0; i < 10; i++) {
-        const x = (i + 0.5) * 102.4;
-        ctx.fillText(i.toString(), x, 64);
-      }
-    }
-    const texture = new THREE.CanvasTexture(canvas);
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.colorSpace = THREE.SRGBColorSpace;
-    return texture;
-  }, []);
 
   const count = isMobile ? 300 : 700;
 
   const data = useMemo(() => {
-    // Position buffer is mostly unused since the shader computes Z from phase.
-    // We store x/y lane and phase in the drift attribute.
-    const pos          = new Float32Array(count * 3); // kept as origin placeholders
-    const sizes        = new Float32Array(count);
-    const numberIndexes = new Float32Array(count);
-    // drift.x = normalised x lane (-1..1), drift.y = normalised y lane (-1..1), drift.z = phase 0..1
-    const drifts       = new Float32Array(count * 3);
+    const pos    = new Float32Array(count * 3);
+    const sizes  = new Float32Array(count);
+    const drifts = new Float32Array(count * 3);
 
     let seed = 888.0;
     const random = () => {
@@ -438,41 +355,33 @@ const NumberParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue
     };
 
     for (let i = 0; i < count; i++) {
-      // All positions at origin — shader drives actual placement via drift
       pos[i * 3]     = 0;
       pos[i * 3 + 1] = 0;
       pos[i * 3 + 2] = 0;
 
-      // X/Y lane: spread in a circle so the tunnel feels round
       const angle = random() * Math.PI * 2;
-      const radius = Math.sqrt(random()); // sqrt for uniform disc distribution
-      drifts[i * 3]     = Math.cos(angle) * radius; // -1..1
-      drifts[i * 3 + 1] = Math.sin(angle) * radius; // -1..1
-      drifts[i * 3 + 2] = random();                  // phase 0..1
+      const radius = Math.sqrt(random());
+      drifts[i * 3]     = Math.cos(angle) * radius;
+      drifts[i * 3 + 1] = Math.sin(angle) * radius;
+      drifts[i * 3 + 2] = random();
 
-      // Number size — bigger near camera handled by shader, base size controls detail
       sizes[i] = isMobile ? (1.8 + random() * 1.5) : (2.5 + random() * 3.0);
-
-      numberIndexes[i] = Math.floor(random() * 10);
     }
-    return { pos, sizes, numberIndexes, drifts };
+    return { pos, sizes, drifts };
   }, [count, isMobile]);
 
   useFrame((state) => {
     const scroll = globalScroll.get();
     if (pointsRef.current) {
-      // No world-space rotation — the tunnel moves along Z, not around Y
       pointsRef.current.rotation.set(0, 0, 0);
 
       const mat = pointsRef.current.material as THREE.ShaderMaterial;
       if (mat.uniforms) {
-        mat.uniforms.uTime.value  = state.clock.elapsedTime;
+        mat.uniforms.uTime.value   = state.clock.elapsedTime;
         mat.uniforms.uScroll.value = scroll;
       }
     }
   });
-
-  if (!numbersTexture) return null;
 
   return (
     <points ref={pointsRef}>
@@ -486,13 +395,186 @@ const NumberParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue
           args={[data.sizes, 1]}
         />
         <bufferAttribute
-          attach="attributes-numberIndex"
-          args={[data.numberIndexes, 1]}
-        />
-        <bufferAttribute
           attach="attributes-drift"
           args={[data.drifts, 3]}
         />
+      </bufferGeometry>
+      <shaderMaterial
+        args={[TunnelDustShaderMaterialDef]}
+        transparent
+        depthWrite={false}
+        blending={THREE.AdditiveBlending}
+      />
+    </points>
+  );
+};
+
+/*
+// ─────────────────────────────────────────────────────────────────────────────
+// ORIGINAL NUMBER DUST & HYPERSPACE NUMBER PARTICLES (COMMENTED OUT FOR REFERENCE)
+// ─────────────────────────────────────────────────────────────────────────────
+
+const DustNumberMaterialDef = {
+  uniforms: {
+    uMap:     { value: null },
+    uTime:    { value: 0 },
+    uColor:   { value: new THREE.Color('#00D1FF') },
+    uOpacity: { value: 0.45 }
+  },
+  vertexShader: `
+    uniform float uTime;
+    attribute float size;
+    attribute float numberIndex;
+    varying float vNumberIndex;
+    varying float vOpacity;
+    void main() {
+      vNumberIndex = numberIndex;
+      vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
+      float dist = -mvPosition.z;
+      gl_PointSize = clamp(size * (220.0 / max(dist, 1.0)), 1.0, 22.0);
+      gl_Position  = projectionMatrix * mvPosition;
+      vOpacity = smoothstep(0.5, 4.0, dist);
+    }
+  `,
+  fragmentShader: `
+    uniform sampler2D uMap;
+    uniform vec3 uColor;
+    uniform float uOpacity;
+    varying float vNumberIndex;
+    varying float vOpacity;
+    void main() {
+      vec2 uv = vec2(
+        (gl_PointCoord.x + vNumberIndex) / 10.0,
+        1.0 - gl_PointCoord.y
+      );
+      vec4 tex = texture2D(uMap, uv);
+      float mask = tex.r;
+      if (mask < 0.15) discard;
+      vec3 col = mix(uColor, vec3(0.85, 0.98, 1.0), 0.3);
+      gl_FragColor = vec4(col, mask * uOpacity * vOpacity);
+    }
+  `
+};
+
+const NumberShaderMaterialDef = {
+  uniforms: {
+    uMap: { value: null },
+    uTime: { value: 0 },
+    uScroll: { value: 0 },
+    uColor: { value: new THREE.Color('#ffffff') },
+    uOpacity: { value: 0.55 }
+  },
+  vertexShader: `
+    uniform float uTime;
+    uniform float uScroll;
+    attribute float size;
+    attribute float numberIndex;
+    attribute vec3 drift;
+    varying float vNumberIndex;
+    varying float vOpacity;
+
+    void main() {
+      vNumberIndex = numberIndex;
+      float zRange  = 630.0;
+      float zFar    = -600.0;
+      float speed   = 6.0;
+      float phase   = drift.z;
+      float zOffset = mod(phase * zRange + uTime * speed + uScroll * 400.0, zRange);
+      float zPos    = zFar + zOffset;
+
+      float spread = 80.0;
+      vec3 pos = vec3(drift.x * spread, drift.y * spread, zPos);
+
+      vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+      float dist = -mvPosition.z;
+
+      gl_PointSize = clamp(size * (260.0 / max(dist, 1.0)), 1.0, 80.0);
+      gl_Position  = projectionMatrix * mvPosition;
+      vOpacity = smoothstep(0.0, 60.0, dist) * smoothstep(0.0, 25.0, dist - 2.0);
+    }
+  `,
+  fragmentShader: `
+    uniform sampler2D uMap;
+    uniform vec3 uColor;
+    uniform float uOpacity;
+    varying float vNumberIndex;
+    varying float vOpacity;
+
+    void main() {
+      vec2 uv = vec2((gl_PointCoord.x + vNumberIndex) / 10.0, 1.0 - gl_PointCoord.y);
+      vec4 tex = texture2D(uMap, uv);
+      float mask = tex.r;
+      if (mask < 0.15) discard;
+      vec3 finalColor = mix(uColor, vec3(0.55, 0.95, 1.0), 0.45);
+      gl_FragColor = vec4(finalColor, mask * uOpacity * vOpacity);
+    }
+  `
+};
+
+const NumberParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue<number>; isMobile: boolean }) => {
+  const pointsRef = useRef<THREE.Points>(null);
+  const numbersTexture = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    const canvas = document.createElement('canvas');
+    canvas.width = 1024; canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    if (ctx) {
+      ctx.clearRect(0, 0, 1024, 128);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 110px Courier New, monospace';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      for (let i = 0; i < 10; i++) ctx.fillText(i.toString(), (i + 0.5) * 102.4, 64);
+    }
+    const texture = new THREE.CanvasTexture(canvas);
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.colorSpace = THREE.SRGBColorSpace;
+    return texture;
+  }, []);
+
+  const count = isMobile ? 300 : 700;
+  const data = useMemo(() => {
+    const pos = new Float32Array(count * 3);
+    const sizes = new Float32Array(count);
+    const numberIndexes = new Float32Array(count);
+    const drifts = new Float32Array(count * 3);
+    let seed = 888.0;
+    const random = () => { const x = Math.sin(seed++) * 10000; return x - Math.floor(x); };
+    for (let i = 0; i < count; i++) {
+      pos[i * 3] = 0; pos[i * 3 + 1] = 0; pos[i * 3 + 2] = 0;
+      const angle = random() * Math.PI * 2;
+      const radius = Math.sqrt(random());
+      drifts[i * 3] = Math.cos(angle) * radius;
+      drifts[i * 3 + 1] = Math.sin(angle) * radius;
+      drifts[i * 3 + 2] = random();
+      sizes[i] = isMobile ? (1.8 + random() * 1.5) : (2.5 + random() * 3.0);
+      numberIndexes[i] = Math.floor(random() * 10);
+    }
+    return { pos, sizes, numberIndexes, drifts };
+  }, [count, isMobile]);
+
+  useFrame((state) => {
+    const scroll = globalScroll.get();
+    if (pointsRef.current) {
+      pointsRef.current.rotation.set(0, 0, 0);
+      const mat = pointsRef.current.material as THREE.ShaderMaterial;
+      if (mat.uniforms) {
+        mat.uniforms.uTime.value = state.clock.elapsedTime;
+        mat.uniforms.uScroll.value = scroll;
+      }
+    }
+  });
+
+  if (!numbersTexture) return null;
+
+  return (
+    <points ref={pointsRef}>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[data.pos, 3]} />
+        <bufferAttribute attach="attributes-size" args={[data.sizes, 1]} />
+        <bufferAttribute attach="attributes-numberIndex" args={[data.numberIndexes, 1]} />
+        <bufferAttribute attach="attributes-drift" args={[data.drifts, 3]} />
       </bufferGeometry>
       <shaderMaterial
         args={[NumberShaderMaterialDef]}
@@ -504,6 +586,7 @@ const NumberParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue
     </points>
   );
 };
+*/
 
 
 // EarthMesh — normalized synchronously via useMemo
@@ -732,7 +815,7 @@ const ModelScene = ({
           <Suspense fallback={null}>
             <ModelPreloader />
             <SpaceParticles globalScroll={activeGlobalScroll} indiaProgress={activeIndiaProgress} isMobile={isMobile} />
-            <NumberParticles globalScroll={activeGlobalScroll} isMobile={isMobile} />
+            <TunnelDustParticles globalScroll={activeGlobalScroll} isMobile={isMobile} />
             {shouldShowEarth && (
               <GlobeModel
                 globalScroll={activeGlobalScroll}
