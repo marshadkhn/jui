@@ -7,11 +7,12 @@ export function ModelPreloader() {
   // This suspends the Canvas until these assets are fully loaded and cached,
   // allowing useProgress() to accurately track their loading status.
   useGLTF('/models/Emblem.glb');
-  useGLTF('/AnimatedModels/Note_printer2-transformed.glb');
-  useGLTF('/models/Note_printer_draco.glb');
   useGLTF('/AnimatedModels/Card-transformed.glb');
   useGLTF('/models/Paint_mixer-transformed.glb');
   useGLTF('/models/Earth1_.2.glb');
+
+  // Note: Product models (Note_printer, etc.) are preloaded inside
+  // their own ProductModelCanvas contexts — NOT here.
 
   // Preload textures inside the Canvas context
   useTexture('/smoke.png');

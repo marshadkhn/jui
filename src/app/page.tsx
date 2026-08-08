@@ -36,7 +36,7 @@ export default function Home() {
       {/* Sections */}
       <Hero />
       <ProductSections />
-      <IndiaSection ref={indiaSectionRef} />
+      {/* <IndiaSection ref={indiaSectionRef} /> */}
 
       {/* Loader — Shows only ONCE per browser session */}
       {!loadingDone && (

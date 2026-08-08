@@ -65,7 +65,7 @@ const CTAButtons = ({
         onClick={onActionClick}
         variants={buttonVariants}
         transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-        className={`${isSm ? 'w-10 h-10' : 'w-14 h-14'} rounded-lg border flex items-center justify-center transition-colors pointer-events-none shrink-0`}
+        className={`${isSm ? 'w-10 h-10' : 'w-14 h-14'}  border flex items-center justify-center transition-colors pointer-events-none shrink-0`}
       >
         <motion.svg
           width={isSm ? "16" : "24"}
@@ -89,7 +89,7 @@ const CTAButtons = ({
         onClick={onContactClick}
         variants={buttonVariants}
         transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-        className={`${fullWidth ? 'flex-1 text-center' : ''} ${isSm ? 'h-10 px-5 text-[10px] tracking-[0.15em]' : 'h-14 px-10 text-xs tracking-[0.2em]'} rounded-lg border text-white font-bold uppercase transition-colors pointer-events-none`}
+        className={`${fullWidth ? 'flex-1 text-center' : ''} ${isSm ? 'h-10 px-5 text-[10px] tracking-[0.15em]' : 'h-14 px-10 text-xs tracking-[0.2em]'}  border text-white font-bold uppercase transition-colors pointer-events-none`}
       >
         {label}
       </motion.button>

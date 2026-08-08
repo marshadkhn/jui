@@ -8,6 +8,7 @@ const IndiaSection = ({ ref }: IndiaSectionProps) => {
   return (
     <section
       ref={ref}
+      id="india-section"
       className="relative w-full h-[150vh] overflow-hidden flex items-center justify-center pt-20 snap-start"
     >
       {/* 

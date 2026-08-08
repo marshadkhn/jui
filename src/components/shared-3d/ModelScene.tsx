@@ -694,7 +694,8 @@ const GlobeModel = ({
   // Use raw transform mappers for robust HMR / real-time updates
   const getPosX = transform([0, 0.1, 0.16, 0.80, 0.86], [1.5, 0, 0, -15, 0]);
   const getPosY = transform([0, 0.1, 0.16, 0.80, 0.86], [-4, 0, 0, 0, 0]);
-  const getOpacity = transform([0.12, 0.16, 0.80, 0.84], [1, 0, 0, 1]);
+  // Set end opacity to 0 so Earth stays hidden after Hero section and does not re-appear at the end:
+  const getOpacity = transform([0.12, 0.16, 0.80, 0.84], [1, 0, 0, 0]);
   const getScale = transform([0, 0.1, 0.16, 0.80, 0.86], [3, 5, 35, 0.4, 1.2]);
   const getPosZ = transform([0, 0.1, 0.16, 0.80, 0.86], [-2.5, 5, 28, 0, 2.4]);
 

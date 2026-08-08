@@ -4,15 +4,17 @@ import React, { Suspense, useMemo, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, Float, PerspectiveCamera, Environment, ContactShadows, Center, AdaptiveDpr, AdaptiveEvents } from '@react-three/drei';
 import * as THREE from 'three';
-import { Model as NotePrinter } from './models/NotePrinter';
-import { NotePrinterAnimated } from './models/NotePrinterAnimated';
+
+// Configure Draco decoder path BEFORE importing model files or preloading GLTF assets
+useGLTF.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+
+import { NotePrinterAnimated as NotePrinter } from './models/NotePrinterAnimated';
 import { Model as Card } from './models/Card';
 import { Model as PaintMixer } from './models/PaintMixer';
 
 // Preload all product models so they are ready by the time the loader finishes
 // Preload transformed models
 useGLTF.preload('/AnimatedModels/Note_printer2-transformed.glb');
-useGLTF.preload('/models/Note_printer_draco.glb');
 useGLTF.preload('/AnimatedModels/Card-transformed.glb');
 useGLTF.preload('/models/Paint_mixer-transformed.glb');
 
@@ -38,7 +40,7 @@ const AtmosphericLights = ({ progress }: { progress?: MotionValue<number> }) => 
   const reveal = useTransform(
     activeProgress,
     [0.0, 0.08, 0.5, 0.85, 1.0],
-    [0, 0.3, 1, 1, 0]
+    [0.3, 0.6, 1, 1, 0.3]
   );
 
   const ambientRef = useRef<THREE.AmbientLight>(null);
@@ -47,17 +49,17 @@ const AtmosphericLights = ({ progress }: { progress?: MotionValue<number> }) => 
 
   useFrame(() => {
     const val = reveal.get();
-    if (ambientRef.current) ambientRef.current.intensity = 0.3 * val;
-    if (dirLightRef.current) dirLightRef.current.intensity = 1.5 * val;
-    if (pointLightRef.current) pointLightRef.current.intensity = val * 1.5;
+    if (ambientRef.current) ambientRef.current.intensity = 0.6 * val;
+    if (dirLightRef.current) dirLightRef.current.intensity = 1.8 * val;
+    if (pointLightRef.current) pointLightRef.current.intensity = val * 2.0;
   });
 
   return (
     <>
-      <ambientLight ref={ambientRef} intensity={0} />
-      <directionalLight ref={dirLightRef} position={[10, 10, 10]} intensity={0} />
-      {/* Neutral highlight instead of blue */}
-      <pointLight ref={pointLightRef} position={[-10, 5, 2]} intensity={0} color="#ffffff" />
+      <ambientLight ref={ambientRef} intensity={0.6} />
+      <directionalLight ref={dirLightRef} position={[10, 10, 10]} intensity={1.5} />
+      {/* Neutral highlight */}
+      <pointLight ref={pointLightRef} position={[-10, 5, 2]} intensity={1} color="#ffffff" />
     </>
   );
 };
@@ -104,8 +106,7 @@ const GltfModel = ({
   });
 
   const SelectedModel = useMemo(() => {
-    if (path.includes('AnimatedModels/Note_printer')) return <NotePrinterAnimated progress={progress} />;
-    if (path.includes('Note_printer')) return <NotePrinter isMobile={isMobile} />;
+    if (path.includes('Note_printer') || path.includes('whatWeDo')) return <NotePrinter isMobile={isMobile} progress={progress} />;
     if (path.includes('Card')) return <Card isMobile={isMobile} progress={progress} />;
     if (path.includes('Paint_mixer')) return <PaintMixer />;
     return null;
@@ -136,7 +137,7 @@ const ProductModelCanvas = (props: ModelProps) => {
     setIsMobile(window.innerWidth < 768);
   }, []);
 
-  const isFirstSection = props.path && props.path.includes('Note_printer');
+  const isFirstSection = props.path && (props.path.includes('Note_printer') || props.path.includes('Currency'));
 
   const fallbackProgress = useMotionValue(0.5);
   const activeProgress = props.progress || fallbackProgress;

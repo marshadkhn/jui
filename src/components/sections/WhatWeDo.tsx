@@ -107,6 +107,7 @@ const WhatWeDo = () => {
   return (
     <section
       ref={sectionRef}
+      id="what-we-do"
       className="relative h-[220vh] w-full bg-transparent"
     >
       <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden">

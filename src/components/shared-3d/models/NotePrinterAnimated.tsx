@@ -33,7 +33,7 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[]
 }
 
-export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] & { progress?: MotionValue<number> }) {
+export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] & { progress?: MotionValue<number>; isMobile?: boolean }) {
   const group = useRef<THREE.Group>(null)
   const { nodes, materials, animations } = useGLTF('/AnimatedModels/Note_printer2-transformed.glb') as unknown as GLTFResult
   const { actions } = useAnimations(animations, group)

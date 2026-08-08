@@ -11,8 +11,8 @@ const CustomCursor = () => {
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  // Stable and smooth spring config to absorb rendering frames
-  const springConfig = { damping: 35, stiffness: 220, mass: 0.15 };
+  // Ultra-responsive zero-lag spring physics
+  const springConfig = { damping: 28, stiffness: 450, mass: 0.05 };
   const cursorX = useSpring(mouseX, springConfig);
   const cursorY = useSpring(mouseY, springConfig);
 
@@ -29,22 +29,28 @@ const CustomCursor = () => {
 
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const isClickable =
+      if (!target) return;
+
+      // Fast non-blocking hover detection without layout thrashing
+      const isClickable = Boolean(
         target.tagName === 'A' ||
         target.tagName === 'BUTTON' ||
+        target.tagName === 'INPUT' ||
         target.closest('a') ||
         target.closest('button') ||
-        window.getComputedStyle(target).cursor === 'pointer';
+        target.closest('[role="button"]') ||
+        target.classList?.contains('cursor-pointer')
+      );
 
-      setIsHovered(!!isClickable);
+      setIsHovered(isClickable);
     };
 
     const handleMouseLeave = () => {
       setIsVisible(false);
     };
 
-    window.addEventListener("mousemove", moveMouse);
-    window.addEventListener("mouseover", handleMouseOver);
+    window.addEventListener("mousemove", moveMouse, { passive: true });
+    window.addEventListener("mouseover", handleMouseOver, { passive: true });
     document.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
@@ -68,7 +74,7 @@ const CustomCursor = () => {
           willChange: "transform",
         }}
         animate={{
-          scale: isHovered ? 0.5 : 0.3,
+          scale: isHovered ? 0.5 : 0.4,
           rotate: isHovered ? [0, 45, 0] : 0, // Quick tilt on hover
         }}
         transition={{
@@ -112,7 +118,7 @@ const CustomCursor = () => {
             src="/cursor-needle.svg"
             alt="Custom Cursor Needle"
             className="absolute inset-0 w-full h-full object-contain filter brightness-[1.8] contrast-[1.2] drop-shadow-[0_0_15px_rgba(0,209,255,0.6)]"
-            style={{ transform: 'scale(1.5)', transformOrigin: 'center' }}
+            style={{ transform: 'scale(2)', transformOrigin: 'center' }}
           />
         </motion.div>
       </motion.div>
