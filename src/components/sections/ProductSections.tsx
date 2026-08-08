@@ -214,7 +214,7 @@ const ProductSectionItem = ({
                 <CTAButtons label="Currency" arrowDirection="right" reverseOrder={true} size="sm" fullWidth={true} />
                 <CTAButtons label="Security" arrowDirection="right" reverseOrder={true} size="sm" fullWidth={true} />
                 <CTAButtons label="Mint" arrowDirection="right" reverseOrder={true} size="sm" fullWidth={true} />
-                <CTAButtons label="Paper" arrowDirection="right" reverseOrder={true} size="sm" fullWidth={true} />
+                <CTAButtons label="Paper Mill" arrowDirection="right" reverseOrder={true} size="sm" fullWidth={true} />
               </div>
             </div>
           ) : (
