@@ -6,7 +6,7 @@ Files: public\AnimatedModels\Note_printer2.glb [394.02MB] > D:\FREELANCING\MAGIC
 
 import * as THREE from 'three'
 import React, { useEffect, useRef } from 'react'
-import { useGLTF, useAnimations } from '@react-three/drei'
+import { useGLTF, useAnimations, Text } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 import { useFrame } from '@react-three/fiber'
 import { MotionValue } from 'framer-motion'
@@ -31,6 +31,45 @@ type GLTFResult = GLTF & {
     Logo: THREE.MeshStandardMaterial
   }
   animations: GLTFAction[]
+}
+
+const NUM_SEGMENTS = 16
+const RADIUS = 1.478
+const X_RIGHT = 0.22
+
+function CylinderSerialNumbers() {
+  const segments = Array.from({ length: NUM_SEGMENTS }, (_, i) => i)
+
+  return (
+    <group name="CylinderSerialNumbers">
+      {segments.map((i) => {
+        const theta = (i * 2 * Math.PI) / NUM_SEGMENTS
+        const serialNum = `AA${12350 + i * 5}`
+
+        return (
+          <group key={i} rotation={[theta, 0, 0]}>
+            <Text
+              position={[X_RIGHT, RADIUS, 0]}
+              rotation={[-Math.PI / 2, 0, 0]}
+              fontSize={0.075}
+              letterSpacing={0.15}
+              anchorX="center"
+              anchorY="middle"
+              fontStyle="italic"
+            >
+              {serialNum}
+              <meshStandardMaterial
+                color="#00D1FF"
+                emissive="#00D1FF"
+                emissiveIntensity={10}
+                toneMapped={false}
+              />
+            </Text>
+          </group>
+        )
+      })}
+    </group>
+  )
 }
 
 export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] & { progress?: MotionValue<number>; isMobile?: boolean }) {
@@ -72,7 +111,7 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
     )
 
     if (topCylinderRef.current) {
-      topCylinderRef.current.rotation.x = currentRotation.current
+      topCylinderRef.current.rotation.x = -currentRotation.current
     }
     if (bottomCylinderRef.current) {
       bottomCylinderRef.current.rotation.x = currentRotation.current
@@ -121,6 +160,7 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
                 toneMapped={false}
               />
             </mesh>
+            <CylinderSerialNumbers />
           </group>
         </group>
       </group>
