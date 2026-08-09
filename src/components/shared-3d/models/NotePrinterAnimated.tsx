@@ -43,7 +43,7 @@ function CylinderSerialNumbers() {
   return (
     <group name="CylinderSerialNumbers">
       {segments.map((i) => {
-        const theta = (i * 2 * Math.PI) / NUM_SEGMENTS
+        const theta = ((i + 0.12) * 2 * Math.PI) / NUM_SEGMENTS
         const serialNum = `AA${12350 + i * 5}`
 
         return (
