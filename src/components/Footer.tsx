@@ -15,10 +15,10 @@ const Footer = () => {
       { name: 'Card Technology', href: '#' },
       { name: 'Paints & Coatings', href: '#' },
     ],
-    social: [
-      { name: 'LinkedIn', href: '#' },
-      { name: 'Twitter', href: '#' },
-      { name: 'Instagram', href: '#' },
+    locations: [
+      { label: 'Corporate Office', address: 'Lorem ipsum' },
+      { label: 'Registered Office', address: 'Lorem ipsum' },
+      { label: 'Warehouse', address: 'Lorem ipsum' },
     ],
     legal: [
       { name: 'Privacy Policy', href: '#' },
@@ -82,13 +82,12 @@ const Footer = () => {
           </div>
 
           <div className="flex flex-col gap-8 md:pt-4">
-            <h4 className="text-white font-bold text-[11px] tracking-[0.25em] uppercase opacity-40">Follow</h4>
-            <ul className="flex flex-col gap-5">
-              {footerLinks.social.map((link) => (
-                <li key={link.name}>
-                  <Link href={link.href} className="text-[#8BAAB8] hover:text-accent transition-colors text-[15px] font-medium ">
-                    {link.name}
-                  </Link>
+            <h4 className="text-white font-bold text-[11px] tracking-[0.25em] uppercase opacity-40">Office Locations</h4>
+            <ul className="flex flex-col gap-4">
+              {footerLinks.locations.map((loc) => (
+                <li key={loc.label} className="text-[#8BAAB8] text-[14px] leading-relaxed">
+                  <span className="text-white font-semibold">{loc.label}: </span>
+                  <span>{loc.address}</span>
                 </li>
               ))}
             </ul>

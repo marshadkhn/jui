@@ -37,37 +37,87 @@ const NUM_SEGMENTS = 16
 const RADIUS = 1.478
 const X_RIGHT = 0.22
 
-function CylinderSerialNumbers() {
+interface SerialSegmentProps {
+  index: number
+  rotationRef: React.MutableRefObject<number>
+}
+
+function SerialSegment({ index, rotationRef }: SerialSegmentProps) {
+  const textRef = useRef<any>(null)
+  const materialRef = useRef<THREE.MeshStandardMaterial>(null)
+  const lastSerialText = useRef<string>('')
+
+  // Angle positioning for segment around the cylinder face
+  const theta = (((NUM_SEGMENTS - index) % NUM_SEGMENTS + 0.12) * 2 * Math.PI) / NUM_SEGMENTS
+
+  useFrame(() => {
+    if (!textRef.current || !materialRef.current) return
+
+    const rot = rotationRef.current
+    const stepAngle = (2 * Math.PI) / NUM_SEGMENTS
+
+    // How many segment steps the cylinder has rotated past this segment
+    const stepProgress = rot / stepAngle
+    const segmentOffset = stepProgress - index
+
+    if (rot < 0.05 || segmentOffset < 0.02) {
+      // Not yet reached print head or initial state before scroll — face is blank
+      textRef.current.visible = false
+    } else {
+      textRef.current.visible = true
+      const cycle = Math.floor(Math.max(0, segmentOffset) / NUM_SEGMENTS)
+      const serialIndex = index + cycle * NUM_SEGMENTS
+      const serialNum = `AA${12350 + serialIndex * 5}`
+
+      if (lastSerialText.current !== serialNum) {
+        lastSerialText.current = serialNum
+        textRef.current.text = serialNum
+      }
+
+      // Flash pulse effect when the text is first stamped/printed at the print head
+      const stepFraction = Math.max(0, segmentOffset) % 1.0
+      if (stepFraction < 0.35) {
+        const pulse = 1 - stepFraction / 0.35
+        materialRef.current.emissiveIntensity = 10 + pulse * 25
+      } else {
+        materialRef.current.emissiveIntensity = 10
+      }
+    }
+  })
+
+  return (
+    <group rotation={[theta, 0, 0]}>
+      <Text
+        ref={textRef}
+        position={[X_RIGHT, RADIUS, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        fontSize={0.075}
+        letterSpacing={0.15}
+        anchorX="center"
+        anchorY="middle"
+        fontStyle="italic"
+      >
+        AA12350
+        <meshStandardMaterial
+          ref={materialRef}
+          color="#00D1FF"
+          emissive="#00D1FF"
+          emissiveIntensity={10}
+          toneMapped={false}
+        />
+      </Text>
+    </group>
+  )
+}
+
+function CylinderSerialNumbers({ rotationRef }: { rotationRef: React.MutableRefObject<number> }) {
   const segments = Array.from({ length: NUM_SEGMENTS }, (_, i) => i)
 
   return (
     <group name="CylinderSerialNumbers">
-      {segments.map((i) => {
-        const theta = ((i + 0.12) * 2 * Math.PI) / NUM_SEGMENTS
-        const serialNum = `AA${12350 + i * 5}`
-
-        return (
-          <group key={i} rotation={[theta, 0, 0]}>
-            <Text
-              position={[X_RIGHT, RADIUS, 0]}
-              rotation={[-Math.PI / 2, 0, 0]}
-              fontSize={0.075}
-              letterSpacing={0.15}
-              anchorX="center"
-              anchorY="middle"
-              fontStyle="italic"
-            >
-              {serialNum}
-              <meshStandardMaterial
-                color="#00D1FF"
-                emissive="#00D1FF"
-                emissiveIntensity={10}
-                toneMapped={false}
-              />
-            </Text>
-          </group>
-        )
-      })}
+      {segments.map((i) => (
+        <SerialSegment key={i} index={i} rotationRef={rotationRef} />
+      ))}
     </group>
   )
 }
@@ -98,16 +148,16 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
       const p = props.progress.get()
       if (lastP.current !== null) {
         const dp = Math.abs(p - lastP.current)
-        targetRotation.current += dp * 12
+        targetRotation.current += dp * 5
       }
       lastP.current = p
     }
 
-    // Smooth lerp to eliminate all frame lag and scroll jitter
+    // Smooth lerp for graceful slow rotation without jitter
     currentRotation.current = THREE.MathUtils.lerp(
       currentRotation.current,
       targetRotation.current,
-      Math.min(delta * 12, 1)
+      Math.min(delta * 6, 1)
     )
 
     if (topCylinderRef.current) {
@@ -160,7 +210,7 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
                 toneMapped={false}
               />
             </mesh>
-            <CylinderSerialNumbers />
+            <CylinderSerialNumbers rotationRef={currentRotation} />
           </group>
         </group>
       </group>
