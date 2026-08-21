@@ -23,14 +23,12 @@ const NebulaMaterial = {
     uMap: { value: null },
     uTime: { value: 0 },
     uScroll: { value: 0 },
-    uIndia: { value: 0 }, // Progress toward India section
     uColor: { value: new THREE.Color('#004D5E') },
     uOpacity: { value: 0.75 } // More volumetric
   },
   vertexShader: `
     uniform float uTime;
     uniform float uScroll;
-    uniform float uIndia;
     attribute float size;
     attribute float rotation;
     attribute vec3 drift;
@@ -47,9 +45,6 @@ const NebulaMaterial = {
       float speedMult = 1.0 + drift.z * 0.3;
       pos.z += uScroll * 110.0 - 75.0; // Pushed further back initially, moving closer to foreground
       
-      // Pull clouds slightly toward center when Earth appears
-      pos.xy *= (1.0 - uIndia * 0.1);
-      
       vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
       float dist = -mvPosition.z;
       
@@ -59,11 +54,6 @@ const NebulaMaterial = {
       
       // Fade out when very close to camera or very far
       vOpacity = smoothstep(2.0, 8.0, dist) * smoothstep(120.0, 90.0, dist);
-      
-      // Stronger atmosphere around Earth
-      float centerDist = length(pos.xy);
-      float atmosphericGlow = smoothstep(25.0, 0.0, centerDist) * uIndia;
-      vOpacity *= (1.0 + atmosphericGlow * 1.8);
     }
   `,
   fragmentShader: `
@@ -125,7 +115,7 @@ const StarDustMaterialDef = {
   `
 };
 
-const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScroll: MotionValue<number>; indiaProgress: MotionValue<number>; isMobile: boolean }) => {
+const SpaceParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue<number>; isMobile: boolean }) => {
   const dustRef    = useRef<THREE.Points>(null);
   const dotDustRef = useRef<THREE.Points>(null);
   const cloudRef   = useRef<THREE.Points>(null);
@@ -191,7 +181,6 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
 
   useFrame((state, delta) => {
     const scroll = globalScroll.get();
-    const indiaVal = indiaProgress.get();
 
     // Constant slow travel for dust
     if (dustRef.current) {
@@ -212,7 +201,6 @@ const SpaceParticles = ({ globalScroll, indiaProgress, isMobile }: { globalScrol
       if (mat.uniforms) {
         mat.uniforms.uTime.value = state.clock.elapsedTime;
         mat.uniforms.uScroll.value = scroll;
-        mat.uniforms.uIndia.value = indiaVal;
       }
     }
   });
@@ -591,18 +579,15 @@ const NumberParticles = ({ globalScroll, isMobile }: { globalScroll: MotionValue
 
 // EarthMesh — normalized synchronously via useMemo
 const EarthMesh = ({
-  indiaProgress,
   debugRotX,
   debugRotY
 }: {
-  indiaProgress: MotionValue<number>;
   debugRotX: number;
   debugRotY: number;
 }) => {
   const rotRef = useRef<THREE.Group>(null);
   const { scene } = useGLTF('/models/Earth1_.2.glb');
 
-  // Start with India facing the camera — matches India section target
   useEffect(() => {
     if (rotRef.current) {
       rotRef.current.rotation.y = -1.170;
@@ -611,29 +596,16 @@ const EarthMesh = ({
   }, []);
 
   const { normScale, offset } = useMemo(() => {
-    // We want to measure the scene's intrinsic size.
-    // However, scene might already have a scale applied. To be safe, we measure the box
-    // and divide the desired size (6) by the max dimension, but we must ensure we don't
-    // compound the scale if this re-renders.
-
-    // Create a temporary box to measure. Box3.setFromObject ignores the object's 
-    // current local scale/position/rotation if we are careful, but R3F might have
-    // sync'd it to the matrix.
     const box = new THREE.Box3().setFromObject(scene);
-
-    // Reset any existing scale on the scene to get absolute units
-    // or just calculate based on current state and divide out the scale
     const currentScale = scene.scale.x;
     const size = new THREE.Vector3();
     box.getSize(size);
 
-    // The "unscaled" size max dimension
     const maxDim = Math.max(size.x, size.y, size.z) / (currentScale || 1);
     const normScale = maxDim > 0 ? 6 / maxDim : 1;
 
     const center = new THREE.Vector3();
     box.getCenter(center);
-    // Unscale the center too
     center.divideScalar(currentScale || 1);
 
     return { normScale, offset: center };
@@ -646,17 +618,7 @@ const EarthMesh = ({
     if (DEBUG_ROTATION) {
       rotRef.current.rotation.x = debugRotX;
       rotRef.current.rotation.y = debugRotY;
-      return;
     }
-
-    const iProgress = indiaProgress.get();
-
-    // Smoothly rotate on axis from Hero initial values to original India target values
-    const targetY = THREE.MathUtils.lerp(-1.170, -1.2, iProgress);
-    const targetX = THREE.MathUtils.lerp(-0.320, 0.2, iProgress);
-
-    rotRef.current.rotation.y = THREE.MathUtils.lerp(rotRef.current.rotation.y, targetY, 0.2);
-    rotRef.current.rotation.x = THREE.MathUtils.lerp(rotRef.current.rotation.x, targetX, 0.2);
   });
 
   return (
@@ -674,16 +636,14 @@ const EarthMesh = ({
   );
 };
 
-// Outer group — handles scroll-driven position and scale
+// Outer group — handles Hero scroll-driven entrance and zoom past camera
 const GlobeModel = ({
   globalScroll,
-  indiaProgress,
   debugRotX,
   debugRotY,
   debugPosZ
 }: {
   globalScroll: MotionValue<number>,
-  indiaProgress: MotionValue<number>,
   debugRotX: number,
   debugRotY: number,
   debugPosZ: number
@@ -691,17 +651,16 @@ const GlobeModel = ({
   const containerRef = useRef<THREE.Group>(null);
   const meshGroupRef = useRef<THREE.Group>(null);
 
-  // Use raw transform mappers for robust HMR / real-time updates
-  const getPosX = transform([0, 0.1, 0.16, 0.80, 0.86], [1.5, 0, 0, -15, 0]);
-  const getPosY = transform([0, 0.1, 0.16, 0.80, 0.86], [-4, 0, 0, 0, 0]);
-  // Set end opacity to 0 so Earth stays hidden after Hero section and does not re-appear at the end:
-  const getOpacity = transform([0.12, 0.16, 0.80, 0.84], [1, 0, 0, 0]);
-  const getScale = transform([0, 0.1, 0.16, 0.80, 0.86], [3, 5, 35, 0.4, 1.2]);
-  const getPosZ = transform([0, 0.1, 0.16, 0.80, 0.86], [-2.5, 5, 28, 0, 2.4]);
+  // Hero section entrance and zoom pass
+  const getPosX = transform([0, 0.1, 0.16], [1.5, 0, 0]);
+  const getPosY = transform([0, 0.1, 0.16], [-4, 0, 0]);
+  const getOpacity = transform([0.12, 0.16], [1, 0]);
+  const getScale = transform([0, 0.1, 0.16], [3, 5, 35]);
+  const getPosZ = transform([0, 0.1, 0.16], [-2.5, 5, 28]);
 
   // Rotations for a dynamic "roll in" entrance
-  const getRotY = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 0, 0, -Math.PI / 2, 0]);
-  const getRotZ = transform([0, 0.1, 0.16, 0.80, 0.86], [0, 0, 0, Math.PI / 4, 0]);
+  const getRotY = transform([0, 0.1, 0.16], [0, 0, 0]);
+  const getRotZ = transform([0, 0.1, 0.16], [0, 0, 0]);
 
   useFrame(() => {
     if (!containerRef.current || !meshGroupRef.current) return;
@@ -731,7 +690,6 @@ const GlobeModel = ({
       <group ref={meshGroupRef}>
         <Float speed={1.5} rotationIntensity={0.05} floatIntensity={0.1}>
           <EarthMesh
-            indiaProgress={indiaProgress}
             debugRotX={debugRotX}
             debugRotY={debugRotY}
           />
@@ -740,8 +698,6 @@ const GlobeModel = ({
     </group>
   );
 };
-
-
 
 const noopEvents = () => ({
   enabled: false,
@@ -753,11 +709,9 @@ const noopEvents = () => ({
 
 const ModelScene = ({
   globalScroll,
-  indiaRef,
   showEarth
 }: {
   globalScroll?: MotionValue<number>;
-  indiaRef?: React.RefObject<HTMLDivElement | null>;
   showEarth?: boolean;
 }) => {
   const pathname = usePathname();
@@ -780,13 +734,6 @@ const ModelScene = ({
 
   const { scrollYProgress: defaultScroll } = useScroll();
   const activeGlobalScroll = globalScroll || defaultScroll;
-
-  const { scrollYProgress: indiaProgressFallback } = useScroll({
-    target: indiaRef && indiaRef.current ? indiaRef : undefined,
-    offset: ["start end", "center 75%"]
-  });
-
-  const activeIndiaProgress = (indiaRef && indiaRef.current) ? indiaProgressFallback : activeGlobalScroll;
 
   const isCurrencyPage = pathname === '/currency';
   const shouldShowEarth = showEarth !== undefined ? showEarth : !isCurrencyPage;
@@ -815,12 +762,11 @@ const ModelScene = ({
 
           <Suspense fallback={null}>
             <ModelPreloader />
-            <SpaceParticles globalScroll={activeGlobalScroll} indiaProgress={activeIndiaProgress} isMobile={isMobile} />
+            <SpaceParticles globalScroll={activeGlobalScroll} isMobile={isMobile} />
             <TunnelDustParticles globalScroll={activeGlobalScroll} isMobile={isMobile} />
             {shouldShowEarth && (
               <GlobeModel
                 globalScroll={activeGlobalScroll}
-                indiaProgress={activeIndiaProgress}
                 debugRotX={debugRotX}
                 debugRotY={debugRotY}
                 debugPosZ={debugPosZ}
