@@ -10,6 +10,7 @@ export function ModelPreloader() {
   useGLTF('/AnimatedModels/Card-transformed.glb');
   useGLTF('/models/Paint_mixer-transformed.glb');
   useGLTF('/models/Earth1_.2.glb');
+  useGLTF('/AnimatedModels/Erarth_india_section.glb');
 
   // Note: Product models (Note_printer, etc.) are preloaded inside
   // their own ProductModelCanvas contexts — NOT here.
