@@ -2,8 +2,6 @@
 import { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import LoadingScreen from "@/components/LoadingScreen";
-import IndiaSection from "@/components/sections/IndiaSection";
-import { useScroll } from "framer-motion";
 
 const Hero = dynamic(() => import("@/components/hero/Hero"), { ssr: false });
 const ProductSections = dynamic(() => import("@/components/sections/ProductSections"), { ssr: false });
@@ -11,7 +9,6 @@ const ProductSections = dynamic(() => import("@/components/sections/ProductSecti
 export default function Home() {
   const [loadingDone, setLoadingDone] = useState(true);
   const mainRef = useRef<HTMLDivElement>(null);
-  const indiaSectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Check if site loader has already completed in this browser session
@@ -26,17 +23,11 @@ export default function Home() {
     setLoadingDone(true);
   };
 
-  const { scrollYProgress } = useScroll({
-    target: mainRef,
-    offset: ["start start", "end end"]
-  });
-
   return (
     <main ref={mainRef} className="relative w-full flex flex-col bg-black">
       {/* Sections */}
       <Hero />
       <ProductSections />
-      {/* <IndiaSection ref={indiaSectionRef} /> */}
 
       {/* Loader — Shows only ONCE per browser session */}
       {!loadingDone && (

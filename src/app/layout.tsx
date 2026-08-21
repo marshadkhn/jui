@@ -18,6 +18,7 @@ import SmoothScroll from "@/components/providers/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
 import Footer from "@/components/Footer";
 import GlobalModelScene from "@/components/GlobalModelScene";
+import { BlackHoleTransitionProvider } from "@/components/transitions/BlackHoleTransitionContext";
 
 export default function RootLayout({
   children,
@@ -30,13 +31,15 @@ export default function RootLayout({
       className={`${CenturyGothic.variable} antialiased selection:bg-accent/30`}
     >
       <body className="min-h-screen bg-background text-foreground overflow-x-hidden">
-        <CustomCursor />
-        <GlobalModelScene />
-        <SmoothScroll>
-          <Navbar />
-          {children}
-          <Footer />
-        </SmoothScroll>
+        <BlackHoleTransitionProvider>
+          <CustomCursor />
+          <GlobalModelScene />
+          <SmoothScroll>
+            <Navbar />
+            {children}
+            <Footer />
+          </SmoothScroll>
+        </BlackHoleTransitionProvider>
       </body>
     </html>
   );
