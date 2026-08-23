@@ -10,6 +10,8 @@ import { EarthIndiaModel } from '../shared-3d/models/EarthIndiaSection';
 import Image from 'next/image';
 import CTAButtons from '../shared/CTAButtons';
 import { useBlackHoleTransition } from '../transitions/BlackHoleTransitionContext';
+import { PrincipalDetailCard } from './PrincipalDetailCard';
+import { PrincipalCompany } from '@/data/principalsData';
 
 const STORAGE_KEY = 'jui_earth_india_debug_3pos_v5';
 
@@ -211,6 +213,9 @@ const AnimatingEarthGroup = ({
   livePreviewActive,
   currentTabVals,
   isMobile,
+  selectedCompany,
+  onSelectCompany,
+  onDebugInfo,
 }: {
   smoothSize: MotionValue<number>;
   smoothPosX: MotionValue<number>;
@@ -222,6 +227,9 @@ const AnimatingEarthGroup = ({
   livePreviewActive: boolean;
   currentTabVals: { size: number; rotX: number; rotY: number; rotZ: number; posX: number; posY: number; posZ: number };
   isMobile: boolean;
+  selectedCompany?: PrincipalCompany | null;
+  onSelectCompany?: (company: PrincipalCompany | null) => void;
+  onDebugInfo?: (info: string) => void;
 }) => {
   const groupRef = useRef<THREE.Group>(null);
 
@@ -247,6 +255,9 @@ const AnimatingEarthGroup = ({
         size={14.80}
         autoRotate={false}
         initialRotation={[0, 0, 0]}
+        selectedCompany={selectedCompany}
+        onSelectCompany={onSelectCompany}
+        onDebugInfo={onDebugInfo}
       />
     </group>
   );
@@ -256,6 +267,8 @@ const AnimatingEarthGroup = ({
 const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number> }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<PrincipalCompany | null>(null);
+  const [debugClickInfo, setDebugClickInfo] = useState<string>('Click on any glowing red dot on the globe to inspect');
 
   // 🔧 Debug control states (3 Positions) — Hidden
   const [showDebug, setShowDebug] = useState(false);
@@ -346,26 +359,26 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
     }
   };
 
-  // Fades in right as Black Hole Transition 3 clears (0.76 -> 0.79), stays full during Pos 1 -> Pos 2 -> Pos 3 (0.79 -> 0.96), then smoothly fades out as footer enters (0.96 -> 1.00)
+  // Fades in as Transition 3 clears (0.76 -> 0.79), stays full during Pos 1 -> 2 -> 3 (0.79 -> 0.95), then slowly fades with parallax as footer glides up (0.95 -> 1.00)
   const rawOpacity = useTransform(globalScroll, (v: number) => {
     if (v < 0.76) return 0;
     if (v < 0.79) return (v - 0.76) / 0.03;
-    if (v < 0.96) return 1;
-    if (v <= 1.00) return 1 - (v - 0.96) / 0.04; // Smooth fade out directly at the exact moment footer comes up
-    return 0;
+    if (v < 0.95) return 1;
+    if (v <= 1.00) return 1 - ((v - 0.95) / 0.05) * 0.85; // Slow, graceful fade
+    return 0.15;
   });
   const opacity = useSpring(rawOpacity, { damping: 28, stiffness: 75 });
 
   const display = useTransform(opacity, (v: number) => (v < 0.01 ? 'none' : 'block'));
 
-  // 🌊 Smooth 3-Keyframe Scroll-driven Animation across (Pos 1: 0.78-0.81 -> Pos 2: 0.86-0.88 -> Pos 3: 0.93-0.96)
-  const animSize = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.96], [p1Size, p1Size, p2Size, p2Size, p3Size, p3Size]);
-  const animRotX = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.96], [p1RotX, p1RotX, p2RotX, p2RotX, p3RotX, p3RotX]);
-  const animRotY = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.96], [p1RotY, p1RotY, p2RotY, p2RotY, p3RotY, p3RotY]);
-  const animRotZ = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.96], [p1RotZ, p1RotZ, p2RotZ, p2RotZ, p3RotZ, p3RotZ]);
-  const animPosX = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.96], [p1PosX, p1PosX, p2PosX, p2PosX, p3PosX, p3PosX]);
-  const animPosY = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.96], [p1PosY, p1PosY, p2PosY, p2PosY, p3PosY, p3PosY]);
-  const animPosZ = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.96], [p1PosZ, p1PosZ, p2PosZ, p2PosZ, p3PosZ, p3PosZ]);
+  // 🌊 Smooth 3-Keyframe Scroll-driven Animation + Post-Pos3 Parallax Drift (0.95 -> 1.00)
+  const animSize = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1Size, p1Size, p2Size, p2Size, p3Size, p3Size, p3Size * 0.90]);
+  const animRotX = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1RotX, p1RotX, p2RotX, p2RotX, p3RotX, p3RotX, p3RotX]);
+  const animRotY = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1RotY, p1RotY, p2RotY, p2RotY, p3RotY, p3RotY, p3RotY - 0.35]);
+  const animRotZ = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1RotZ, p1RotZ, p2RotZ, p2RotZ, p3RotZ, p3RotZ, p3RotZ]);
+  const animPosX = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1PosX, p1PosX, p2PosX, p2PosX, p3PosX, p3PosX, p3PosX]);
+  const animPosY = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1PosY, p1PosY, p2PosY, p2PosY, p3PosY, p3PosY, p3PosY - 1.4]);
+  const animPosZ = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1PosZ, p1PosZ, p2PosZ, p2PosZ, p3PosZ, p3PosZ, p3PosZ]);
 
   const springOpts = { damping: 28, stiffness: 75, mass: 0.8 };
   const smoothSize = useSpring(animSize, springOpts);
@@ -422,7 +435,7 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
 
   return (
     <motion.div
-      className="absolute inset-0 h-full w-full pointer-events-none"
+      className="absolute inset-0 h-full w-full pointer-events-auto"
       style={{ opacity, display, zIndex: 60 }}
     >
       <div className="w-full h-full relative">
@@ -464,12 +477,22 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
                   livePreviewActive={livePreviewActive}
                   currentTabVals={currentTabVals}
                   isMobile={isMobile}
+                  selectedCompany={selectedCompany}
+                  onSelectCompany={setSelectedCompany}
+                  onDebugInfo={setDebugClickInfo}
                 />
               </Float>
             </Suspense>
           </Canvas>
         )}
       </div>
+
+      {/* 🏢 Global Principals Interactive Directory & Modal Card */}
+      <PrincipalDetailCard
+        company={selectedCompany}
+        onClose={() => setSelectedCompany(null)}
+        onSelectCompany={setSelectedCompany}
+      />
 
       {/* 🔧 HERO-STYLED DEBUG PANEL */}
       {showDebug && (
@@ -719,19 +742,13 @@ const ProductSections = () => {
     setProgress(Math.max(0, Math.min(1, suction)), Math.max(0, Math.min(1, blackout)));
   });
 
-  // Global Exit: Fade everything out right before un-sticking at 1.00 for footer
-  const globalExitOpacity = useTransform(globalScroll, [0.98, 1.0], [1, 0]);
-
   return (
     <div ref={containerRef} id="product-sections" className="relative z-20 w-full h-[1400vh] bg-transparent">
       {/* 
-        Single Sticky Stage: This stays on screen continuously.
-        All 3 products AND India Earth section transition INSIDE this one container without any bottom-up scrolling.
+        Single Sticky Stage: Stays on screen continuously.
+        Footer slides over above this section with high z-index.
       */}
-      <motion.div
-        className="sticky top-0 h-screen w-full flex items-center justify-center p-0 m-0"
-        style={{ opacity: globalExitOpacity }}
-      >
+      <div className="sticky top-0 h-screen w-full flex items-center justify-center p-0 m-0">
         {/* Stages 1, 2, 3 */}
         {sections.map((data, index) => (
           <ProductSectionItem
@@ -742,9 +759,9 @@ const ProductSections = () => {
           />
         ))}
 
-        {/* Stage 4: India Earth Section with 3-Keyframe Scroll Interpolation & Debug UI */}
+        {/* Stage 4: India Earth Section with 3-Keyframe Scroll Interpolation */}
         <IndiaSectionStage globalScroll={globalScroll} />
-      </motion.div>
+      </div>
     </div>
   );
 };

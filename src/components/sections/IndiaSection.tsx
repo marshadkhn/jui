@@ -4,6 +4,8 @@ import React, { forwardRef, Suspense, useState, useEffect, useRef } from 'react'
 import { Canvas } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import { EarthIndiaModel } from '../shared-3d/models/EarthIndiaSection';
+import { PrincipalDetailCard } from './PrincipalDetailCard';
+import { PrincipalCompany } from '@/data/principalsData';
 
 // 🔧 DEBUG — set to true so you can interactively adjust values
 const DEFAULT_DEBUG = false;
@@ -15,6 +17,8 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
   const sectionRef = useRef<HTMLElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState<PrincipalCompany | null>(null);
+  const [debugClickInfo, setDebugClickInfo] = useState<string>('Click on any glowing red dot on the globe');
 
   // 🔧 Locked coordinates: size 14.80, rot [0.420, -0.330, 0.110], pos [0.900, -2.300, -0.100]
   const [showDebug, setShowDebug] = useState(DEFAULT_DEBUG);
@@ -139,6 +143,9 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
                       size={isMobile ? debugSize * 0.75 : debugSize}
                       autoRotate={false}
                       initialRotation={[debugRotX, debugRotY, debugRotZ]}
+                      selectedCompany={selectedCompany}
+                      onSelectCompany={setSelectedCompany}
+                      onDebugInfo={setDebugClickInfo}
                     />
                   </group>
                 </Float>
@@ -146,6 +153,13 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
             </Canvas>
           )}
         </div>
+
+        {/* Global Principals Interactive Modal & Directory */}
+        <PrincipalDetailCard
+          company={selectedCompany}
+          onClose={() => setSelectedCompany(null)}
+          onSelectCompany={setSelectedCompany}
+        />
 
         {/* Content Overlay */}
         <div className="relative z-20 text-center max-w-4xl px-6 pointer-events-auto">

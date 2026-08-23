@@ -27,7 +27,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative w-full min-h-[90vh] bg-[#000000] z-30 pt-32 pb-16 px-6 md:px-16 flex flex-col justify-between snap-start">
+    <footer className="relative w-full min-h-[90vh] bg-[#000000] z-[70] pt-32 pb-16 px-6 md:px-16 flex flex-col justify-between snap-start shadow-[0_-30px_70px_rgba(0,0,0,0.98)]">
       {/* Top Transition Blur - Creates the "merged" effect with India section */}
       <div className="absolute top-1 left-0 w-full h-72 -translate-y-full pointer-events-none z-50">
         <div
