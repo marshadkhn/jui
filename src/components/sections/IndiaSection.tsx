@@ -5,6 +5,7 @@ import { Canvas } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import { EarthIndiaModel } from '../shared-3d/models/EarthIndiaSection';
 import { PrincipalDetailCard } from './PrincipalDetailCard';
+import { CompanyPointerCallout } from './CompanyPointerCallout';
 import { PrincipalCompany } from '@/data/principalsData';
 
 // 🔧 DEBUG — set to true so you can interactively adjust values
@@ -18,6 +19,7 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<PrincipalCompany | null>(null);
+  const [screenPos, setScreenPos] = useState<{ x: number; y: number } | null>(null);
   const [debugClickInfo, setDebugClickInfo] = useState<string>('Click on any glowing red dot on the globe');
 
   // 🔧 Locked coordinates: size 14.80, rot [0.420, -0.330, 0.110], pos [0.900, -2.300, -0.100]
@@ -31,10 +33,16 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
   const [debugPosZ, setDebugPosZ] = useState(-0.100);
   const [copied, setCopied] = useState(false);
 
-  // Load saved slider state from localStorage on first mount
+  // Load saved slider state from localStorage on first mount & dismiss badge on scroll
   useEffect(() => {
     setIsMobile(window.innerWidth < 768);
     setMounted(true);
+
+    const handleScroll = () => {
+      setSelectedCompany(null);
+      setScreenPos(null);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
 
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -57,7 +65,10 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
     };
 
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   // Save slider state automatically whenever changed
@@ -145,6 +156,7 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
                       initialRotation={[debugRotX, debugRotY, debugRotZ]}
                       selectedCompany={selectedCompany}
                       onSelectCompany={setSelectedCompany}
+                      onScreenPosChange={setScreenPos}
                       onDebugInfo={setDebugClickInfo}
                     />
                   </group>
@@ -154,11 +166,14 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
           )}
         </div>
 
-        {/* Global Principals Interactive Modal & Directory */}
-        <PrincipalDetailCard
+        {/* 🏷️ Sleek Company Pointer Line & Callout Badge */}
+        <CompanyPointerCallout
           company={selectedCompany}
-          onClose={() => setSelectedCompany(null)}
-          onSelectCompany={setSelectedCompany}
+          screenPos={screenPos}
+          onClose={() => {
+            setSelectedCompany(null);
+            setScreenPos(null);
+          }}
         />
 
         {/* Content Overlay */}

@@ -97,22 +97,24 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 53.48,
     "lng": 14.19,
     "company": {
-      "id": 7,
-      "name": "Melzer Maschinenbau GmbH",
+      "id": 6,
+      "name": "MABEG Systems GmbH",
       "segments": [
-        "Security"
+        "Currency",
+        "Security",
+        "Paper Mill"
       ],
-      "product": "Automatic Card Production Lines, Inlay Production Lines, Smart Card & RFID Converting Machines",
+      "product": "Sheet Feeders, Stackers & Transportation Systems for Currency & Security Printing Industry",
       "country": "Germany",
-      "city": "Schwelm",
-      "address": "Ruhrstrasse 51, 58332 Schwelm, Germany",
-      "website": "https://www.melzergmbh.com/",
-      "lat": 51.2896221,
-      "lng": 7.2719127,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=51.2896221,7.2719127",
-      "u": 0.5202,
-      "v": 0.784942,
-      "vThree": 0.215058
+      "city": "Moerfelden-Walldorf",
+      "address": "Opelstrasse 17-19, 64546 Moerfelden-Walldorf, Germany",
+      "website": "https://www.mabeg.de/",
+      "lat": 49.9667569,
+      "lng": 8.5614041,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=49.9667569,8.5614041",
+      "u": 0.523782,
+      "v": 0.777593,
+      "vThree": 0.222407
     }
   },
   {
@@ -149,22 +151,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 52.69,
     "lng": 19.9,
     "company": {
-      "id": 22,
-      "name": "GWT GmbH",
+      "id": 10,
+      "name": "WISTA GmbH",
       "segments": [
-        "Currency"
+        "Security"
       ],
-      "product": "Wiping Solution Recovery and Treatment Plant (WSRTP) for Banknote Printing",
-      "country": "Austria",
-      "city": "Leobersdorf",
-      "address": "Hirtenberger Str. 1, 2544 Leobersdorf, Austria",
-      "website": "https://www.gwt.at/",
-      "lat": 47.9358865,
-      "lng": 16.2266286,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=47.9358865,16.2266286",
-      "u": 0.545074,
-      "v": 0.76631,
-      "vThree": 0.23369
+      "product": "Stamp Perforating Machines",
+      "country": "Germany",
+      "city": "Bad Rappenau",
+      "address": "Buchaeckerring 27, 74906 Bad Rappenau, Germany",
+      "website": "https://www.wista-gmbh.de/",
+      "lat": 49.215344,
+      "lng": 9.0666682,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=49.215344,9.0666682",
+      "u": 0.525185,
+      "v": 0.773419,
+      "vThree": 0.226581
     }
   },
   {
@@ -175,22 +177,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 51.91,
     "lng": 5.74,
     "company": {
-      "id": 7,
-      "name": "Melzer Maschinenbau GmbH",
+      "id": 1,
+      "name": "ACSYS Lasertechnik GmbH",
       "segments": [
-        "Security"
+        "Mint"
       ],
-      "product": "Automatic Card Production Lines, Inlay Production Lines, Smart Card & RFID Converting Machines",
+      "product": "Laser Engraving Systems for Mints",
       "country": "Germany",
-      "city": "Schwelm",
-      "address": "Ruhrstrasse 51, 58332 Schwelm, Germany",
-      "website": "https://www.melzergmbh.com/",
-      "lat": 51.2896221,
-      "lng": 7.2719127,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=51.2896221,7.2719127",
-      "u": 0.5202,
-      "v": 0.784942,
-      "vThree": 0.215058
+      "city": "Kornwestheim",
+      "address": "Leibnizstrasse 9, 70806 Kornwestheim, Germany",
+      "website": "https://www.acsys.de/",
+      "lat": 48.8691247,
+      "lng": 9.1993914,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.8691247,9.1993914",
+      "u": 0.525554,
+      "v": 0.771495,
+      "vThree": 0.228505
     }
   },
   {
@@ -201,22 +203,24 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 51.91,
     "lng": 5.75,
     "company": {
-      "id": 7,
-      "name": "Melzer Maschinenbau GmbH",
+      "id": 4,
+      "name": "GTS GmbH",
       "segments": [
-        "Security"
+        "Currency",
+        "Security",
+        "Paper Mill"
       ],
-      "product": "Automatic Card Production Lines, Inlay Production Lines, Smart Card & RFID Converting Machines",
+      "product": "Counting Machines & Allied Systems for Banknotes, Security Documents and Security Paper Mills",
       "country": "Germany",
-      "city": "Schwelm",
-      "address": "Ruhrstrasse 51, 58332 Schwelm, Germany",
-      "website": "https://www.melzergmbh.com/",
-      "lat": 51.2896221,
-      "lng": 7.2719127,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=51.2896221,7.2719127",
-      "u": 0.5202,
-      "v": 0.784942,
-      "vThree": 0.215058
+      "city": "Heilbronn",
+      "address": "Boellinger Str. 61, 74078 Heilbronn, Germany",
+      "website": "https://gts-countmaster.com/en/products/",
+      "lat": 49.175969,
+      "lng": 9.198693,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=49.175969,9.198693",
+      "u": 0.525552,
+      "v": 0.7732,
+      "vThree": 0.2268
     }
   },
   {
@@ -227,22 +231,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 51.57,
     "lng": 16.88,
     "company": {
-      "id": 22,
-      "name": "GWT GmbH",
+      "id": 5,
+      "name": "I.T.G. GmbH Graphic Products",
       "segments": [
         "Currency"
       ],
-      "product": "Wiping Solution Recovery and Treatment Plant (WSRTP) for Banknote Printing",
-      "country": "Austria",
-      "city": "Leobersdorf",
-      "address": "Hirtenberger Str. 1, 2544 Leobersdorf, Austria",
-      "website": "https://www.gwt.at/",
-      "lat": 47.9358865,
-      "lng": 16.2266286,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=47.9358865,16.2266286",
-      "u": 0.545074,
-      "v": 0.76631,
-      "vThree": 0.23369
+      "product": "Currency Printing Blankets & Allied Products",
+      "country": "Germany",
+      "city": "Munich",
+      "address": "Dachauer Str. 201, 80637 Munich, Germany",
+      "website": "https://www.itg-graph.com/",
+      "lat": 48.161145,
+      "lng": 11.5445446,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.161145,11.5445446",
+      "u": 0.532068,
+      "v": 0.767562,
+      "vThree": 0.232438
     }
   },
   {
@@ -253,22 +257,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 51.03,
     "lng": 16.81,
     "company": {
-      "id": 22,
-      "name": "GWT GmbH",
+      "id": 8,
+      "name": "Micro Laser Technology GmbH",
       "segments": [
-        "Currency"
+        "Security"
       ],
-      "product": "Wiping Solution Recovery and Treatment Plant (WSRTP) for Banknote Printing",
-      "country": "Austria",
-      "city": "Leobersdorf",
-      "address": "Hirtenberger Str. 1, 2544 Leobersdorf, Austria",
-      "website": "https://www.gwt.at/",
-      "lat": 47.9358865,
-      "lng": 16.2266286,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=47.9358865,16.2266286",
-      "u": 0.545074,
-      "v": 0.76631,
-      "vThree": 0.23369
+      "product": "Laser Micro Perforation on Security Documents",
+      "country": "Germany",
+      "city": "Kirchheim bei Munich",
+      "address": "Benzstrasse 5B, 85551 Kirchheim bei Muenchen, Germany",
+      "website": "https://www.mlt-gmbh.com/",
+      "lat": 48.17772,
+      "lng": 11.76761,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.17772,11.76761",
+      "u": 0.532688,
+      "v": 0.767654,
+      "vThree": 0.232346
     }
   },
   {
@@ -279,22 +283,23 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 51.2,
     "lng": 16.82,
     "company": {
-      "id": 22,
-      "name": "GWT GmbH",
+      "id": 9,
+      "name": "Paul Leibinger GmbH & Co. KG",
       "segments": [
-        "Currency"
+        "Currency",
+        "Security"
       ],
-      "product": "Wiping Solution Recovery and Treatment Plant (WSRTP) for Banknote Printing",
-      "country": "Austria",
-      "city": "Leobersdorf",
-      "address": "Hirtenberger Str. 1, 2544 Leobersdorf, Austria",
-      "website": "https://www.gwt.at/",
-      "lat": 47.9358865,
-      "lng": 16.2266286,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=47.9358865,16.2266286",
-      "u": 0.545074,
-      "v": 0.76631,
-      "vThree": 0.23369
+      "product": "Numbering Systems for Banknotes, Passports and Security Documents",
+      "country": "Germany",
+      "city": "Tuttlingen",
+      "address": "Daimlerstrasse 14, 78532 Tuttlingen, Germany",
+      "website": "https://leibinger-group.com/",
+      "lat": 47.9923744,
+      "lng": 8.8256998,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=47.9923744,8.8256998",
+      "u": 0.524516,
+      "v": 0.766624,
+      "vThree": 0.233376
     }
   },
   {
@@ -331,22 +336,23 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 49.93,
     "lng": 4.5,
     "company": {
-      "id": 2,
-      "name": "BW Converting GmbH (formerly W+D)",
+      "id": 3,
+      "name": "BW Papersystems Stuttgart GmbH",
       "segments": [
-        "Security"
+        "Security",
+        "Paper Mill"
       ],
-      "product": "Envelope Making Machines for Security Printing Industry",
+      "product": "Kugler Womako Passport Making Machines (Security); Bielomatik Banknote Sheeters (Paper Mill)",
       "country": "Germany",
-      "city": "Neuwied",
-      "address": "Sohler Weg 65, 56564 Neuwied, Germany",
-      "website": "https://www.bwconverting.com/",
-      "lat": 50.4337726,
-      "lng": 7.4798967,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=50.4337726,7.4798967",
-      "u": 0.520777,
-      "v": 0.780188,
-      "vThree": 0.219812
+      "city": "Nuertingen",
+      "address": "Schlosserstrasse 15, 72622 Nuertingen, Germany",
+      "website": "https://www.bwpapersystems.com/",
+      "lat": 48.6389846,
+      "lng": 9.3417186,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.6389846,9.3417186",
+      "u": 0.525949,
+      "v": 0.770217,
+      "vThree": 0.229783
     }
   },
   {
@@ -437,23 +443,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 48.48,
     "lng": 6.47,
     "company": {
-      "id": 9,
-      "name": "Paul Leibinger GmbH & Co. KG",
+      "id": 1,
+      "name": "ACSYS Lasertechnik GmbH",
       "segments": [
-        "Currency",
-        "Security"
+        "Mint"
       ],
-      "product": "Numbering Systems for Banknotes, Passports and Security Documents",
+      "product": "Laser Engraving Systems for Mints",
       "country": "Germany",
-      "city": "Tuttlingen",
-      "address": "Daimlerstrasse 14, 78532 Tuttlingen, Germany",
-      "website": "https://leibinger-group.com/",
-      "lat": 47.9923744,
-      "lng": 8.8256998,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=47.9923744,8.8256998",
-      "u": 0.524516,
-      "v": 0.766624,
-      "vThree": 0.233376
+      "city": "Kornwestheim",
+      "address": "Leibnizstrasse 9, 70806 Kornwestheim, Germany",
+      "website": "https://www.acsys.de/",
+      "lat": 48.8691247,
+      "lng": 9.1993914,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.8691247,9.1993914",
+      "u": 0.525554,
+      "v": 0.771495,
+      "vThree": 0.228505
     }
   },
   {
@@ -464,23 +469,24 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 48.48,
     "lng": 10.1,
     "company": {
-      "id": 3,
-      "name": "BW Papersystems Stuttgart GmbH",
+      "id": 4,
+      "name": "GTS GmbH",
       "segments": [
+        "Currency",
         "Security",
         "Paper Mill"
       ],
-      "product": "Kugler Womako Passport Making Machines (Security); Bielomatik Banknote Sheeters (Paper Mill)",
+      "product": "Counting Machines & Allied Systems for Banknotes, Security Documents and Security Paper Mills",
       "country": "Germany",
-      "city": "Nuertingen",
-      "address": "Schlosserstrasse 15, 72622 Nuertingen, Germany",
-      "website": "https://www.bwpapersystems.com/",
-      "lat": 48.6389846,
-      "lng": 9.3417186,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.6389846,9.3417186",
-      "u": 0.525949,
-      "v": 0.770217,
-      "vThree": 0.229783
+      "city": "Heilbronn",
+      "address": "Boellinger Str. 61, 74078 Heilbronn, Germany",
+      "website": "https://gts-countmaster.com/en/products/",
+      "lat": 49.175969,
+      "lng": 9.198693,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=49.175969,9.198693",
+      "u": 0.525552,
+      "v": 0.7732,
+      "vThree": 0.2268
     }
   },
   {
@@ -517,22 +523,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 48.43,
     "lng": 15.86,
     "company": {
-      "id": 22,
-      "name": "GWT GmbH",
+      "id": 5,
+      "name": "I.T.G. GmbH Graphic Products",
       "segments": [
         "Currency"
       ],
-      "product": "Wiping Solution Recovery and Treatment Plant (WSRTP) for Banknote Printing",
-      "country": "Austria",
-      "city": "Leobersdorf",
-      "address": "Hirtenberger Str. 1, 2544 Leobersdorf, Austria",
-      "website": "https://www.gwt.at/",
-      "lat": 47.9358865,
-      "lng": 16.2266286,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=47.9358865,16.2266286",
-      "u": 0.545074,
-      "v": 0.76631,
-      "vThree": 0.23369
+      "product": "Currency Printing Blankets & Allied Products",
+      "country": "Germany",
+      "city": "Munich",
+      "address": "Dachauer Str. 201, 80637 Munich, Germany",
+      "website": "https://www.itg-graph.com/",
+      "lat": 48.161145,
+      "lng": 11.5445446,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.161145,11.5445446",
+      "u": 0.532068,
+      "v": 0.767562,
+      "vThree": 0.232438
     }
   },
   {
@@ -543,22 +549,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 48.3,
     "lng": 13.18,
     "company": {
-      "id": 8,
-      "name": "Micro Laser Technology GmbH",
+      "id": 10,
+      "name": "WISTA GmbH",
       "segments": [
         "Security"
       ],
-      "product": "Laser Micro Perforation on Security Documents",
+      "product": "Stamp Perforating Machines",
       "country": "Germany",
-      "city": "Kirchheim bei Munich",
-      "address": "Benzstrasse 5B, 85551 Kirchheim bei Muenchen, Germany",
-      "website": "https://www.mlt-gmbh.com/",
-      "lat": 48.17772,
-      "lng": 11.76761,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.17772,11.76761",
-      "u": 0.532688,
-      "v": 0.767654,
-      "vThree": 0.232346
+      "city": "Bad Rappenau",
+      "address": "Buchaeckerring 27, 74906 Bad Rappenau, Germany",
+      "website": "https://www.wista-gmbh.de/",
+      "lat": 49.215344,
+      "lng": 9.0666682,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=49.215344,9.0666682",
+      "u": 0.525185,
+      "v": 0.773419,
+      "vThree": 0.226581
     }
   },
   {
@@ -569,22 +575,24 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 46.12,
     "lng": 17.53,
     "company": {
-      "id": 22,
-      "name": "GWT GmbH",
+      "id": 6,
+      "name": "MABEG Systems GmbH",
       "segments": [
-        "Currency"
+        "Currency",
+        "Security",
+        "Paper Mill"
       ],
-      "product": "Wiping Solution Recovery and Treatment Plant (WSRTP) for Banknote Printing",
-      "country": "Austria",
-      "city": "Leobersdorf",
-      "address": "Hirtenberger Str. 1, 2544 Leobersdorf, Austria",
-      "website": "https://www.gwt.at/",
-      "lat": 47.9358865,
-      "lng": 16.2266286,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=47.9358865,16.2266286",
-      "u": 0.545074,
-      "v": 0.76631,
-      "vThree": 0.23369
+      "product": "Sheet Feeders, Stackers & Transportation Systems for Currency & Security Printing Industry",
+      "country": "Germany",
+      "city": "Moerfelden-Walldorf",
+      "address": "Opelstrasse 17-19, 64546 Moerfelden-Walldorf, Germany",
+      "website": "https://www.mabeg.de/",
+      "lat": 49.9667569,
+      "lng": 8.5614041,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=49.9667569,8.5614041",
+      "u": 0.523782,
+      "v": 0.777593,
+      "vThree": 0.222407
     }
   },
   {
@@ -595,22 +603,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 46.14,
     "lng": 17.53,
     "company": {
-      "id": 22,
-      "name": "GWT GmbH",
+      "id": 7,
+      "name": "Melzer Maschinenbau GmbH",
       "segments": [
-        "Currency"
+        "Security"
       ],
-      "product": "Wiping Solution Recovery and Treatment Plant (WSRTP) for Banknote Printing",
-      "country": "Austria",
-      "city": "Leobersdorf",
-      "address": "Hirtenberger Str. 1, 2544 Leobersdorf, Austria",
-      "website": "https://www.gwt.at/",
-      "lat": 47.9358865,
-      "lng": 16.2266286,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=47.9358865,16.2266286",
-      "u": 0.545074,
-      "v": 0.76631,
-      "vThree": 0.23369
+      "product": "Automatic Card Production Lines, Inlay Production Lines, Smart Card & RFID Converting Machines",
+      "country": "Germany",
+      "city": "Schwelm",
+      "address": "Ruhrstrasse 51, 58332 Schwelm, Germany",
+      "website": "https://www.melzergmbh.com/",
+      "lat": 51.2896221,
+      "lng": 7.2719127,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=51.2896221,7.2719127",
+      "u": 0.5202,
+      "v": 0.784942,
+      "vThree": 0.215058
     }
   },
   {
@@ -647,22 +655,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 45.73,
     "lng": 8.7,
     "company": {
-      "id": 13,
-      "name": "PARVIS Systems and Services S.p.A.",
+      "id": 11,
+      "name": "ACIGRAF Graphic Equipments S.r.l.",
       "segments": [
-        "Currency"
+        "Security"
       ],
-      "product": "Track & Trace System for Banknote Presses",
+      "product": "Pre-press Equipment for Gravure Cylinders",
       "country": "Italy",
-      "city": "Milan",
-      "address": "Via Clemente Prudenzio 16, 20138 Milan, Italy",
-      "website": "https://www.parvis.it/",
-      "lat": 45.4489555,
-      "lng": 9.2443037,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=45.4489555,9.2443037",
-      "u": 0.525679,
-      "v": 0.752494,
-      "vThree": 0.247506
+      "city": "Ornago, MB",
+      "address": "Via E. Fermi 10, 20876 Ornago MB, Italy",
+      "website": "https://www.acigraf.com/",
+      "lat": 45.6032377,
+      "lng": 9.4141371,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=45.6032377,9.4141371",
+      "u": 0.52615,
+      "v": 0.753351,
+      "vThree": 0.246649
     }
   },
   {
@@ -777,22 +785,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 44.74,
     "lng": 0.07,
     "company": {
-      "id": 16,
-      "name": "PRODITEC",
+      "id": 15,
+      "name": "IN-CORE Systemes",
       "segments": [
-        "Mint"
+        "Paper Mill"
       ],
-      "product": "Inspection Systems for Mint Industry",
+      "product": "Inspection Systems for Security Paper Mills",
       "country": "France",
-      "city": "Pessac",
-      "address": "3 Rue Eugene Chevreul, 33600 Pessac, France",
-      "website": "https://www.proditec.com/",
-      "lat": 44.7779761,
-      "lng": -0.6646108,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=44.7779761,-0.6646108",
-      "u": 0.498154,
-      "v": 0.748767,
-      "vThree": 0.251233
+      "city": "Chassieu",
+      "address": "10 Rue Ampere, 69680 Chassieu, France",
+      "website": "https://www.in-core.com/",
+      "lat": 45.7306506,
+      "lng": 4.9747613,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=45.7306506,4.9747613",
+      "u": 0.513819,
+      "v": 0.754059,
+      "vThree": 0.245941
     }
   },
   {
@@ -829,22 +837,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 44.69,
     "lng": 0.15,
     "company": {
-      "id": 16,
-      "name": "PRODITEC",
+      "id": 15,
+      "name": "IN-CORE Systemes",
       "segments": [
-        "Mint"
+        "Paper Mill"
       ],
-      "product": "Inspection Systems for Mint Industry",
+      "product": "Inspection Systems for Security Paper Mills",
       "country": "France",
-      "city": "Pessac",
-      "address": "3 Rue Eugene Chevreul, 33600 Pessac, France",
-      "website": "https://www.proditec.com/",
-      "lat": 44.7779761,
-      "lng": -0.6646108,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=44.7779761,-0.6646108",
-      "u": 0.498154,
-      "v": 0.748767,
-      "vThree": 0.251233
+      "city": "Chassieu",
+      "address": "10 Rue Ampere, 69680 Chassieu, France",
+      "website": "https://www.in-core.com/",
+      "lat": 45.7306506,
+      "lng": 4.9747613,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=45.7306506,4.9747613",
+      "u": 0.513819,
+      "v": 0.754059,
+      "vThree": 0.245941
     }
   },
   {
@@ -881,22 +889,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 44.19,
     "lng": 0.19,
     "company": {
-      "id": 16,
-      "name": "PRODITEC",
+      "id": 15,
+      "name": "IN-CORE Systemes",
       "segments": [
-        "Mint"
+        "Paper Mill"
       ],
-      "product": "Inspection Systems for Mint Industry",
+      "product": "Inspection Systems for Security Paper Mills",
       "country": "France",
-      "city": "Pessac",
-      "address": "3 Rue Eugene Chevreul, 33600 Pessac, France",
-      "website": "https://www.proditec.com/",
-      "lat": 44.7779761,
-      "lng": -0.6646108,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=44.7779761,-0.6646108",
-      "u": 0.498154,
-      "v": 0.748767,
-      "vThree": 0.251233
+      "city": "Chassieu",
+      "address": "10 Rue Ampere, 69680 Chassieu, France",
+      "website": "https://www.in-core.com/",
+      "lat": 45.7306506,
+      "lng": 4.9747613,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=45.7306506,4.9747613",
+      "u": 0.513819,
+      "v": 0.754059,
+      "vThree": 0.245941
     }
   },
   {
@@ -959,22 +967,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 44.33,
     "lng": -0.05,
     "company": {
-      "id": 16,
-      "name": "PRODITEC",
+      "id": 15,
+      "name": "IN-CORE Systemes",
       "segments": [
-        "Mint"
+        "Paper Mill"
       ],
-      "product": "Inspection Systems for Mint Industry",
+      "product": "Inspection Systems for Security Paper Mills",
       "country": "France",
-      "city": "Pessac",
-      "address": "3 Rue Eugene Chevreul, 33600 Pessac, France",
-      "website": "https://www.proditec.com/",
-      "lat": 44.7779761,
-      "lng": -0.6646108,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=44.7779761,-0.6646108",
-      "u": 0.498154,
-      "v": 0.748767,
-      "vThree": 0.251233
+      "city": "Chassieu",
+      "address": "10 Rue Ampere, 69680 Chassieu, France",
+      "website": "https://www.in-core.com/",
+      "lat": 45.7306506,
+      "lng": 4.9747613,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=45.7306506,4.9747613",
+      "u": 0.513819,
+      "v": 0.754059,
+      "vThree": 0.245941
     }
   },
   {
@@ -1089,22 +1097,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 43.84,
     "lng": -91.78,
     "company": {
-      "id": 19,
-      "name": "ENTRUST Corporation",
+      "id": 20,
+      "name": "Universal Machine Company",
       "segments": [
-        "Security"
+        "Mint"
       ],
-      "product": "Smart Card Personalization Machines",
+      "product": "Coin Counting Machines for Mints",
       "country": "USA",
-      "city": "Shakopee, MN",
-      "address": "1187 Park Pl, Shakopee, MN 55379, USA",
-      "website": "https://www.entrust.com/",
-      "lat": 44.7867819,
-      "lng": -93.4571122,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=44.7867819,-93.4571122",
-      "u": 0.240397,
-      "v": 0.748815,
-      "vThree": 0.251185
+      "city": "Pottstown, PA",
+      "address": "645 Old Reading Pike, Pottstown, PA 19464, USA",
+      "website": "https://universalmachine.com/",
+      "lat": 40.2443428,
+      "lng": -75.6923904,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=40.2443428,-75.6923904",
+      "u": 0.289743,
+      "v": 0.72358,
+      "vThree": 0.27642
     }
   },
   {
@@ -1193,22 +1201,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 40.4,
     "lng": 15.41,
     "company": {
-      "id": 14,
-      "name": "Tecnoprint S.r.l.",
+      "id": 11,
+      "name": "ACIGRAF Graphic Equipments S.r.l.",
       "segments": [
         "Security"
       ],
-      "product": "Web-Fed Photogravure Printing Machines for Postage Stamps",
+      "product": "Pre-press Equipment for Gravure Cylinders",
       "country": "Italy",
-      "city": "Ceprano, FR",
-      "address": "Via Pennea 10, 03024 Ceprano FR, Italy",
-      "website": "https://www.tecnoprintsrl.io/",
-      "lat": 41.5291215,
-      "lng": 13.5030324,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=41.5291215,13.5030324",
-      "u": 0.537508,
-      "v": 0.730717,
-      "vThree": 0.269283
+      "city": "Ornago, MB",
+      "address": "Via E. Fermi 10, 20876 Ornago MB, Italy",
+      "website": "https://www.acigraf.com/",
+      "lat": 45.6032377,
+      "lng": 9.4141371,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=45.6032377,9.4141371",
+      "u": 0.52615,
+      "v": 0.753351,
+      "vThree": 0.246649
     }
   },
   {
@@ -1245,22 +1253,22 @@ export const BLINKING_POINTS: BlinkingPoint[] = [
     "lat": 40.4,
     "lng": 15.42,
     "company": {
-      "id": 14,
-      "name": "Tecnoprint S.r.l.",
+      "id": 13,
+      "name": "PARVIS Systems and Services S.p.A.",
       "segments": [
-        "Security"
+        "Currency"
       ],
-      "product": "Web-Fed Photogravure Printing Machines for Postage Stamps",
+      "product": "Track & Trace System for Banknote Presses",
       "country": "Italy",
-      "city": "Ceprano, FR",
-      "address": "Via Pennea 10, 03024 Ceprano FR, Italy",
-      "website": "https://www.tecnoprintsrl.io/",
-      "lat": 41.5291215,
-      "lng": 13.5030324,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=41.5291215,13.5030324",
-      "u": 0.537508,
-      "v": 0.730717,
-      "vThree": 0.269283
+      "city": "Milan",
+      "address": "Via Clemente Prudenzio 16, 20138 Milan, Italy",
+      "website": "https://www.parvis.it/",
+      "lat": 45.4489555,
+      "lng": 9.2443037,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=45.4489555,9.2443037",
+      "u": 0.525679,
+      "v": 0.752494,
+      "vThree": 0.247506
     }
   },
   {

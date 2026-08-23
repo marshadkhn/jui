@@ -1,7 +1,7 @@
 'use client';
 
 import * as THREE from 'three';
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { useGLTF } from '@react-three/drei';
 import { useFrame, ThreeEvent } from '@react-three/fiber';
 import { BLINKING_POINTS, BlinkingPoint } from '@/data/blinkingPointsData';
@@ -17,9 +17,13 @@ export type EarthIndiaModelProps = React.ComponentProps<'group'> & {
   initialRotation?: [number, number, number];
   enableFlicker?: boolean;
   selectedCompany?: PrincipalCompany | null;
-  onSelectCompany?: (company: PrincipalCompany | null) => void;
+  onSelectCompany?: (company: PrincipalCompany | null, point3D?: THREE.Vector3) => void;
+  onScreenPosChange?: (pos: { x: number; y: number } | null) => void;
   onDebugInfo?: (info: string) => void;
 };
+
+// 🎯 Strict Red Dot Hit Threshold (corresponds to exact pixel radius of the glowing dot)
+const EXACT_RED_DOT_THRESHOLD_UV = 0.0065;
 
 export function EarthIndiaModel({
   autoRotate = false,
@@ -29,22 +33,31 @@ export function EarthIndiaModel({
   enableFlicker = true,
   selectedCompany = null,
   onSelectCompany,
+  onScreenPosChange,
   onDebugInfo,
   ...props
 }: EarthIndiaModelProps) {
   const groupRef = useRef<THREE.Group>(null);
   const timeRef = useRef({ uTime: { value: 0 } });
+  const selectedMeshPointRef = useRef<THREE.Vector3 | null>(null);
+  const terreMeshRef = useRef<THREE.Mesh | null>(null);
   const { scene } = useGLTF('/AnimatedModels/Erarth_india_section.glb');
 
   // Clone and automatically normalize geometry bounds & inject dynamic pure red flicker shader
-  const { clonedScene, normScale, offset } = useMemo(() => {
+  const { clonedScene, normScale, offset, beaconLocalMap } = useMemo(() => {
     const clone = scene.clone(true);
+    let terreMesh: THREE.Mesh | null = null;
+    const localMap: Record<number, THREE.Vector3> = {};
 
     clone.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         child.castShadow = true;
         child.receiveShadow = true;
         const mesh = child as THREE.Mesh;
+        if (mesh.name.includes('TERRE') || mesh.name.includes('0.001')) {
+          terreMesh = mesh;
+          terreMeshRef.current = mesh;
+        }
 
         if (mesh.material) {
           const applyMaterialShader = (originalMat: THREE.Material) => {
@@ -53,7 +66,7 @@ export function EarthIndiaModel({
             mat.side = THREE.DoubleSide;
 
             if (enableFlicker && mat.isMeshStandardMaterial) {
-              mat.customProgramCacheKey = () => 'earth_india_red_beacon_v9';
+              mat.customProgramCacheKey = () => 'earth_india_red_beacon_v13';
 
               mat.onBeforeCompile = (shader) => {
                 shader.uniforms.uTime = timeRef.current.uTime;
@@ -105,6 +118,37 @@ export function EarthIndiaModel({
       }
     });
 
+    // Compute exact local vertex coordinates for each of the 59 points
+    if (terreMesh) {
+      const mesh = terreMesh as THREE.Mesh;
+      const geom = mesh.geometry;
+      const posAttr = geom.attributes.position;
+      const uvAttr = geom.attributes.uv;
+
+      if (posAttr && uvAttr) {
+        for (const pt of BLINKING_POINTS) {
+          let bestDistSq = Infinity;
+          let bestIdx = 0;
+          for (let i = 0; i < uvAttr.count; i++) {
+            const du = uvAttr.getX(i) - pt.u;
+            const dv = uvAttr.getY(i) - pt.vThree;
+            const d2 = du * du + dv * dv;
+            if (d2 < bestDistSq) {
+              bestDistSq = d2;
+              bestIdx = i;
+            }
+          }
+          const vx = posAttr.getX(bestIdx);
+          const vy = posAttr.getY(bestIdx);
+          const vz = posAttr.getZ(bestIdx);
+          const vLen = Math.sqrt(vx * vx + vy * vy + vz * vz) || 5000;
+          const factor = (vLen + 20) / vLen;
+
+          localMap[pt.clusterId] = new THREE.Vector3(vx * factor, vy * factor, vz * factor);
+        }
+      }
+    }
+
     const box = new THREE.Box3().setFromObject(clone);
     const boxSize = new THREE.Vector3();
     box.getSize(boxSize);
@@ -114,8 +158,16 @@ export function EarthIndiaModel({
     const center = new THREE.Vector3();
     box.getCenter(center);
 
-    return { clonedScene: clone, normScale, offset: center };
+    return { clonedScene: clone, normScale, offset: center, beaconLocalMap: localMap };
   }, [scene, size, enableFlicker]);
+
+  // Reset target point when selection is cleared
+  useEffect(() => {
+    if (!selectedCompany) {
+      selectedMeshPointRef.current = null;
+      onScreenPosChange?.(null);
+    }
+  }, [selectedCompany, onScreenPosChange]);
 
   useFrame((state, delta) => {
     timeRef.current.uTime.value = state.clock.elapsedTime;
@@ -123,9 +175,24 @@ export function EarthIndiaModel({
     if (autoRotate && groupRef.current) {
       groupRef.current.rotation.y += delta * rotationSpeed;
     }
+
+    // Project selected 3D location to 2D screen coordinates
+    if (selectedMeshPointRef.current && onScreenPosChange && terreMeshRef.current) {
+      const worldPos = selectedMeshPointRef.current.clone();
+      worldPos.applyMatrix4(terreMeshRef.current.matrixWorld);
+      worldPos.project(state.camera);
+
+      const x = (worldPos.x * 0.5 + 0.5) * state.size.width;
+      const y = (-worldPos.y * 0.5 + 0.5) * state.size.height;
+
+      // Only show if point is facing the camera
+      if (worldPos.z < 1) {
+        onScreenPosChange({ x, y });
+      }
+    }
   });
 
-  // Handle direct clicks on globe mesh with inverted V matching
+  // Handle direct clicks on globe mesh with exact red dot precision
   const handleMeshClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
     const uv = e.uv;
@@ -144,15 +211,32 @@ export function EarthIndiaModel({
         }
       }
 
-      if (closestPt) {
-        const msg = `🎯 Clicked: #${closestPt.clusterId} ${closestPt.company.name} (${closestPt.company.city})`;
-        console.log(msg, { uv, dist: minUvDist });
-        onDebugInfo?.(msg);
+      // ONLY trigger if clicked directly on the glowing red dot
+      if (closestPt && minUvDist <= EXACT_RED_DOT_THRESHOLD_UV) {
+        console.log(`[Exact Red Dot Click] #${closestPt.clusterId} ${closestPt.company.name} (dist: ${minUvDist.toFixed(4)})`);
 
-        // Click threshold in UV space
-        if (minUvDist < 0.06) {
-          onSelectCompany?.(closestPt.company);
+        // Set initial screen position immediately from the click
+        const clickX = e.clientX || (e.nativeEvent as MouseEvent).clientX;
+        const clickY = e.clientY || (e.nativeEvent as MouseEvent).clientY;
+        if (clickX && clickY) {
+          onScreenPosChange?.({ x: clickX, y: clickY });
         }
+
+        // Anchor 3D vertex position for ongoing tracking
+        const exactLocalPoint = beaconLocalMap[closestPt.clusterId];
+        if (exactLocalPoint) {
+          selectedMeshPointRef.current = exactLocalPoint.clone();
+        } else if (terreMeshRef.current && e.point) {
+          const localPoint = e.point.clone();
+          terreMeshRef.current.worldToLocal(localPoint);
+          selectedMeshPointRef.current = localPoint;
+        }
+
+        onSelectCompany?.(closestPt.company, e.point);
+      } else {
+        // If clicked on empty space / non-red area, close any open callout
+        onSelectCompany?.(null);
+        onScreenPosChange?.(null);
       }
     }
   };
@@ -160,7 +244,6 @@ export function EarthIndiaModel({
   const handlePointerMove = (e: ThreeEvent<PointerEvent>) => {
     if (!e.uv) return;
     let minUvDist = Infinity;
-    let hoverPt: BlinkingPoint | null = null;
 
     for (const pt of BLINKING_POINTS) {
       const du = pt.u - e.uv.x;
@@ -168,11 +251,11 @@ export function EarthIndiaModel({
       const dist = Math.sqrt(du * du + dv * dv);
       if (dist < minUvDist) {
         minUvDist = dist;
-        hoverPt = pt;
       }
     }
 
-    if (minUvDist < 0.035 && hoverPt) {
+    // Pointer cursor ONLY appears when directly over the red dot
+    if (minUvDist <= EXACT_RED_DOT_THRESHOLD_UV) {
       document.body.style.cursor = 'pointer';
     } else {
       document.body.style.cursor = 'default';

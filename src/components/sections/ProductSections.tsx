@@ -11,6 +11,7 @@ import Image from 'next/image';
 import CTAButtons from '../shared/CTAButtons';
 import { useBlackHoleTransition } from '../transitions/BlackHoleTransitionContext';
 import { PrincipalDetailCard } from './PrincipalDetailCard';
+import { CompanyPointerCallout } from './CompanyPointerCallout';
 import { PrincipalCompany } from '@/data/principalsData';
 
 const STORAGE_KEY = 'jui_earth_india_debug_3pos_v5';
@@ -215,6 +216,7 @@ const AnimatingEarthGroup = ({
   isMobile,
   selectedCompany,
   onSelectCompany,
+  onScreenPosChange,
   onDebugInfo,
 }: {
   smoothSize: MotionValue<number>;
@@ -229,6 +231,7 @@ const AnimatingEarthGroup = ({
   isMobile: boolean;
   selectedCompany?: PrincipalCompany | null;
   onSelectCompany?: (company: PrincipalCompany | null) => void;
+  onScreenPosChange?: (pos: { x: number; y: number } | null) => void;
   onDebugInfo?: (info: string) => void;
 }) => {
   const groupRef = useRef<THREE.Group>(null);
@@ -257,6 +260,7 @@ const AnimatingEarthGroup = ({
         initialRotation={[0, 0, 0]}
         selectedCompany={selectedCompany}
         onSelectCompany={onSelectCompany}
+        onScreenPosChange={onScreenPosChange}
         onDebugInfo={onDebugInfo}
       />
     </group>
@@ -268,7 +272,16 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState<PrincipalCompany | null>(null);
+  const [screenPos, setScreenPos] = useState<{ x: number; y: number } | null>(null);
   const [debugClickInfo, setDebugClickInfo] = useState<string>('Click on any glowing red dot on the globe to inspect');
+
+  // 📜 Auto-dismiss callout badge whenever the user scrolls
+  useMotionValueEvent(globalScroll, 'change', () => {
+    if (selectedCompany) {
+      setSelectedCompany(null);
+      setScreenPos(null);
+    }
+  });
 
   // 🔧 Debug control states (3 Positions) — Hidden
   const [showDebug, setShowDebug] = useState(false);
@@ -479,6 +492,7 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
                   isMobile={isMobile}
                   selectedCompany={selectedCompany}
                   onSelectCompany={setSelectedCompany}
+                  onScreenPosChange={setScreenPos}
                   onDebugInfo={setDebugClickInfo}
                 />
               </Float>
@@ -487,11 +501,14 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
         )}
       </div>
 
-      {/* 🏢 Global Principals Interactive Directory & Modal Card */}
-      <PrincipalDetailCard
+      {/* 🏷️ Sleek Company Pointer Line & Callout Badge */}
+      <CompanyPointerCallout
         company={selectedCompany}
-        onClose={() => setSelectedCompany(null)}
-        onSelectCompany={setSelectedCompany}
+        screenPos={screenPos}
+        onClose={() => {
+          setSelectedCompany(null);
+          setScreenPos(null);
+        }}
       />
 
       {/* 🔧 HERO-STYLED DEBUG PANEL */}
