@@ -95,7 +95,7 @@ export const CompanyPointerCallout: React.FC<CompanyPointerCalloutProps> = ({
             top: `${cornerY}px`,
             transform: isRightSide ? 'translate(-100%, -50%)' : 'translate(0, -50%)',
           }}
-          className="pointer-events-auto flex items-center gap-3 rounded-2xl border border-cyan-400/50 bg-[#040c14]/95 px-4 py-3 shadow-[0_0_30px_rgba(0,209,255,0.35),0_10px_25px_rgba(0,0,0,0.85)] backdrop-blur-2xl"
+          className="pointer-events-auto flex items-center gap-2.5 rounded-2xl border border-cyan-400/50 bg-[#040c14]/95 px-4 py-2.5 shadow-[0_0_30px_rgba(0,209,255,0.35),0_10px_25px_rgba(0,0,0,0.85)] backdrop-blur-2xl"
         >
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5">
@@ -108,14 +108,6 @@ export const CompanyPointerCallout: React.FC<CompanyPointerCalloutProps> = ({
               {company.name}
             </div>
           </div>
-
-          <button
-            onClick={onClose}
-            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/10 text-xs text-white/70 transition-colors hover:bg-red-500/30 hover:text-white"
-            title="Close"
-          >
-            ✕
-          </button>
         </motion.div>
       </div>
     </AnimatePresence>
