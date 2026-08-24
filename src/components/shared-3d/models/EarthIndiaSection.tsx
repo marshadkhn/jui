@@ -118,7 +118,7 @@ export function EarthIndiaModel({
       }
     });
 
-    // Compute exact local vertex coordinates for each of the 59 points
+    // Compute exact local vertex coordinates for each of the points
     if (terreMesh) {
       const mesh = terreMesh as THREE.Mesh;
       const geom = mesh.geometry;
@@ -176,18 +176,25 @@ export function EarthIndiaModel({
       groupRef.current.rotation.y += delta * rotationSpeed;
     }
 
-    // Project selected 3D location to 2D screen coordinates
+    // Project selected 3D location to 2D screen coordinates with accurate hemisphere facing check
     if (selectedMeshPointRef.current && onScreenPosChange && terreMeshRef.current) {
       const worldPos = selectedMeshPointRef.current.clone();
       worldPos.applyMatrix4(terreMeshRef.current.matrixWorld);
-      worldPos.project(state.camera);
 
-      const x = (worldPos.x * 0.5 + 0.5) * state.size.width;
-      const y = (-worldPos.y * 0.5 + 0.5) * state.size.height;
+      const globeCenter = new THREE.Vector3();
+      terreMeshRef.current.getWorldPosition(globeCenter);
 
-      // Only show if point is facing the camera
-      if (worldPos.z < 1) {
+      const surfaceNormal = worldPos.clone().sub(globeCenter).normalize();
+      const viewDir = state.camera.position.clone().sub(worldPos).normalize();
+      const isFacingCamera = surfaceNormal.dot(viewDir) > -0.08;
+
+      if (isFacingCamera) {
+        worldPos.project(state.camera);
+        const x = (worldPos.x * 0.5 + 0.5) * state.size.width;
+        const y = (-worldPos.y * 0.5 + 0.5) * state.size.height;
         onScreenPosChange({ x, y });
+      } else {
+        onScreenPosChange(null);
       }
     }
   });
@@ -211,9 +218,9 @@ export function EarthIndiaModel({
         }
       }
 
-      // ONLY trigger if clicked directly on the glowing red dot
+      // Trigger if clicked on or near the glowing red dot
       if (closestPt && minUvDist <= EXACT_RED_DOT_THRESHOLD_UV) {
-        console.log(`[Exact Red Dot Click] #${closestPt.clusterId} ${closestPt.company.name} (dist: ${minUvDist.toFixed(4)})`);
+        console.log(`[Red Dot Click] #${closestPt.clusterId} ${closestPt.company.name} (dist: ${minUvDist.toFixed(4)})`);
 
         // Set initial screen position immediately from the click
         const clickX = e.clientX || (e.nativeEvent as MouseEvent).clientX;
@@ -222,14 +229,13 @@ export function EarthIndiaModel({
           onScreenPosChange?.({ x: clickX, y: clickY });
         }
 
-        // Anchor 3D vertex position for ongoing tracking
-        const exactLocalPoint = beaconLocalMap[closestPt.clusterId];
-        if (exactLocalPoint) {
-          selectedMeshPointRef.current = exactLocalPoint.clone();
-        } else if (terreMeshRef.current && e.point) {
+        // Anchor 3D position directly from exact surface intersection point
+        if (terreMeshRef.current && e.point) {
           const localPoint = e.point.clone();
           terreMeshRef.current.worldToLocal(localPoint);
           selectedMeshPointRef.current = localPoint;
+        } else if (beaconLocalMap[closestPt.clusterId]) {
+          selectedMeshPointRef.current = beaconLocalMap[closestPt.clusterId].clone();
         }
 
         onSelectCompany?.(closestPt.company, e.point);
@@ -254,7 +260,7 @@ export function EarthIndiaModel({
       }
     }
 
-    // Pointer cursor ONLY appears when directly over the red dot
+    // Pointer cursor appears when hovering over any red dot
     if (minUvDist <= EXACT_RED_DOT_THRESHOLD_UV) {
       document.body.style.cursor = 'pointer';
     } else {
@@ -275,7 +281,6 @@ export function EarthIndiaModel({
         <primitive
           object={clonedScene}
           onClick={handleMeshClick}
-          onPointerDown={handleMeshClick}
           onPointerMove={handlePointerMove}
         />
       </group>

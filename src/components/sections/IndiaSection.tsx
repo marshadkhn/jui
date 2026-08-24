@@ -1,6 +1,6 @@
 'use client';
 
-import React, { forwardRef, Suspense, useState, useEffect, useRef } from 'react';
+import React, { forwardRef, Suspense, useState, useEffect, useRef, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import { EarthIndiaModel } from '../shared-3d/models/EarthIndiaSection';
@@ -21,6 +21,17 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
   const [selectedCompany, setSelectedCompany] = useState<PrincipalCompany | null>(null);
   const [screenPos, setScreenPos] = useState<{ x: number; y: number } | null>(null);
   const [debugClickInfo, setDebugClickInfo] = useState<string>('Click on any glowing red dot on the globe');
+
+  const handleScreenPosChange = useCallback((pos: { x: number; y: number } | null) => {
+    setScreenPos((prev) => {
+      if (!pos && !prev) return prev;
+      if (!pos || !prev) return pos;
+      const dx = Math.abs(pos.x - prev.x);
+      const dy = Math.abs(pos.y - prev.y);
+      if (dx < 0.4 && dy < 0.4) return prev;
+      return pos;
+    });
+  }, []);
 
   // 🔧 Locked coordinates: size 14.80, rot [0.420, -0.330, 0.110], pos [0.900, -2.300, -0.100]
   const [showDebug, setShowDebug] = useState(DEFAULT_DEBUG);
@@ -156,7 +167,7 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
                       initialRotation={[debugRotX, debugRotY, debugRotZ]}
                       selectedCompany={selectedCompany}
                       onSelectCompany={setSelectedCompany}
-                      onScreenPosChange={setScreenPos}
+                      onScreenPosChange={handleScreenPosChange}
                       onDebugInfo={setDebugClickInfo}
                     />
                   </group>

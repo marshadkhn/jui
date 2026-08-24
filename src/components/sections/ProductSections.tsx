@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect, Suspense } from 'react';
+import React, { useRef, useState, useEffect, useCallback, Suspense } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, MotionValue } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
@@ -275,6 +275,17 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
   const [screenPos, setScreenPos] = useState<{ x: number; y: number } | null>(null);
   const [debugClickInfo, setDebugClickInfo] = useState<string>('Click on any glowing red dot on the globe to inspect');
 
+  const handleScreenPosChange = useCallback((pos: { x: number; y: number } | null) => {
+    setScreenPos((prev) => {
+      if (!pos && !prev) return prev;
+      if (!pos || !prev) return pos;
+      const dx = Math.abs(pos.x - prev.x);
+      const dy = Math.abs(pos.y - prev.y);
+      if (dx < 0.4 && dy < 0.4) return prev;
+      return pos;
+    });
+  }, []);
+
   // 📜 Auto-dismiss callout badge whenever the user scrolls
   useMotionValueEvent(globalScroll, 'change', () => {
     if (selectedCompany) {
@@ -492,7 +503,7 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
                   isMobile={isMobile}
                   selectedCompany={selectedCompany}
                   onSelectCompany={setSelectedCompany}
-                  onScreenPosChange={setScreenPos}
+                  onScreenPosChange={handleScreenPosChange}
                   onDebugInfo={setDebugClickInfo}
                 />
               </Float>
