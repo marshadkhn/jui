@@ -35,12 +35,10 @@ const createBarcodeTexture = (
 
   ctx.scale(dpr, dpr);
 
-  ctx.fillStyle = 'rgba(0, 155, 255, 0.95)';
+  // Blue bars — no background box
+  ctx.fillStyle = '#00eeff';
   ctx.shadowColor = '#00d4ff';
-  ctx.shadowBlur = 10;
-  ctx.fillRect(0, 0, width, height);
-
-  ctx.fillStyle = '#000814';
+  ctx.shadowBlur = 6;
   let x = 6;
   const barPattern = denseBars
     ? [2, 1, 3, 1, 4, 1, 2, 1, 3, 2, 1, 4, 2, 1, 3, 1, 2, 3, 1, 4, 1, 2, 3, 1, 2]
@@ -53,11 +51,14 @@ const createBarcodeTexture = (
     x += w + ((pIdx % 3) + (denseBars ? 1 : 2));
   }
 
-  ctx.fillStyle = 'rgba(0, 235, 255, 0.98)';
+  // Code number text
+  ctx.fillStyle = '#00eeff';
+  ctx.shadowColor = '#00d4ff';
+  ctx.shadowBlur = 12;
   ctx.font = '700 10px monospace';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'bottom';
-  ctx.fillText(customNum || '* 1 2 3 4 5 6 7 8 9 0 *', width / 2, height - 2);
+  ctx.fillText(customNum || '1 2 3 4 5 6 7 8 9 0', width / 2, height - 2);
 
   return off;
 };
@@ -86,16 +87,10 @@ const createTextSprite = (text: string, font: string, color: string): HTMLCanvas
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  // Glow layer
+  // Glow layer only — no white overlay
   ctx.fillStyle = color;
   ctx.shadowColor = color;
   ctx.shadowBlur = 14;
-  ctx.fillText(text, textWidth / 2, textHeight / 2);
-
-  // Bright core layer
-  ctx.fillStyle = '#ffffff';
-  ctx.shadowBlur = 0;
-  ctx.globalAlpha = 0.88;
   ctx.fillText(text, textWidth / 2, textHeight / 2);
 
   return off;
@@ -236,6 +231,8 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
           const tex = textureCache.current[`txt_${key}`];
           if (!tex) return;
 
+          const opacityLevels = [1.0, 0.7, 0.5, 0.4, 1.0, 0.7, 0.5];
+          const rayOpacity = opacityLevels[(r * 5 + idx * 3) % opacityLevels.length];
           elements.push({
             id: elId++,
             lane: r,
@@ -245,7 +242,7 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
             speed: 0.18,
             cylinderRadius: maxScreenRadius,
             baseScale: 1.5,
-            opacity: 0.98
+            opacity: rayOpacity
           });
         });
       }
@@ -270,6 +267,8 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
           }
 
           if (tex) {
+            const opacityLevels2 = [0.4, 1.0, 0.5, 0.7, 0.4, 1.0, 0.5, 0.7, 0.4];
+            const gapOpacity = opacityLevels2[(g * 4 + i * 7) % opacityLevels2.length];
             elements.push({
               id: elId++,
               lane: g + 100,
@@ -279,7 +278,7 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
               speed: 0.18,
               cylinderRadius: maxScreenRadius * (0.85 + (g % 4) * 0.05),
               baseScale: 1.25,
-              opacity: 0.95
+              opacity: gapOpacity
             });
           }
         });
@@ -302,6 +301,8 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
         }
 
         if (tex) {
+          const opacityLevels3 = [1.0, 0.5, 0.7, 0.4, 1.0, 0.4, 0.7, 0.5, 0.4, 1.0];
+          const microOpacity = opacityLevels3[m % opacityLevels3.length];
           elements.push({
             id: elId++,
             lane: m + 200,
@@ -311,7 +312,7 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
             speed: 0.16 + (m % 5) * 0.01,
             cylinderRadius: randRadius,
             baseScale: isSingleDigit ? 1.0 : 0.75,
-            opacity: 0.92
+            opacity: microOpacity
           });
         }
       }
