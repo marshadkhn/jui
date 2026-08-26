@@ -16,9 +16,8 @@ const Footer = () => {
       { name: 'Paints & Coatings', href: '#' },
     ],
     locations: [
-      { label: 'Corporate Office', address: 'Lorem ipsum' },
-      { label: 'Registered Office', address: 'Lorem ipsum' },
-      { label: 'Warehouse', address: 'Lorem ipsum' },
+      { label: 'Registered & Corporate', address: 'A wing 305, Everest Grande, Mahakali Caves Road, Andheri East, Mumbai - 400 093 India.' },
+      { label: 'Works and warehouse', address: 'J6-26 Bhumi world, Mumbai - Nashik Express way, Pimplas, Bhiwandi, Thane, Maharashtra 421302\n\nC-1, Punit Industrial Premises Co-op. Society Ltd. Plot No. D 11/11-A, M.I.D.C., T.T.C. Opp. Fly Over Bridge Turbhe Rly. Stn. Thane Belapur Road Turbhe, Navi Mumbai – 400 705.' },
     ],
     legal: [
       { name: 'Privacy Policy', href: '#' },
@@ -86,8 +85,8 @@ const Footer = () => {
             <ul className="flex flex-col gap-4">
               {footerLinks.locations.map((loc) => (
                 <li key={loc.label} className="text-[#8BAAB8] text-[14px] leading-relaxed">
-                  <span className="text-white font-semibold">{loc.label}: </span>
-                  <span>{loc.address}</span>
+                  <span className="text-white font-semibold block mb-1">{loc.label}: </span>
+                  <span className="whitespace-pre-line block">{loc.address}</span>
                 </li>
               ))}
             </ul>
