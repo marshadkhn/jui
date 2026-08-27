@@ -66,7 +66,7 @@ export function EarthIndiaModel({
             mat.side = THREE.DoubleSide;
 
             if (enableFlicker && mat.isMeshStandardMaterial) {
-              mat.customProgramCacheKey = () => 'earth_india_red_beacon_v13';
+              mat.customProgramCacheKey = () => 'earth_india_red_beacon_v15_random_radar';
 
               mat.onBeforeCompile = (shader) => {
                 shader.uniforms.uTime = timeRef.current.uTime;
@@ -82,11 +82,14 @@ export function EarthIndiaModel({
                   #include <opaque_fragment>
                   
                   #ifdef USE_EMISSIVEMAP
+                    vec2 uvCoord = vEmissiveMapUv;
                     vec4 checkSample = texture2D( emissiveMap, vEmissiveMapUv );
                   #else
                     #ifdef USE_MAP
+                      vec2 uvCoord = vMapUv;
                       vec4 checkSample = texture2D( map, vMapUv );
                     #else
+                      vec2 uvCoord = vec2(0.0);
                       vec4 checkSample = vec4(0.0);
                     #endif
                   #endif
@@ -95,11 +98,31 @@ export function EarthIndiaModel({
                   bool isRedMarker = (checkSample.r > 0.15 && (checkSample.r - checkSample.g > 0.05) && (checkSample.r - checkSample.b > 0.05));
 
                   if (isRedMarker) {
-                    float ping = sin(uTime * 5.0) * 0.5 + 0.5;
-                    float rapidPing = pow(sin(uTime * 10.0) * 0.5 + 0.5, 3.0);
-                    float digitalFlicker = fract(sin(floor(uTime * 18.0) * 43758.5453) * 19.34);
-                    float glowIntensity = mix(0.4, 3.8, ping) + rapidPing * 2.8 + digitalFlicker * 1.5;
-                    gl_FragColor.rgb = vec3(2.8, 0.03, 0.06) * glowIntensity;
+                    // Spatial pseudo-random seed per location bucket so every dot blinks independently
+                    vec2 gridId = floor(uvCoord * 220.0);
+                    float randSeed = fract(sin(dot(gridId, vec2(127.1, 311.7))) * 43758.5453123);
+                    float speed = 2.4 + fract(randSeed * 17.13) * 1.8;
+                    float phase = randSeed * 6.2831853;
+
+                    // Concentric radar ring pulse expanding and fading smoothly
+                    float radarTime = uTime * (speed * 0.4) + phase;
+                    float radarRing = fract(radarTime);
+                    float ringFade = (1.0 - radarRing) * (1.0 - radarRing);
+                    float ringGlow = smoothstep(0.02, 0.25, radarRing) * ringFade;
+
+                    // Core pulsing heartbeat with organic variation
+                    float corePulse = sin(uTime * speed + phase) * 0.5 + 0.5;
+                    float coreGlow = pow(corePulse, 2.2) * 3.2 + 0.6;
+
+                    // Digital micro-flicker
+                    float flicker = fract(sin(floor((uTime + randSeed * 10.0) * 12.0) * 87.34) * 43758.545);
+                    float flickerMod = (flicker > 0.88) ? 1.45 : 1.0;
+
+                    // Vibrant Red Core (#ff1133) + Concentric Cyan Radar Aura (#00D1FF)
+                    vec3 redCore = vec3(3.2, 0.06, 0.16) * (coreGlow * flickerMod);
+                    vec3 cyanAura = vec3(0.0, 1.2, 2.2) * (ringGlow * 2.2);
+
+                    gl_FragColor.rgb = redCore + cyanAura;
                   }
                   `
                 );

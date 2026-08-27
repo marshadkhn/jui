@@ -395,23 +395,61 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
 
   const display = useTransform(opacity, (v: number) => (v < 0.01 ? 'none' : 'block'));
 
-  // 🌊 Smooth 3-Keyframe Scroll-driven Animation + Post-Pos3 Parallax Drift (0.95 -> 1.00)
-  const animSize = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1Size, p1Size, p2Size, p2Size, p3Size, p3Size, p3Size * 0.90]);
-  const animRotX = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1RotX, p1RotX, p2RotX, p2RotX, p3RotX, p3RotX, p3RotX]);
-  const animRotY = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1RotY, p1RotY, p2RotY, p2RotY, p3RotY, p3RotY, p3RotY - 0.35]);
-  const animRotZ = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1RotZ, p1RotZ, p2RotZ, p2RotZ, p3RotZ, p3RotZ, p3RotZ]);
-  const animPosX = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1PosX, p1PosX, p2PosX, p2PosX, p3PosX, p3PosX, p3PosX]);
-  const animPosY = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1PosY, p1PosY, p2PosY, p2PosY, p3PosY, p3PosY, p3PosY - 1.4]);
-  const animPosZ = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1PosZ, p1PosZ, p2PosZ, p2PosZ, p3PosZ, p3PosZ, p3PosZ]);
+  // 🌊 Discrete 3-Position Snapped Scroll Animation (No intermediate stops between points)
+  // When scrolling, it smoothly snaps and transitions directly between Pos 1, Pos 2, and Pos 3
+  const targetSize = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1Size;
+    if (v < 0.905) return p2Size;
+    if (v < 0.960) return p3Size;
+    return p3Size * (1 - (v - 0.960) * 2.0);
+  });
 
-  const springOpts = { damping: 28, stiffness: 75, mass: 0.8 };
-  const smoothSize = useSpring(animSize, springOpts);
-  const smoothRotX = useSpring(animRotX, springOpts);
-  const smoothRotY = useSpring(animRotY, springOpts);
-  const smoothRotZ = useSpring(animRotZ, springOpts);
-  const smoothPosX = useSpring(animPosX, springOpts);
-  const smoothPosY = useSpring(animPosY, springOpts);
-  const smoothPosZ = useSpring(animPosZ, springOpts);
+  const targetRotX = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1RotX;
+    if (v < 0.905) return p2RotX;
+    return p3RotX;
+  });
+
+  const targetRotY = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1RotY;
+    if (v < 0.905) return p2RotY;
+    if (v < 0.960) return p3RotY;
+    return p3RotY - (v - 0.960) * 4.0;
+  });
+
+  const targetRotZ = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1RotZ;
+    if (v < 0.905) return p2RotZ;
+    return p3RotZ;
+  });
+
+  const targetPosX = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1PosX;
+    if (v < 0.905) return p2PosX;
+    return p3PosX;
+  });
+
+  const targetPosY = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1PosY;
+    if (v < 0.905) return p2PosY;
+    if (v < 0.960) return p3PosY;
+    return p3PosY - (v - 0.960) * 25.0;
+  });
+
+  const targetPosZ = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1PosZ;
+    if (v < 0.905) return p2PosZ;
+    return p3PosZ;
+  });
+
+  const springOpts = { damping: 26, stiffness: 55, mass: 0.9 };
+  const smoothSize = useSpring(targetSize, springOpts);
+  const smoothRotX = useSpring(targetRotX, springOpts);
+  const smoothRotY = useSpring(targetRotY, springOpts);
+  const smoothRotZ = useSpring(targetRotZ, springOpts);
+  const smoothPosX = useSpring(targetPosX, springOpts);
+  const smoothPosY = useSpring(targetPosY, springOpts);
+  const smoothPosZ = useSpring(targetPosZ, springOpts);
 
   const handleCopyValues = () => {
     const text = `// Position 1 (Initial Entrance):\nsize: ${p1Size.toFixed(2)}\ninitialRotation: [${p1RotX.toFixed(3)}, ${p1RotY.toFixed(3)}, ${p1RotZ.toFixed(3)}]\nposition: [${p1PosX.toFixed(3)}, ${p1PosY.toFixed(3)}, ${p1PosZ.toFixed(3)}]\n\n// Position 2 (Intermediate):\nsize: ${p2Size.toFixed(2)}\ninitialRotation: [${p2RotX.toFixed(3)}, ${p2RotY.toFixed(3)}, ${p2RotZ.toFixed(3)}]\nposition: [${p2PosX.toFixed(3)}, ${p2PosY.toFixed(3)}, ${p2PosZ.toFixed(3)}]\n\n// Position 3 (Final Target):\nsize: ${p3Size.toFixed(2)}\ninitialRotation: [${p3RotX.toFixed(3)}, ${p3RotY.toFixed(3)}, ${p3RotZ.toFixed(3)}]\nposition: [${p3PosX.toFixed(3)}, ${p3PosY.toFixed(3)}, ${p3PosZ.toFixed(3)}]`;
