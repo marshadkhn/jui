@@ -1,12 +1,17 @@
 'use client';
 
-import React, { forwardRef, Suspense, useState, useEffect, useRef, useCallback } from 'react';
+import React, { forwardRef, Suspense, useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
 import { EarthIndiaModel } from '../shared-3d/models/EarthIndiaSection';
 import { PrincipalDetailCard } from './PrincipalDetailCard';
 import { CompanyPointerCallout } from './CompanyPointerCallout';
 import { PrincipalCompany } from '@/data/principalsData';
+import { getLocationCompany } from '../shared-3d/models/EarthIndiaSection';
+
+// 📍 Location that stays open by default every time this section is viewed
+// (the principal's own id in PRINCIPALS_DATA)
+const DEFAULT_LOCATION_ID = 9; // Paul Leibinger GmbH & Co. KG — Tuttlingen, Germany
 
 // 🔧 DEBUG — set to true so you can interactively adjust values
 const DEFAULT_DEBUG = false;
@@ -18,7 +23,11 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
   const sectionRef = useRef<HTMLElement>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [selectedCompany, setSelectedCompany] = useState<PrincipalCompany | null>(null);
+  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(DEFAULT_LOCATION_ID);
+  const selectedCompany = useMemo<PrincipalCompany | null>(
+    () => getLocationCompany(selectedLocationId),
+    [selectedLocationId]
+  );
   const [screenPos, setScreenPos] = useState<{ x: number; y: number } | null>(null);
   const [debugClickInfo, setDebugClickInfo] = useState<string>('Click on any glowing red dot on the globe');
 
@@ -49,11 +58,18 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
     setIsMobile(window.innerWidth < 768);
     setMounted(true);
 
-    const handleScroll = () => {
-      setSelectedCompany(null);
-      setScreenPos(null);
-    };
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Reset back to the default location point whenever the section scrolls out of view,
+    // so returning to it always shows the default marker open again.
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) {
+          setSelectedLocationId(DEFAULT_LOCATION_ID);
+          setScreenPos(null);
+        }
+      },
+      { threshold: 0 }
+    );
+    if (sectionRef.current) observer.observe(sectionRef.current);
 
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
@@ -77,7 +93,7 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
 
     window.addEventListener('resize', handleResize);
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
       window.removeEventListener('resize', handleResize);
     };
   }, []);
@@ -166,7 +182,9 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
                       autoRotate={false}
                       initialRotation={[debugRotX, debugRotY, debugRotZ]}
                       selectedCompany={selectedCompany}
-                      onSelectCompany={setSelectedCompany}
+                      selectedLocationId={selectedLocationId}
+                      needleLocationId={DEFAULT_LOCATION_ID}
+                      onSelectLocation={setSelectedLocationId}
                       onScreenPosChange={handleScreenPosChange}
                       onDebugInfo={setDebugClickInfo}
                     />
@@ -182,7 +200,7 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
           company={selectedCompany}
           screenPos={screenPos}
           onClose={() => {
-            setSelectedCompany(null);
+            setSelectedLocationId(null);
             setScreenPos(null);
           }}
         />

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect, useCallback, Suspense } from 'react';
+import React, { useRef, useState, useEffect, useCallback, useMemo, Suspense } from 'react';
 import { motion, useScroll, useTransform, useSpring, useMotionValueEvent, MotionValue } from 'framer-motion';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Float } from '@react-three/drei';
@@ -13,8 +13,27 @@ import { useBlackHoleTransition } from '../transitions/BlackHoleTransitionContex
 import { PrincipalDetailCard } from './PrincipalDetailCard';
 import { CompanyPointerCallout } from './CompanyPointerCallout';
 import { PrincipalCompany } from '@/data/principalsData';
+import { getLocationCompany } from '../shared-3d/models/EarthIndiaSection';
 
 const STORAGE_KEY = 'jui_earth_india_debug_3pos_v5';
+
+// 📍 Location that stays open by default every time the India section is viewed.
+// The number is the principal's own id in PRINCIPALS_DATA — change it to make a
+// different company the default marker.
+const DEFAULT_LOCATION_ID = 9; // Paul Leibinger GmbH & Co. KG — Tuttlingen, Germany
+
+// Scroll range (globalScroll progress) during which the India globe stage is on screen
+const INDIA_SECTION_SCROLL_START = 0.76;
+
+// The default card belongs to Position 1 only. Once the globe starts travelling to
+// Position 2 / 3 it is hidden straight away instead of riding along with the model.
+// (Position 1 holds until 0.835 — see the targetSize / targetRot transforms below.)
+const INDIA_POSITION_1_START = 0.79; // stage has finished fading in
+const INDIA_POSITION_1_END = 0.835; // globe starts moving to Position 2
+
+// A hand-picked card is dropped as soon as the user scrolls this far, so it never
+// drifts across the screen with the globe either.
+const SCROLL_DISMISS_DELTA = 0.004;
 
 interface SectionData {
   number: string;
@@ -215,7 +234,10 @@ const AnimatingEarthGroup = ({
   currentTabVals,
   isMobile,
   selectedCompany,
+  selectedLocationId,
+  needleLocationId,
   onSelectCompany,
+  onSelectLocation,
   onScreenPosChange,
   onDebugInfo,
 }: {
@@ -230,7 +252,10 @@ const AnimatingEarthGroup = ({
   currentTabVals: { size: number; rotX: number; rotY: number; rotZ: number; posX: number; posY: number; posZ: number };
   isMobile: boolean;
   selectedCompany?: PrincipalCompany | null;
+  selectedLocationId?: number | null;
+  needleLocationId?: number | null;
   onSelectCompany?: (company: PrincipalCompany | null) => void;
+  onSelectLocation?: (id: number | null) => void;
   onScreenPosChange?: (pos: { x: number; y: number } | null) => void;
   onDebugInfo?: (info: string) => void;
 }) => {
@@ -259,7 +284,10 @@ const AnimatingEarthGroup = ({
         autoRotate={false}
         initialRotation={[0, 0, 0]}
         selectedCompany={selectedCompany}
+        selectedLocationId={selectedLocationId}
+        needleLocationId={needleLocationId}
         onSelectCompany={onSelectCompany}
+        onSelectLocation={onSelectLocation}
         onScreenPosChange={onScreenPosChange}
         onDebugInfo={onDebugInfo}
       />
@@ -271,7 +299,12 @@ const AnimatingEarthGroup = ({
 const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number> }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [selectedCompany, setSelectedCompany] = useState<PrincipalCompany | null>(null);
+  // 📍 Active location — starts on the default marker so its info card is open on arrival
+  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(DEFAULT_LOCATION_ID);
+  const selectedCompany = useMemo<PrincipalCompany | null>(
+    () => getLocationCompany(selectedLocationId),
+    [selectedLocationId]
+  );
   const [screenPos, setScreenPos] = useState<{ x: number; y: number } | null>(null);
   const [debugClickInfo, setDebugClickInfo] = useState<string>('Click on any glowing red dot on the globe to inspect');
 
@@ -286,10 +319,43 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
     });
   }, []);
 
-  // 📜 Auto-dismiss callout badge whenever the user scrolls
-  useMotionValueEvent(globalScroll, 'change', () => {
-    if (selectedCompany) {
-      setSelectedCompany(null);
+  // Tracks whether the open card was chosen by the user (a click) or is the default one
+  const userPickedRef = useRef(false);
+  const pickScrollRef = useRef(0);
+
+  const handleSelectLocation = useCallback(
+    (id: number | null) => {
+      userPickedRef.current = id !== null;
+      pickScrollRef.current = globalScroll.get();
+      setSelectedLocationId(id);
+      if (id === null) setScreenPos(null);
+    },
+    [globalScroll]
+  );
+
+  // 📜 Card visibility follows the globe's scroll positions:
+  //  • Position 1  → the default card is open
+  //  • scrolled off Position 1 → hidden immediately (it must not travel with the model)
+  //  • back in Position 1 → the default card opens again
+  //  • a clicked card shows where it was clicked and is dismissed on the next scroll
+  useMotionValueEvent(globalScroll, 'change', (v: number) => {
+    if (userPickedRef.current) {
+      if (Math.abs(v - pickScrollRef.current) > SCROLL_DISMISS_DELTA) {
+        userPickedRef.current = false;
+        setSelectedLocationId(null);
+        setScreenPos(null);
+      }
+      return;
+    }
+
+    const inPositionOne = v >= INDIA_POSITION_1_START && v < INDIA_POSITION_1_END;
+
+    if (inPositionOne) {
+      if (selectedLocationId !== DEFAULT_LOCATION_ID) {
+        setSelectedLocationId(DEFAULT_LOCATION_ID);
+      }
+    } else if (selectedLocationId !== null) {
+      setSelectedLocationId(null);
       setScreenPos(null);
     }
   });
@@ -395,23 +461,61 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
 
   const display = useTransform(opacity, (v: number) => (v < 0.01 ? 'none' : 'block'));
 
-  // 🌊 Smooth 3-Keyframe Scroll-driven Animation + Post-Pos3 Parallax Drift (0.95 -> 1.00)
-  const animSize = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1Size, p1Size, p2Size, p2Size, p3Size, p3Size, p3Size * 0.90]);
-  const animRotX = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1RotX, p1RotX, p2RotX, p2RotX, p3RotX, p3RotX, p3RotX]);
-  const animRotY = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1RotY, p1RotY, p2RotY, p2RotY, p3RotY, p3RotY, p3RotY - 0.35]);
-  const animRotZ = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1RotZ, p1RotZ, p2RotZ, p2RotZ, p3RotZ, p3RotZ, p3RotZ]);
-  const animPosX = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1PosX, p1PosX, p2PosX, p2PosX, p3PosX, p3PosX, p3PosX]);
-  const animPosY = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1PosY, p1PosY, p2PosY, p2PosY, p3PosY, p3PosY, p3PosY - 1.4]);
-  const animPosZ = useTransform(globalScroll, [0.78, 0.81, 0.86, 0.88, 0.93, 0.95, 1.00], [p1PosZ, p1PosZ, p2PosZ, p2PosZ, p3PosZ, p3PosZ, p3PosZ]);
+  // 🌊 Discrete 3-Position Snapped Scroll Animation (No intermediate stops between points)
+  // When scrolling, it smoothly snaps and transitions directly between Pos 1, Pos 2, and Pos 3
+  const targetSize = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1Size;
+    if (v < 0.905) return p2Size;
+    if (v < 0.960) return p3Size;
+    return p3Size * (1 - (v - 0.960) * 2.0);
+  });
 
-  const springOpts = { damping: 28, stiffness: 75, mass: 0.8 };
-  const smoothSize = useSpring(animSize, springOpts);
-  const smoothRotX = useSpring(animRotX, springOpts);
-  const smoothRotY = useSpring(animRotY, springOpts);
-  const smoothRotZ = useSpring(animRotZ, springOpts);
-  const smoothPosX = useSpring(animPosX, springOpts);
-  const smoothPosY = useSpring(animPosY, springOpts);
-  const smoothPosZ = useSpring(animPosZ, springOpts);
+  const targetRotX = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1RotX;
+    if (v < 0.905) return p2RotX;
+    return p3RotX;
+  });
+
+  const targetRotY = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1RotY;
+    if (v < 0.905) return p2RotY;
+    if (v < 0.960) return p3RotY;
+    return p3RotY - (v - 0.960) * 4.0;
+  });
+
+  const targetRotZ = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1RotZ;
+    if (v < 0.905) return p2RotZ;
+    return p3RotZ;
+  });
+
+  const targetPosX = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1PosX;
+    if (v < 0.905) return p2PosX;
+    return p3PosX;
+  });
+
+  const targetPosY = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1PosY;
+    if (v < 0.905) return p2PosY;
+    if (v < 0.960) return p3PosY;
+    return p3PosY - (v - 0.960) * 25.0;
+  });
+
+  const targetPosZ = useTransform(globalScroll, (v: number) => {
+    if (v < 0.835) return p1PosZ;
+    if (v < 0.905) return p2PosZ;
+    return p3PosZ;
+  });
+
+  const springOpts = { damping: 26, stiffness: 55, mass: 0.9 };
+  const smoothSize = useSpring(targetSize, springOpts);
+  const smoothRotX = useSpring(targetRotX, springOpts);
+  const smoothRotY = useSpring(targetRotY, springOpts);
+  const smoothRotZ = useSpring(targetRotZ, springOpts);
+  const smoothPosX = useSpring(targetPosX, springOpts);
+  const smoothPosY = useSpring(targetPosY, springOpts);
+  const smoothPosZ = useSpring(targetPosZ, springOpts);
 
   const handleCopyValues = () => {
     const text = `// Position 1 (Initial Entrance):\nsize: ${p1Size.toFixed(2)}\ninitialRotation: [${p1RotX.toFixed(3)}, ${p1RotY.toFixed(3)}, ${p1RotZ.toFixed(3)}]\nposition: [${p1PosX.toFixed(3)}, ${p1PosY.toFixed(3)}, ${p1PosZ.toFixed(3)}]\n\n// Position 2 (Intermediate):\nsize: ${p2Size.toFixed(2)}\ninitialRotation: [${p2RotX.toFixed(3)}, ${p2RotY.toFixed(3)}, ${p2RotZ.toFixed(3)}]\nposition: [${p2PosX.toFixed(3)}, ${p2PosY.toFixed(3)}, ${p2PosZ.toFixed(3)}]\n\n// Position 3 (Final Target):\nsize: ${p3Size.toFixed(2)}\ninitialRotation: [${p3RotX.toFixed(3)}, ${p3RotY.toFixed(3)}, ${p3RotZ.toFixed(3)}]\nposition: [${p3PosX.toFixed(3)}, ${p3PosY.toFixed(3)}, ${p3PosZ.toFixed(3)}]`;
@@ -502,7 +606,9 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
                   currentTabVals={currentTabVals}
                   isMobile={isMobile}
                   selectedCompany={selectedCompany}
-                  onSelectCompany={setSelectedCompany}
+                  selectedLocationId={selectedLocationId}
+                  needleLocationId={DEFAULT_LOCATION_ID}
+                  onSelectLocation={handleSelectLocation}
                   onScreenPosChange={handleScreenPosChange}
                   onDebugInfo={setDebugClickInfo}
                 />
@@ -517,7 +623,8 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
         company={selectedCompany}
         screenPos={screenPos}
         onClose={() => {
-          setSelectedCompany(null);
+          userPickedRef.current = false;
+          setSelectedLocationId(null);
           setScreenPos(null);
         }}
       />
