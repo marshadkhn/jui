@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 
 export interface ProductItem {
   id: string;
-  title: string;
+  title?: string;
   companyName?: string;
   description?: string;
   website?: string;
@@ -73,21 +73,22 @@ const headerItemVariants = {
 };
 
 export const defaultCurrencyItems: ProductItem[] = [
+  // Top Row (3 Logos Centered)
   {
     id: '1',
-    title: 'NUMBERING SYSTEMS',
-    companyName: 'Paul Leibinger GmbH & Co. KG',
-    description: 'High-precision mechanical and electronic numbering systems engineered for banknote and security document printing.',
-    website: 'https://leibinger-group.com/',
-    imageSrc: '/currency page/logo1.png',
-  },
-  {
-    id: '2',
     title: 'SHEET & NOTE COUNTING MACHINES',
     companyName: 'GTS GmbH',
     description: 'High-speed precision counting machines & allied verification systems for banknotes and high-security paper mills.',
     website: 'https://gts-countmaster.com/en/products/',
-    imageSrc: '/currency page/logo2.png',
+    imageSrc: '/Currency/GTS GmbH.png',
+  },
+  {
+    id: '2',
+    title: 'WIPING SOLUTION RECOVERY (WSRTP)',
+    companyName: 'GWT GmbH',
+    description: 'Closed-loop Wiping Solution Recovery and Treatment Plants (WSRTP) dedicated to eco-friendly banknote printing.',
+    website: 'https://www.gwt.at/',
+    imageSrc: '/Currency/GWT GmbH.png',
   },
   {
     id: '3',
@@ -95,87 +96,53 @@ export const defaultCurrencyItems: ProductItem[] = [
     companyName: 'I.T.G. GmbH Graphic Products',
     description: 'Specialized high-durability currency printing blankets, underlay sheets, and allied graphic consumables.',
     website: 'https://www.itg-graph.com/',
-    imageSrc: '/currency page/logo1.png',
+    imageSrc: '/Currency/I.T.G. GmbH Graphic Products.png',
   },
+  // Bottom Row (4 Logos)
   {
     id: '4',
-    title: 'SHEET FEEDER & TRANSPORT SYSTEMS',
-    companyName: 'MABEG Systems GmbH',
-    description: 'Heavy-duty high-speed sheet feeders, non-stop stackers, and automated transportation systems for currency presses.',
-    website: 'https://www.mabeg.de/',
-    imageSrc: '/currency page/logo2.png',
-  },
-  {
-    id: '5',
-    title: 'TRACK & TRACE SYSTEM',
-    companyName: 'PARVIS Systems and Services S.p.A.',
-    description: 'Real-time automated production tracking, computerized banknote numbering control, and quality verification systems.',
-    website: 'https://www.parvis.it/',
-    imageSrc: '/currency page/logo1.png',
-  },
-  {
-    id: '6',
-    title: 'WIPING SOLUTION RECOVERY (WSRTP)',
-    companyName: 'GWT GmbH',
-    description: 'Closed-loop Wiping Solution Recovery and Treatment Plants (WSRTP) dedicated to eco-friendly banknote printing.',
-    website: 'https://www.gwt.at/',
-    imageSrc: '/currency page/logo2.png',
-  },
-  {
-    id: '7',
     title: 'UF MEMBRANES FOR WSRTP',
     companyName: 'KOVALUS Separation Solutions',
     description: 'Advanced ultrafiltration membrane systems for industrial wiping solution recovery and wastewater minimization.',
     website: 'https://www.kovalus.com/',
-    imageSrc: '/currency page/logo1.png',
+    imageSrc: '/Currency/KOVALUS Separation Solutions.png',
   },
   {
-    id: '8',
-    title: 'AUTOMATIC CARD & INLAY LINES',
-    companyName: 'Melzer Maschinenbau GmbH',
-    description: 'Modular high-precision production lines for high-security smart cards, e-passports, and RFID inlays.',
-    website: 'https://www.melzergmbh.com/',
-    imageSrc: '/currency page/logo2.png',
+    id: '5',
+    title: 'SHEET FEEDER & TRANSPORT SYSTEMS',
+    companyName: 'MABEG Systems GmbH',
+    description: 'Heavy-duty high-speed sheet feeders, non-stop stackers, and automated transportation systems for currency presses.',
+    website: 'https://www.mabeg.de/',
+    imageSrc: '/Currency/MABEG Systems GmbH.png',
   },
   {
-    id: '9',
-    title: 'LASER MICRO PERFORATION',
-    companyName: 'Micro Laser Technology GmbH',
-    description: 'State-of-the-art laser micro perforation systems creating covert security features in banknotes and ID documents.',
-    website: 'https://www.mlt-gmbh.com/',
-    imageSrc: '/currency page/logo1.png',
+    id: '6',
+    title: 'TRACK & TRACE SYSTEM',
+    companyName: 'PARVIS Systems and Services S.p.A.',
+    description: 'Real-time automated production tracking, computerized banknote numbering control, and quality verification systems.',
+    website: 'https://www.parvis.it/',
+    imageSrc: '/Currency/PARVIS Systems and Services S.p.A.png',
   },
   {
-    id: '10',
-    title: 'STAMP PERFORATING MACHINES',
-    companyName: 'WISTA GmbH',
-    description: 'Custom high-precision perforating machinery for postage stamps, secure tax banderols, and vouchers.',
-    website: 'https://www.wista-gmbh.de/',
-    imageSrc: '/currency page/logo2.png',
-  },
-  {
-    id: '11',
-    title: 'WEB-FED OFFSET PRINTING PRESSES',
-    companyName: 'ROTATEK Printing and Packaging Technologies',
-    description: 'High-end inline web-fed rotary offset printing presses engineered for security printing and brand protection.',
-    website: 'https://www.rotatek.com/',
-    imageSrc: '/currency page/logo1.png',
-  },
-  {
-    id: '12',
-    title: 'LASER ENGRAVING SYSTEMS FOR MINTS',
-    companyName: 'ACSYS Lasertechnik GmbH',
-    description: 'High-precision 3D laser engraving, frosting, and digitizing systems for coins, medals, and high-security dies.',
-    website: 'https://www.acsys.de/',
-    imageSrc: '/currency page/logo2.png',
+    id: '7',
+    title: 'NUMBERING SYSTEMS',
+    companyName: 'Paul Leibinger GmbH & Co. KG',
+    description: 'High-precision mechanical and electronic numbering systems engineered for banknote and security document printing.',
+    website: 'https://leibinger-group.com/',
+    imageSrc: '/Currency/Paul Leibinger GmbH & Co. KG.png',
   },
 ];
 
-const PartnerProductCard: React.FC<{ item: ProductItem }> = ({ item }) => {
+export const defaultCurrencyLogos = defaultCurrencyItems;
+
+const PartnerProductCard: React.FC<{ item: ProductItem; className?: string }> = ({ item, className = "" }) => {
+  const displayTitle = item.title || item.companyName || 'PARTNER';
+  const displayName = item.companyName || item.title || '';
+
   return (
     <motion.div
       variants={cardSpaceVariants}
-      className="group relative flex flex-col rounded-2xl bg-[#060c14]/90 backdrop-blur-xl border border-white/10 p-5 h-[235px] sm:h-[245px] md:h-[255px] overflow-hidden transition-all duration-300 hover:border-cyan-400/50 hover:shadow-[0_0_35px_rgba(0,209,255,0.22),0_10px_30px_rgba(0,0,0,0.85)] cursor-pointer select-none"
+      className={`group relative flex flex-col rounded-2xl bg-[#060c14]/90 backdrop-blur-xl border border-white/10 p-5 h-[235px] sm:h-[245px] md:h-[255px] overflow-hidden transition-all duration-300 hover:border-cyan-400/50 hover:shadow-[0_0_35px_rgba(0,209,255,0.22),0_10px_30px_rgba(0,0,0,0.85)] cursor-pointer select-none ${className}`}
     >
       {/* Subtle Radial Glow on Hover */}
       <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -185,7 +152,7 @@ const PartnerProductCard: React.FC<{ item: ProductItem }> = ({ item }) => {
         <div className="flex items-center gap-1.5 overflow-hidden">
           <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-cyan-400 group-hover:shadow-[0_0_8px_#00D1FF] transition-shadow" />
           <h3 className="text-[11px] sm:text-[12px] font-mono font-bold tracking-wider text-slate-300 uppercase truncate">
-            {item.title}
+            {displayTitle}
           </h3>
         </div>
       </div>
@@ -194,7 +161,7 @@ const PartnerProductCard: React.FC<{ item: ProductItem }> = ({ item }) => {
       <div className="flex-1 w-full flex items-center justify-center transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-95">
         <img
           src={item.imageSrc}
-          alt={item.companyName || item.title}
+          alt={displayName}
           className="max-h-16 md:max-h-20 max-w-[85%] object-contain grayscale opacity-60 transition-all duration-300"
         />
       </div>
@@ -205,16 +172,18 @@ const PartnerProductCard: React.FC<{ item: ProductItem }> = ({ item }) => {
         <div className="w-full flex items-center justify-start h-8 flex-shrink-0">
           <img
             src={item.imageSrc}
-            alt={item.companyName || item.title}
+            alt={displayName}
             className="max-h-8 max-w-[65%] object-contain grayscale-0 opacity-100"
           />
         </div>
 
         {/* Middle: Company Name & Description */}
         <div className="space-y-1 flex-1 flex flex-col justify-center py-1">
-          <h4 className="text-[13px] font-extrabold tracking-tight text-white leading-tight line-clamp-1">
-            {item.companyName || item.title}
-          </h4>
+          {displayName && (
+            <h4 className="text-[13px] font-extrabold tracking-tight text-white leading-tight line-clamp-1">
+              {displayName}
+            </h4>
+          )}
           {item.description && (
             <p className="text-[11px] leading-snug text-slate-300/90 line-clamp-2">
               {item.description}
@@ -261,6 +230,11 @@ export default function PartnerProductsGrid({
   showHeader = true,
   className = "",
 }: PartnerProductsGridProps) {
+  // Split items: 3 on top row (centered), 4 on bottom row if 7 items
+  const isSevenLayout = items.length === 7;
+  const topRowItems = isSevenLayout ? items.slice(0, 3) : items.slice(0, Math.ceil(items.length / 2));
+  const bottomRowItems = isSevenLayout ? items.slice(3) : items.slice(Math.ceil(items.length / 2));
+
   return (
     <section className={`relative w-full max-w-[98vw] mx-auto px-4 sm:px-6 lg:px-10 py-8 md:py-16 z-20 overflow-hidden ${className}`}>
       {/* Background Ambient Cyan Space Nebula Glow */}
@@ -292,15 +266,38 @@ export default function PartnerProductsGrid({
 
       {/* Staggered Space Cards Grid Dynamic On-Scroll Reveal */}
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
+        className="flex flex-col gap-4 sm:gap-6 w-full"
         initial="hidden"
         whileInView="visible"
         viewport={{ once: false, amount: 0.1 }}
         variants={gridContainerVariants}
       >
-        {items.map((item) => (
-          <PartnerProductCard key={item.id} item={item} />
-        ))}
+        {isSevenLayout ? (
+          <>
+            {/* Top Row: 3 Logos Centered */}
+            <div className="flex flex-wrap justify-center gap-4 sm:gap-6 w-full">
+              {topRowItems.map((item) => (
+                <div key={item.id} className="w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)]">
+                  <PartnerProductCard item={item} />
+                </div>
+              ))}
+            </div>
+
+            {/* Bottom Row: 4 Logos */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
+              {bottomRowItems.map((item) => (
+                <PartnerProductCard key={item.id} item={item} />
+              ))}
+            </div>
+          </>
+        ) : (
+          /* Standard Layout for other counts */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
+            {items.map((item) => (
+              <PartnerProductCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
       </motion.div>
     </section>
   );
