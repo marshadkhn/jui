@@ -83,7 +83,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 4,
     "name": "GTS GmbH",
     "shortName": "GTS",
-    "logo": "/currency page/logo2.png",
+    "logo": "/Currency/GTS GmbH.png",
     "segments": [
       "Currency",
       "Security",
@@ -105,6 +105,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 5,
     "name": "I.T.G. GmbH Graphic Products",
     "shortName": "I.T.G.",
+    "logo": "/Currency/I.T.G. GmbH Graphic Products.png",
     "segments": [
       "Currency"
     ],
@@ -124,7 +125,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 6,
     "name": "MABEG Systems GmbH",
     "shortName": "MABEG",
-    "logo": "/currency page/logo2.png",
+    "logo": "/Currency/MABEG Systems GmbH.png",
     "segments": [
       "Currency",
       "Security",
@@ -184,7 +185,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 9,
     "name": "Paul Leibinger GmbH & Co. KG",
     "shortName": "Leibinger",
-    "logo": "/currency page/logo1.png",
+    "logo": "/Currency/Paul Leibinger GmbH & Co. KG.png",
     "segments": [
       "Currency",
       "Security"
@@ -262,6 +263,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 13,
     "name": "PARVIS Systems and Services S.p.A.",
     "shortName": "PARVIS",
+    "logo": "/Currency/PARVIS Systems and Services S.p.A.png",
     "segments": [
       "Currency"
     ],
@@ -338,6 +340,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 17,
     "name": "CONDOT Systems Pvt. Ltd.",
     "shortName": "CONDOT",
+    "logo": "/currency page/logo1.png",
     "segments": [
       "Security",
       "Paper Mill"
@@ -358,6 +361,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 18,
     "name": "Syntegon Technology India Private Limited",
     "shortName": "Syntegon",
+    "logo": "/currency page/logo2.png",
     "segments": [
       "Mint"
     ],
@@ -415,6 +419,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 21,
     "name": "KOVALUS Separation Solutions",
     "shortName": "KOVALUS",
+    "logo": "/Currency/KOVALUS Separation Solutions.png",
     "segments": [
       "Currency"
     ],
@@ -434,6 +439,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 22,
     "name": "GWT GmbH",
     "shortName": "GWT",
+    "logo": "/Currency/GWT GmbH.png",
     "segments": [
       "Currency"
     ],
