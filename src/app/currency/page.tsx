@@ -12,17 +12,73 @@ const PaperWindMesh = dynamic(() => import("@/components/shared-3d/PaperWindMesh
 });
 
 const coinMintingProducts: ProductItem[] = [
-  { id: 'cm1', title: 'NUMBERING SYSTEM', imageSrc: '/currency page/logo1.png' },
-  { id: 'cm2', title: 'NUMBERING SYSTEM', imageSrc: '/currency page/logo1.png' },
-  { id: 'cm3', title: 'NUMBERING SYSTEM', imageSrc: '/currency page/logo1.png' },
-  { id: 'cm4', title: 'NUMBERING SYSTEM', imageSrc: '/currency page/logo1.png' },
+  {
+    id: 'cm1',
+    title: 'LASER ENGRAVING SYSTEMS',
+    companyName: 'ACSYS Lasertechnik GmbH',
+    description: 'Precision 3D laser engraving, frosting, and high-security die digitizing systems for national mints.',
+    website: 'https://www.acsys.de/',
+    imageSrc: '/currency page/logo1.png',
+  },
+  {
+    id: 'cm2',
+    title: 'HYDRAULIC MEDAL PRESSES',
+    companyName: 'Locatelli Meccanica S.r.l.',
+    description: 'High-tonnage hydraulic medal and coin stamping presses engineered for state and national mint facilities.',
+    website: 'https://www.locatellimeccanica.com/',
+    imageSrc: '/currency page/logo2.png',
+  },
+  {
+    id: 'cm3',
+    title: 'OPTICAL COIN INSPECTION',
+    companyName: 'PRODITEC',
+    description: 'High-speed automated optical inspection systems ensuring flaw-free coin blanks and finished coins.',
+    website: 'https://www.proditec.com/',
+    imageSrc: '/currency page/logo1.png',
+  },
+  {
+    id: 'cm4',
+    title: 'COIN SACHET & PACKAGING',
+    companyName: 'Syntegon Technology India Pvt. Ltd.',
+    description: 'Automated high-throughput coin counting, sachet packaging, wrapping, and cartoning lines.',
+    website: 'https://www.syntegon.com/',
+    imageSrc: '/currency page/logo2.png',
+  },
 ];
 
 const securityPrintingProducts: ProductItem[] = [
-  { id: 'sp1', title: 'NUMBERING SYSTEM', imageSrc: '/currency page/logo1.png' },
-  { id: 'sp2', title: 'NUMBERING SYSTEM', imageSrc: '/currency page/logo1.png' },
-  { id: 'sp3', title: 'NUMBERING SYSTEM', imageSrc: '/currency page/logo1.png' },
-  { id: 'sp4', title: 'NUMBERING SYSTEM', imageSrc: '/currency page/logo1.png' },
+  {
+    id: 'sp1',
+    title: 'ENVELOPE MAKING MACHINES',
+    companyName: 'BW Converting GmbH',
+    description: 'Specialized high-speed envelope making and converting lines for the secure document industry.',
+    website: 'https://www.bwconverting.com/',
+    imageSrc: '/currency page/logo1.png',
+  },
+  {
+    id: 'sp2',
+    title: 'PASSPORT MAKING MACHINES',
+    companyName: 'BW Papersystems Stuttgart GmbH',
+    description: 'Kugler Womako automated passport manufacturing systems and precision banknote paper sheeters.',
+    website: 'https://www.bwpapersystems.com/',
+    imageSrc: '/currency page/logo2.png',
+  },
+  {
+    id: 'sp3',
+    title: 'SMART CARD ISSUANCE & PERSONALIZATION',
+    companyName: 'ENTRUST Corporation',
+    description: 'Advanced central issuance, physical and digital credential personalization systems for national ID.',
+    website: 'https://www.entrust.com/',
+    imageSrc: '/currency page/logo1.png',
+  },
+  {
+    id: 'sp4',
+    title: 'STAMP ROTARY PERFORATION',
+    companyName: 'APS Engineering Ltd',
+    description: 'Inline rotary perforation and precision security processing systems for postage stamps and secure prints.',
+    website: 'http://www.apseng.co.uk/',
+    imageSrc: '/currency page/logo2.png',
+  },
 ];
 
 export default function CurrencyPage() {

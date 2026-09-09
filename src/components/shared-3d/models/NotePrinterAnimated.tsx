@@ -110,6 +110,40 @@ function SerialSegment({ index, rotationRef }: SerialSegmentProps) {
   )
 }
 
+function CylinderCornerOutlines({ geometry }: { geometry?: THREE.BufferGeometry }) {
+  const { lineGeo, minX, maxX } = React.useMemo(() => {
+    if (!geometry) {
+      const g = new THREE.BufferGeometry().setFromPoints([])
+      return { lineGeo: g, minX: -0.85, maxX: 0.85 }
+    }
+    geometry.computeBoundingBox()
+    const bb = geometry.boundingBox!
+    const r = (bb.max.y - bb.min.y) / 2
+
+    const segments = 128
+    const pts: THREE.Vector3[] = []
+    for (let i = 0; i <= segments; i++) {
+      const angle = (i / segments) * Math.PI * 2
+      pts.push(new THREE.Vector3(0, Math.cos(angle) * (r + 0.003), Math.sin(angle) * (r + 0.003)))
+    }
+    const g = new THREE.BufferGeometry().setFromPoints(pts)
+    return { lineGeo: g, minX: bb.min.x, maxX: bb.max.x }
+  }, [geometry])
+
+  return (
+    <group name="CylinderCornerOutlines">
+      {/* Far Right Outer Corner Boundary */}
+      <lineLoop geometry={lineGeo} position={[maxX, 0, 0]}>
+        <lineBasicMaterial color="#00D1FF" transparent opacity={0.95} />
+      </lineLoop>
+      {/* Far Left Outer Corner Boundary */}
+      <lineLoop geometry={lineGeo} position={[minX, 0, 0]}>
+        <lineBasicMaterial color="#00D1FF" transparent opacity={0.95} />
+      </lineLoop>
+    </group>
+  )
+}
+
 function CylinderSerialNumbers({ rotationRef }: { rotationRef: React.MutableRefObject<number> }) {
   const segments = Array.from({ length: NUM_SEGMENTS }, (_, i) => i)
 
@@ -201,15 +235,7 @@ export function NotePrinterAnimated(props: React.JSX.IntrinsicElements['group'] 
         <group name="Bottom" position={[-0.255, -0.542, 0]} scale={1.514}>
           <group ref={bottomCylinderRef} name="Cylinder034" position={[-0.003, -0.004, 0]} scale={0.66}>
             <mesh name="Cylinder038" castShadow receiveShadow geometry={nodes.Cylinder038.geometry} material={materials.Black_Metal} />
-            <mesh name="Cylinder038_1" castShadow receiveShadow geometry={nodes.Cylinder038_1.geometry}>
-              <meshStandardMaterial
-                {...materials.Neon}
-                color="#00D1FF"
-                emissive="#00D1FF"
-                emissiveIntensity={10}
-                toneMapped={false}
-              />
-            </mesh>
+            <CylinderCornerOutlines geometry={nodes.Cylinder038?.geometry} />
             <CylinderSerialNumbers rotationRef={currentRotation} />
           </group>
         </group>

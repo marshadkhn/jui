@@ -1,6 +1,8 @@
 export interface PrincipalCompany {
   id: number;
   name: string;
+  shortName?: string;
+  logo?: string;
   segments: string[];
   product: string;
   country: string;
@@ -21,6 +23,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 1,
     "name": "ACSYS Lasertechnik GmbH",
+    "shortName": "ACSYS",
+    "logo": "/currency page/logo1.png",
     "segments": [
       "Mint"
     ],
@@ -39,6 +43,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 2,
     "name": "BW Converting GmbH (formerly W+D)",
+    "shortName": "BW Converting",
     "segments": [
       "Security"
     ],
@@ -57,6 +62,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 3,
     "name": "BW Papersystems Stuttgart GmbH",
+    "shortName": "BW Papersystems",
     "segments": [
       "Security",
       "Paper Mill"
@@ -76,6 +82,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 4,
     "name": "GTS GmbH",
+    "shortName": "GTS",
+    "logo": "/currency page/logo2.png",
     "segments": [
       "Currency",
       "Security",
@@ -96,6 +104,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 5,
     "name": "I.T.G. GmbH Graphic Products",
+    "shortName": "I.T.G.",
     "segments": [
       "Currency"
     ],
@@ -114,6 +123,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 6,
     "name": "MABEG Systems GmbH",
+    "shortName": "MABEG",
+    "logo": "/currency page/logo2.png",
     "segments": [
       "Currency",
       "Security",
@@ -134,6 +145,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 7,
     "name": "Melzer Maschinenbau GmbH",
+    "shortName": "Melzer",
     "segments": [
       "Security"
     ],
@@ -152,6 +164,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 8,
     "name": "Micro Laser Technology GmbH",
+    "shortName": "Micro Laser Technology",
     "segments": [
       "Security"
     ],
@@ -170,6 +183,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 9,
     "name": "Paul Leibinger GmbH & Co. KG",
+    "shortName": "Leibinger",
+    "logo": "/currency page/logo1.png",
     "segments": [
       "Currency",
       "Security"
@@ -189,6 +204,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 10,
     "name": "WISTA GmbH",
+    "shortName": "WISTA",
     "segments": [
       "Security"
     ],
@@ -207,6 +223,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 11,
     "name": "ACIGRAF Graphic Equipments S.r.l.",
+    "shortName": "ACIGRAF",
     "segments": [
       "Security"
     ],
@@ -225,6 +242,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 12,
     "name": "Locatelli Meccanica S.r.l.",
+    "shortName": "Locatelli",
     "segments": [
       "Mint"
     ],
@@ -243,6 +261,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 13,
     "name": "PARVIS Systems and Services S.p.A.",
+    "shortName": "PARVIS",
     "segments": [
       "Currency"
     ],
@@ -261,6 +280,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 14,
     "name": "Tecnoprint S.r.l.",
+    "shortName": "Tecnoprint",
     "segments": [
       "Security"
     ],
@@ -279,6 +299,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 15,
     "name": "IN-CORE Systemes",
+    "shortName": "IN-CORE",
     "segments": [
       "Paper Mill"
     ],
@@ -297,6 +318,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 16,
     "name": "PRODITEC",
+    "shortName": "PRODITEC",
     "segments": [
       "Mint"
     ],
@@ -315,6 +337,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 17,
     "name": "CONDOT Systems Pvt. Ltd.",
+    "shortName": "CONDOT",
     "segments": [
       "Security",
       "Paper Mill"
@@ -334,6 +357,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 18,
     "name": "Syntegon Technology India Private Limited",
+    "shortName": "Syntegon",
     "segments": [
       "Mint"
     ],
@@ -352,6 +376,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 19,
     "name": "ENTRUST Corporation",
+    "shortName": "ENTRUST",
     "segments": [
       "Security"
     ],
@@ -370,6 +395,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 20,
     "name": "Universal Machine Company",
+    "shortName": "Universal Machine",
     "segments": [
       "Mint"
     ],
@@ -388,6 +414,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 21,
     "name": "KOVALUS Separation Solutions",
+    "shortName": "KOVALUS",
     "segments": [
       "Currency"
     ],
@@ -406,6 +433,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 22,
     "name": "GWT GmbH",
+    "shortName": "GWT",
     "segments": [
       "Currency"
     ],
@@ -424,6 +452,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 23,
     "name": "ROTATEK Printing and Packaging Technologies S.L.",
+    "shortName": "Rotec",
+    "logo": "/currency page/logo1.png",
     "segments": [
       "Security"
     ],
@@ -442,6 +472,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
   {
     "id": 24,
     "name": "APS Engineering Ltd",
+    "shortName": "APS Engineering",
     "segments": [
       "Security"
     ],
@@ -458,6 +489,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "v": 0.786862
   }
 ];
+
+export function getShortCompanyName(company: PrincipalCompany | null | undefined): string {
+  if (!company) return '';
+  if (company.shortName) return company.shortName;
+  return company.name
+    .replace(/\s+(GmbH|S\.r\.l\.|S\.p\.A\.|Pvt\.\s*Ltd\.|Ltd|Corporation|Inc\.|Co\.\s*KG).*$/i, '')
+    .trim();
+}
 
 export const SEGMENTS = ['All', 'Currency', 'Security', 'Mint', 'Paper Mill'] as const;
 export type SegmentType = (typeof SEGMENTS)[number];

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import JuiLogo from './shared/JuiLogo';
 
 const menuItems = [
-  { name: 'JUI GLOBALS', href: '/' },
+  { name: 'JUI GLOBAL', href: '/' },
   { name: 'CURRENCY', href: '/currency' },
   { name: 'CARD', href: '#' },
   { name: 'PAINT', href: '#' },

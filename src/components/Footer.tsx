@@ -16,20 +16,23 @@ const Footer = () => {
       { name: 'Card Technology', href: '#' },
       { name: 'Paints & Coatings', href: '#' },
     ],
-    locations: [
-      {
-        label: 'Registered & Corporate Office',
-        address: 'A wing 305, Everest Grande, Mahakali Caves Road, Andheri East, Mumbai - 400 093, India.',
-      },
-      {
-        label: 'Works & Warehouse (Bhiwandi)',
-        address: 'J6-26 Bhumi World, Mumbai - Nashik Express Way, Pimplas, Bhiwandi, Thane, Maharashtra 421302.',
-      },
-      {
-        label: 'Works & Warehouse (Turbhe)',
-        address: 'C-1, Punit Industrial Premises Co-op. Society Ltd., Plot No. D 11/11-A, M.I.D.C., T.T.C. Opp. Fly Over Bridge Turbhe Rly. Stn., Thane Belapur Road, Turbhe, Navi Mumbai – 400 705.',
-      },
-    ],
+    corporateOffice: {
+      label: 'Registered and Corporate Office',
+      address: 'A wing 305, Everest Grande, Mahakali Caves Road, Andheri East, Mumbai - 400 093, India.',
+    },
+    worksAndWarehouse: {
+      label: 'Works and Warehouse',
+      locations: [
+        {
+          name: 'Bhiwandi',
+          address: 'J6-26 Bhumi World, Mumbai - Nashik Express Way, Pimplas, Bhiwandi, Thane, Maharashtra 421302.',
+        },
+        {
+          name: 'Turbhe',
+          address: 'C-1, Punit Industrial Premises Co-op. Society Ltd., Plot No. D 11/11-A, M.I.D.C., T.T.C. Opp. Fly Over Bridge Turbhe Rly. Stn., Thane Belapur Road, Turbhe, Navi Mumbai – 400 705.',
+        },
+      ],
+    },
     legal: [
       { name: 'Privacy Policy', href: '#' },
       { name: 'Terms of Use', href: '#' },
@@ -116,19 +119,37 @@ const Footer = () => {
               Office Locations
             </h4>
             <div className="flex flex-col gap-4">
-              {footerLinks.locations.map((loc) => (
-                <div
-                  key={loc.label}
-                  className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3 transition-colors hover:border-cyan-400/25"
-                >
-                  <span className="text-white text-[12px] font-semibold tracking-tight block mb-1">
-                    {loc.label}
-                  </span>
-                  <p className="text-[#8BAAB8] text-[12px] leading-relaxed">
-                    {loc.address}
-                  </p>
+              {/* Section 1: Registered and Corporate Office */}
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5 transition-colors hover:border-cyan-400/25">
+                <span className="text-white text-[12px] font-semibold tracking-tight block mb-1">
+                  {footerLinks.corporateOffice.label}
+                </span>
+                <p className="text-[#8BAAB8] text-[12px] leading-relaxed">
+                  {footerLinks.corporateOffice.address}
+                </p>
+              </div>
+
+              {/* Section 2: Works and Warehouse (Bhiwandi & Turbhe) */}
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3.5 transition-colors hover:border-cyan-400/25 space-y-3">
+                <span className="text-white text-[12px] font-semibold tracking-tight block">
+                  {footerLinks.worksAndWarehouse.label}
+                </span>
+                <div className="space-y-2.5 pt-0.5">
+                  {footerLinks.worksAndWarehouse.locations.map((loc, idx) => (
+                    <div
+                      key={loc.name}
+                      className={idx > 0 ? 'border-t border-white/[0.04] pt-2.5' : ''}
+                    >
+                      <span className="text-white/80 text-[11px] font-medium tracking-wide block mb-0.5 font-mono">
+                        {loc.name}:
+                      </span>
+                      <p className="text-[#8BAAB8] text-[12px] leading-relaxed">
+                        {loc.address}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
             </div>
           </div>
         </div>

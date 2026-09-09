@@ -90,7 +90,7 @@ const CTAButtons = ({
         onClick={onContactClick}
         variants={buttonVariants}
         transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-        className={`${fullWidth ? 'flex-1 text-center' : ''} ${isSm ? 'h-10 px-5 text-[10px] tracking-[0.15em]' : 'h-14 px-10 text-xs tracking-[0.2em]'} border text-white font-bold uppercase transition-colors pointer-events-none rounded-lg`}
+        className={`${fullWidth ? 'flex-1 text-center' : ''} ${isSm ? 'h-11 px-5 text-[13px] md:text-[14px] font-bold tracking-[0.12em]' : 'h-14 px-10 text-[14px] md:text-[15px] font-bold tracking-[0.18em]'} border text-white uppercase transition-colors pointer-events-none rounded-lg`}
       >
         {label}
       </motion.button>

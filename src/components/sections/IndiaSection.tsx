@@ -6,6 +6,7 @@ import { Float } from '@react-three/drei';
 import { EarthIndiaModel } from '../shared-3d/models/EarthIndiaSection';
 import { PrincipalDetailCard } from './PrincipalDetailCard';
 import { CompanyPointerCallout } from './CompanyPointerCallout';
+import { LocationHoverTooltip } from './LocationHoverTooltip';
 import { PrincipalCompany } from '@/data/principalsData';
 import { getLocationCompany } from '../shared-3d/models/EarthIndiaSection';
 
@@ -15,9 +16,9 @@ const DEFAULT_LOCATION_ID = 9; // Paul Leibinger GmbH & Co. KG — Tuttlingen, G
 
 // 🔧 DEBUG — set to true so you can interactively adjust values
 const DEFAULT_DEBUG = false;
-const STORAGE_KEY = 'jui_earth_india_debug_v5';
+const STORAGE_KEY = 'jui_earth_india_debug_v6';
 
-interface IndiaSectionProps extends React.HTMLAttributes<HTMLElement> {}
+interface IndiaSectionProps extends React.HTMLAttributes<HTMLElement> { }
 
 const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -29,7 +30,24 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
     [selectedLocationId]
   );
   const [screenPos, setScreenPos] = useState<{ x: number; y: number } | null>(null);
+  const [hoveredCompany, setHoveredCompany] = useState<PrincipalCompany | null>(null);
+  const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null);
   const [debugClickInfo, setDebugClickInfo] = useState<string>('Click on any glowing red dot on the globe');
+
+  const handleHoverCompany = useCallback((company: PrincipalCompany | null, pos?: { x: number; y: number } | null) => {
+    setHoveredCompany((prevComp) => {
+      if (prevComp?.id === company?.id) return prevComp;
+      return company;
+    });
+    setHoverPos((prevPos) => {
+      if (!pos && !prevPos) return prevPos;
+      if (!pos || !prevPos) return pos ?? null;
+      const dx = Math.abs(pos.x - prevPos.x);
+      const dy = Math.abs(pos.y - prevPos.y);
+      if (dx < 0.5 && dy < 0.5) return prevPos;
+      return pos;
+    });
+  }, []);
 
   const handleScreenPosChange = useCallback((pos: { x: number; y: number } | null) => {
     setScreenPos((prev) => {
@@ -42,11 +60,11 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
     });
   }, []);
 
-  // 🔧 Locked coordinates: size 14.80, rot [0.420, -0.330, 0.110], pos [0.900, -2.300, -0.100]
+  // 🔧 Locked coordinates: size 14.80, rot [0.370, -0.080, 0.110], pos [0.900, -2.300, -0.100]
   const [showDebug, setShowDebug] = useState(DEFAULT_DEBUG);
   const [debugSize, setDebugSize] = useState(14.80);
-  const [debugRotX, setDebugRotX] = useState(0.420);
-  const [debugRotY, setDebugRotY] = useState(-0.330);
+  const [debugRotX, setDebugRotX] = useState(0.370);
+  const [debugRotY, setDebugRotY] = useState(-0.080);
   const [debugRotZ, setDebugRotZ] = useState(0.110);
   const [debugPosX, setDebugPosX] = useState(0.900);
   const [debugPosY, setDebugPosY] = useState(-2.300);
@@ -152,16 +170,16 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
               <Suspense fallback={null}>
                 {/* 🌟 Balanced Space Lighting Suite */}
                 <ambientLight intensity={1.8} color="#d4f1f9" />
-                
+
                 {/* Front Key Light directly illuminating India & face of globe */}
                 <directionalLight position={[debugPosX, debugPosY + 4, 9]} intensity={3.8} color="#ffffff" />
-                
+
                 {/* Top-Right Rim / Space Sun Light */}
                 <directionalLight position={[debugPosX + 9, debugPosY + 8, 5]} intensity={2.8} color="#e8f8ff" />
-                
+
                 {/* Left Cyan Atmosphere Rim Light */}
                 <directionalLight position={[debugPosX - 9, debugPosY + 4, 3]} intensity={2.4} color="#00D1FF" />
-                
+
                 {/* Bottom-Up Atmospheric Bounce Light */}
                 <directionalLight position={[debugPosX, debugPosY - 6, 4]} intensity={1.6} color="#0077aa" />
 
@@ -186,6 +204,7 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
                       needleLocationId={DEFAULT_LOCATION_ID}
                       onSelectLocation={setSelectedLocationId}
                       onScreenPosChange={handleScreenPosChange}
+                      onHoverCompany={handleHoverCompany}
                       onDebugInfo={setDebugClickInfo}
                     />
                   </group>
@@ -194,6 +213,12 @@ const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>((props, ref) => 
             </Canvas>
           )}
         </div>
+
+        {/* 💬 Simple Plain Text Short Company Name Hover Tooltip */}
+        <LocationHoverTooltip
+          company={hoveredCompany}
+          screenPos={hoverPos}
+        />
 
         {/* 🏷️ Sleek Company Pointer Line & Callout Badge */}
         <CompanyPointerCallout

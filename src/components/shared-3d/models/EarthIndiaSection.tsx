@@ -37,7 +37,7 @@ const MARKER_CORE_RADIUS = 11;       // small solid dot
 const MARKER_GLOW_RADIUS = 22;       // soft bloom hugging the dot
 const MARKER_RING_RADIUS = 70;       // outer radius a radar ring expands to
 const MARKER_RING_THICKNESS = 9;     // thin outline, as in the reference clip
-const MARKER_HIT_RADIUS = 58;        // invisible, generous click target
+const MARKER_HIT_RADIUS = 85;        // invisible, generous click and hover target
 const MARKER_ELEVATION = 26;         // lifts the marker clear of the surface
 const MARKER_RING_COUNT = 2;         // staggered so a new ring starts mid-cycle
 
@@ -83,6 +83,7 @@ export type EarthIndiaModelProps = React.ComponentProps<'group'> & {
   onSelectCompany?: (company: PrincipalCompany | null, point3D?: THREE.Vector3) => void;
   onSelectLocation?: (id: number | null) => void;
   onScreenPosChange?: (pos: { x: number; y: number } | null) => void;
+  onHoverCompany?: (company: PrincipalCompany | null, pos?: { x: number; y: number } | null) => void;
   onDebugInfo?: (info: string) => void;
 };
 
@@ -98,6 +99,7 @@ export function EarthIndiaModel({
   onSelectCompany,
   onSelectLocation,
   onScreenPosChange,
+  onHoverCompany,
   onDebugInfo,
   ...props
 }: EarthIndiaModelProps) {
@@ -106,6 +108,7 @@ export function EarthIndiaModel({
   const terreMeshRef = useRef<THREE.Mesh | null>(null);
   const liveGlobeRef = useRef<THREE.Mesh | null>(null);
   const selectedMarkerRef = useRef<THREE.Object3D | null>(null);
+  const hoveredMarkerRef = useRef<THREE.Object3D | null>(null);
   const billboardQuatRef = useRef(new THREE.Quaternion());
   const tmpQuatRef = useRef(new THREE.Quaternion());
   const lastAnchorRef = useRef<{ x: number; y: number } | null>(null);
@@ -573,13 +576,61 @@ export function EarthIndiaModel({
         onScreenPosChange(null);
       }
     }
+
+    // 📍 Project the hovered location marker to 2D screen coordinates for real-time tooltip tracking
+    const hoveredMarker = hoveredMarkerRef.current;
+    if (hoveredMarker && onHoverCompany && liveGlobe) {
+      const worldPos = hoveredMarker.getWorldPosition(new THREE.Vector3());
+      const globeCenter = liveGlobe.geometry.boundingSphere
+        ? liveGlobe.geometry.boundingSphere.center.clone().applyMatrix4(liveGlobe.matrixWorld)
+        : liveGlobe.getWorldPosition(new THREE.Vector3());
+
+      const surfaceNormal = worldPos.clone().sub(globeCenter).normalize();
+      const viewDir = state.camera.position.clone().sub(worldPos).normalize();
+
+      const projected = worldPos.clone().project(state.camera);
+      const rect = state.gl.domElement.getBoundingClientRect();
+      const x = rect.left + (projected.x * 0.5 + 0.5) * rect.width;
+      const y = rect.top + (-projected.y * 0.5 + 0.5) * rect.height;
+
+      const facing = surfaceNormal.dot(viewDir) > -0.08;
+      const onScreen =
+        projected.z < 1 &&
+        x > -40 && x < window.innerWidth + 40 &&
+        y > -40 && y < window.innerHeight + 40;
+
+      if (facing && onScreen) {
+        const hitId = hoveredMarker.userData.locationId as number | undefined;
+        const point = hitId != null ? LOCATION_POINTS.find((p) => p.id === hitId) : null;
+        if (point) {
+          onHoverCompany(point.company, { x, y });
+        }
+      } else {
+        onHoverCompany(null, null);
+      }
+    }
   });
+
+  // Helper to extract location ID from direct hit or raycast intersections
+  const getHitLocationId = (e: ThreeEvent<any>): number | null => {
+    if (e.object?.userData?.locationId != null) {
+      return e.object.userData.locationId as number;
+    }
+    if (e.intersections && e.intersections.length > 0) {
+      for (const hit of e.intersections) {
+        if (hit.object?.userData?.locationId != null) {
+          return hit.object.userData.locationId as number;
+        }
+      }
+    }
+    return null;
+  };
 
   // Clicking a marker selects exactly that company; clicking bare globe closes
   const handleMeshClick = (e: ThreeEvent<MouseEvent>) => {
     e.stopPropagation();
 
-    const hitId = e.object?.userData?.locationId as number | undefined;
+    const hitId = getHitLocationId(e);
 
     if (hitId != null) {
       const point = LOCATION_POINTS.find((p) => p.id === hitId);
@@ -599,12 +650,37 @@ export function EarthIndiaModel({
   };
 
   const handlePointerMove = (e: ThreeEvent<PointerEvent>) => {
-    const hovering = e.object?.userData?.locationId != null;
-    document.body.style.cursor = hovering ? 'pointer' : 'default';
+    const hitId = getHitLocationId(e);
+    if (hitId != null) {
+      document.body.style.cursor = 'pointer';
+      const marker = markersById[hitId];
+      if (marker) {
+        hoveredMarkerRef.current = marker;
+        const point = LOCATION_POINTS.find((p) => p.id === hitId);
+        if (point) {
+          const worldPos = marker.getWorldPosition(new THREE.Vector3());
+          const projected = worldPos.project(e.camera);
+          const rect = (e.nativeEvent?.target as HTMLElement)?.getBoundingClientRect?.() ?? { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+          const x = rect.left + (projected.x * 0.5 + 0.5) * rect.width;
+          const y = rect.top + (-projected.y * 0.5 + 0.5) * rect.height;
+          onHoverCompany?.(point.company, { x, y });
+        }
+      }
+    } else {
+      document.body.style.cursor = 'default';
+      if (hoveredMarkerRef.current !== null) {
+        hoveredMarkerRef.current = null;
+        onHoverCompany?.(null, null);
+      }
+    }
   };
 
   const handlePointerOut = () => {
     document.body.style.cursor = 'default';
+    if (hoveredMarkerRef.current !== null) {
+      hoveredMarkerRef.current = null;
+      onHoverCompany?.(null, null);
+    }
   };
 
   return (
@@ -620,6 +696,7 @@ export function EarthIndiaModel({
         <primitive
           object={clonedScene}
           onClick={handleMeshClick}
+          onPointerOver={handlePointerMove}
           onPointerMove={handlePointerMove}
           onPointerOut={handlePointerOut}
         />

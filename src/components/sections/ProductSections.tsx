@@ -12,10 +12,11 @@ import CTAButtons from '../shared/CTAButtons';
 import { useBlackHoleTransition } from '../transitions/BlackHoleTransitionContext';
 import { PrincipalDetailCard } from './PrincipalDetailCard';
 import { CompanyPointerCallout } from './CompanyPointerCallout';
+import { LocationHoverTooltip } from './LocationHoverTooltip';
 import { PrincipalCompany } from '@/data/principalsData';
 import { getLocationCompany } from '../shared-3d/models/EarthIndiaSection';
 
-const STORAGE_KEY = 'jui_earth_india_debug_3pos_v5';
+const STORAGE_KEY = 'jui_earth_india_debug_3pos_v6';
 
 // 📍 Location that stays open by default every time the India section is viewed.
 // The number is the principal's own id in PRINCIPALS_DATA — change it to make a
@@ -201,7 +202,7 @@ const ProductSectionItem = ({
               </div>
             </div>
           ) : (
-            <CTAButtons className="mt-4" arrowDirection="right" reverseOrder={true} />
+            <CTAButtons className="mt-4" label="Explore" arrowDirection="right" reverseOrder={true} />
           )}
 
           {data.number === '1' && (
@@ -239,6 +240,7 @@ const AnimatingEarthGroup = ({
   onSelectCompany,
   onSelectLocation,
   onScreenPosChange,
+  onHoverCompany,
   onDebugInfo,
 }: {
   smoothSize: MotionValue<number>;
@@ -257,6 +259,7 @@ const AnimatingEarthGroup = ({
   onSelectCompany?: (company: PrincipalCompany | null) => void;
   onSelectLocation?: (id: number | null) => void;
   onScreenPosChange?: (pos: { x: number; y: number } | null) => void;
+  onHoverCompany?: (company: PrincipalCompany | null, pos?: { x: number; y: number } | null) => void;
   onDebugInfo?: (info: string) => void;
 }) => {
   const groupRef = useRef<THREE.Group>(null);
@@ -289,6 +292,7 @@ const AnimatingEarthGroup = ({
         onSelectCompany={onSelectCompany}
         onSelectLocation={onSelectLocation}
         onScreenPosChange={onScreenPosChange}
+        onHoverCompany={onHoverCompany}
         onDebugInfo={onDebugInfo}
       />
     </group>
@@ -306,7 +310,24 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
     [selectedLocationId]
   );
   const [screenPos, setScreenPos] = useState<{ x: number; y: number } | null>(null);
+  const [hoveredCompany, setHoveredCompany] = useState<PrincipalCompany | null>(null);
+  const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null);
   const [debugClickInfo, setDebugClickInfo] = useState<string>('Click on any glowing red dot on the globe to inspect');
+
+  const handleHoverCompany = useCallback((company: PrincipalCompany | null, pos?: { x: number; y: number } | null) => {
+    setHoveredCompany((prevComp) => {
+      if (prevComp?.id === company?.id) return prevComp;
+      return company;
+    });
+    setHoverPos((prevPos) => {
+      if (!pos && !prevPos) return prevPos;
+      if (!pos || !prevPos) return pos ?? null;
+      const dx = Math.abs(pos.x - prevPos.x);
+      const dy = Math.abs(pos.y - prevPos.y);
+      if (dx < 0.5 && dy < 0.5) return prevPos;
+      return pos;
+    });
+  }, []);
 
   const handleScreenPosChange = useCallback((pos: { x: number; y: number } | null) => {
     setScreenPos((prev) => {
@@ -360,15 +381,15 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
     }
   });
 
-  // 🔧 Debug control states (3 Positions) — Hidden
+  // 🔧 Debug control states (3 Positions) — Disabled
   const [showDebug, setShowDebug] = useState(false);
   const [livePreviewActive, setLivePreviewActive] = useState(false);
   const [activeTab, setActiveTab] = useState<'pos1' | 'pos2' | 'pos3'>('pos1');
 
   // Position 1 (Initial Entrance: 0.78)
   const [p1Size, setP1Size] = useState(14.80);
-  const [p1RotX, setP1RotX] = useState(0.420);
-  const [p1RotY, setP1RotY] = useState(-0.330);
+  const [p1RotX, setP1RotX] = useState(0.370);
+  const [p1RotY, setP1RotY] = useState(-0.080);
   const [p1RotZ, setP1RotZ] = useState(0.110);
   const [p1PosX, setP1PosX] = useState(0.900);
   const [p1PosY, setP1PosY] = useState(-2.300);
@@ -384,11 +405,11 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
   const [p2PosZ, setP2PosZ] = useState(-0.100);
 
   // Position 3 (Final Target: 0.93)
-  const [p3Size, setP3Size] = useState(9.60);
-  const [p3RotX, setP3RotX] = useState(0.490);
+  const [p3Size, setP3Size] = useState(11.50);
+  const [p3RotX, setP3RotX] = useState(0.390);
   const [p3RotY, setP3RotY] = useState(-4.340);
   const [p3RotZ, setP3RotZ] = useState(0.110);
-  const [p3PosX, setP3PosX] = useState(-2.200);
+  const [p3PosX, setP3PosX] = useState(-0.600);
   const [p3PosY, setP3PosY] = useState(-1.500);
   const [p3PosZ, setP3PosZ] = useState(-0.100);
 
@@ -610,6 +631,7 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
                   needleLocationId={DEFAULT_LOCATION_ID}
                   onSelectLocation={handleSelectLocation}
                   onScreenPosChange={handleScreenPosChange}
+                  onHoverCompany={handleHoverCompany}
                   onDebugInfo={setDebugClickInfo}
                 />
               </Float>
@@ -617,6 +639,12 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
           </Canvas>
         )}
       </div>
+
+      {/* 💬 Simple Plain Text Short Company Name Hover Tooltip */}
+      <LocationHoverTooltip
+        company={hoveredCompany}
+        screenPos={hoverPos}
+      />
 
       {/* 🏷️ Sleek Company Pointer Line & Callout Badge */}
       <CompanyPointerCallout
@@ -853,28 +881,36 @@ const ProductSections = () => {
     // Transition 1: Section 1 Currency -> Section 2 Card (0.24 -> 0.28, midpoint 0.26)
     // Transition 2: Section 2 Card -> Section 3 Paints (0.49 -> 0.53, midpoint 0.51)
     // Transition 3: Section 3 Paints -> India Section (0.74 -> 0.78, midpoint 0.76)
+    const computeTransition = (raw: number) => {
+      const clamped = Math.max(0, Math.min(1, raw));
+      const suction = clamped;
+      // Smooth sinusoidal bell curve for blackout: 0 at start, 1 at midpoint 0.5, 0 at end
+      const blackout = Math.sin(clamped * Math.PI);
+      return { suction, blackout };
+    };
+
     let suction = 0;
     let blackout = 0;
 
     if (latest >= 0.00 && latest <= 0.04) {
-      const raw = latest / 0.04;
-      suction = raw;
-      blackout = raw < 0.5 ? raw / 0.5 : 1 - (raw - 0.5) / 0.5;
-    } else if (latest >= 0.24 && latest <= 0.28) {
-      const raw = (latest - 0.24) / 0.04;
-      suction = raw;
-      blackout = raw < 0.5 ? raw / 0.5 : 1 - (raw - 0.5) / 0.5;
-    } else if (latest >= 0.49 && latest <= 0.53) {
-      const raw = (latest - 0.49) / 0.04;
-      suction = raw;
-      blackout = raw < 0.5 ? raw / 0.5 : 1 - (raw - 0.5) / 0.5;
-    } else if (latest >= 0.74 && latest <= 0.78) {
-      const raw = (latest - 0.74) / 0.04;
-      suction = raw;
-      blackout = raw < 0.5 ? raw / 0.5 : 1 - (raw - 0.5) / 0.5;
+      const t = computeTransition(latest / 0.04);
+      suction = t.suction;
+      blackout = t.blackout;
+    } else if (latest >= 0.23 && latest <= 0.28) {
+      const t = computeTransition((latest - 0.23) / 0.05);
+      suction = t.suction;
+      blackout = t.blackout;
+    } else if (latest >= 0.48 && latest <= 0.53) {
+      const t = computeTransition((latest - 0.48) / 0.05);
+      suction = t.suction;
+      blackout = t.blackout;
+    } else if (latest >= 0.73 && latest <= 0.78) {
+      const t = computeTransition((latest - 0.73) / 0.05);
+      suction = t.suction;
+      blackout = t.blackout;
     }
 
-    setProgress(Math.max(0, Math.min(1, suction)), Math.max(0, Math.min(1, blackout)));
+    setProgress(suction, blackout);
   });
 
   return (

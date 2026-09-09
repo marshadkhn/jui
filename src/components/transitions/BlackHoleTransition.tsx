@@ -106,6 +106,7 @@ interface CyberHelicalElement {
   cylinderRadius: number;
   baseScale: number;
   opacity: number;
+  isSingleGlyph?: boolean;
 }
 
 interface StarStreakHelical {
@@ -123,6 +124,8 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
     const canvasRef = useRef<HTMLCanvasElement | null>(null);
     const animSuction = useRef(0);
     const animBlackout = useRef(0);
+    const suctionVel = useRef(0);
+    const blackoutVel = useRef(0);
     const targetSuction = useRef(0);
     const targetBlackout = useRef(0);
     const reqIdRef = useRef<number | null>(null);
@@ -155,7 +158,7 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
           '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
           '8.3', 'F3', 'B2', 'S', 'R3', '13', '42', 'E3', '55', '99', '88', '73', '01',
 
-          // Pure Individual Hindi Alphabets (स्वर & व्यंजन & संयुक्ताक्षर) - NO words or sentences
+          // Pure Individual Hindi Alphabets (स्वर & व्यंजन & संयुक्ताक्षर)
           'अ', 'आ', 'इ', 'ई', 'उ', 'ऊ', 'ऋ', 'ए', 'ऐ', 'ओ', 'औ', 'अं', 'अः',
           'क', 'ख', 'ग', 'घ', 'ङ',
           'च', 'छ', 'ज', 'झ', 'ञ',
@@ -221,7 +224,7 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
       let elId = 0;
       const maxScreenRadius = Math.max(w, h) * 0.72;
 
-      // 2. 24 Primary Highlighted Ray Beams with Staggered Inward Flow (Alternating Mix)
+      // 2. 24 Primary Highlighted Ray Beams with Outward Flow
       const NUM_RAYS = 24;
       for (let r = 0; r < NUM_RAYS; r++) {
         const rayAngle = (r / NUM_RAYS) * Math.PI * 2;
@@ -242,12 +245,13 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
             speed: 0.18,
             cylinderRadius: maxScreenRadius,
             baseScale: 1.5,
-            opacity: rayOpacity
+            opacity: rayOpacity,
+            isSingleGlyph: key.length <= 2
           });
         });
       }
 
-      // 3. Dense Inter-Ray Gap Streams (48 Sub-Lanes packing the gaps, fully mixed)
+      // 3. Dense Inter-Ray Gap Streams (48 Sub-Lanes)
       const NUM_GAP_LANES = 48;
       for (let g = 0; g < NUM_GAP_LANES; g++) {
         const gapAngle = (g / NUM_GAP_LANES) * Math.PI * 2 + (Math.PI / NUM_GAP_LANES);
@@ -256,14 +260,18 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
         uOffsets.forEach((uStart, i) => {
           const itemType = (g + i) % 10;
           let tex: HTMLCanvasElement;
+          let isSingle = false;
+
           if (itemType === 0) {
             tex = textureCache.current[barcodeKeys[(g + i) % barcodeKeys.length]];
           } else if (itemType >= 1 && itemType <= 5) {
             const key = interRayKeys[(g * 5 + i * 3) % interRayKeys.length];
             tex = textureCache.current[`txt_${key}`] || textureCache.current[`txt_3A4D8F19B`];
+            isSingle = key.length <= 2;
           } else {
             const glyph = bigGlyphKeys[(g * 3 + i * 2) % bigGlyphKeys.length];
             tex = textureCache.current[`txt_${glyph}`] || textureCache.current[`txt_7`];
+            isSingle = true;
           }
 
           if (tex) {
@@ -278,13 +286,14 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
               speed: 0.18,
               cylinderRadius: maxScreenRadius * (0.85 + (g % 4) * 0.05),
               baseScale: 1.25,
-              opacity: gapOpacity
+              opacity: gapOpacity,
+              isSingleGlyph: isSingle
             });
           }
         });
       }
 
-      // 4. Dense Floating Field of 300+ Micro & Medium Data Particles in all gaps
+      // 4. Dense Floating Field of 300 Micro & Medium Data Particles in all gaps
       for (let m = 0; m < 300; m++) {
         const randAngle = Math.random() * Math.PI * 2;
         const randRadius = maxScreenRadius * (0.35 + Math.random() * 0.75);
@@ -312,7 +321,8 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
             speed: 0.16 + (m % 5) * 0.01,
             cylinderRadius: randRadius,
             baseScale: isSingleDigit ? 1.0 : 0.75,
-            opacity: microOpacity
+            opacity: microOpacity,
+            isSingleGlyph: true
           });
         }
       }
@@ -337,7 +347,7 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
     }, []);
 
     // ------------------------------------------------------------------
-    // Main True 3D Black Hole Perspective Render Loop (Buttery Smooth 120 FPS)
+    // Main True 3D Tunnel Perspective Render Loop (Forward Motion + Elastic Feel)
     // ------------------------------------------------------------------
     useEffect(() => {
       const canvas = canvasRef.current;
@@ -367,15 +377,22 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
           const dt = Math.min(0.033, Math.max(0.001, rawDt));
           lastTime = now;
 
-          // Framerate-independent smooth exponential follow
-          const followFactor = 1 - Math.exp(-22 * dt);
-          animBlackout.current += (targetBlackout.current - animBlackout.current) * followFactor;
-          animSuction.current += (targetSuction.current - animSuction.current) * followFactor;
+          // Rubber-band / Elastic Spring-Mass Physics Simulation
+          const springK = 38.0;
+          const dampingC = 9.2;
 
-          const s = animSuction.current;
-          const b = animBlackout.current;
+          const suctionForce = (targetSuction.current - animSuction.current) * springK - suctionVel.current * dampingC;
+          suctionVel.current += suctionForce * dt;
+          animSuction.current += suctionVel.current * dt;
 
-          if (b <= 0.005 && targetBlackout.current === 0) {
+          const blackoutForce = (targetBlackout.current - animBlackout.current) * springK - blackoutVel.current * dampingC;
+          blackoutVel.current += blackoutForce * dt;
+          animBlackout.current += blackoutVel.current * dt;
+
+          const s = Math.max(0, animSuction.current);
+          const b = Math.max(0, Math.min(1, animBlackout.current));
+
+          if (b <= 0.003 && targetBlackout.current === 0 && s <= 0.003) {
             ctx.clearRect(0, 0, width, height);
             reqIdRef.current = requestAnimationFrame(render);
             return;
@@ -384,20 +401,22 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
           ctx.clearRect(0, 0, width, height);
 
           // Deep Cosmic Pitch-Black Backdrop
-          const bgAlpha = Math.min(1, b * 4.0);
+          const bgAlpha = Math.min(1, b * 3.8);
           ctx.fillStyle = `rgba(0, 2, 8, ${bgAlpha})`;
           ctx.fillRect(0, 0, width, height);
 
           const cx = width / 2;
           const cy = height / 2;
-          // Natural black hole gap radius (visible open void, not a microscopic pinhole)
-          const blackHoleRadius = Math.min(width, height) * 0.038 * (1.0 + s * 0.25);
 
-          const inwardSpeedMultiplier = 1.0 + s * 4.2;
+          // Generous, prominent wormhole tunnel opening (larger center portal)
+          const blackHoleRadius = Math.min(width, height) * 0.115 * (1.0 + s * 0.22);
+
+          // Forward motion speed multiplier: rushing towards viewer
+          const forwardSpeedMultiplier = 1.0 + s * 4.2;
           const baseAlphaMultiplier = Math.min(1, b * 3.2);
 
           // -----------------------------------------------------------
-          // STEP 1: Cosmic Speed Streaks Gliding Inward
+          // STEP 1: Cosmic Speed Streaks Flying Forward Outward Toward Viewer
           // -----------------------------------------------------------
           ctx.lineWidth = 1.2;
           const streaks = starStreaksRef.current;
@@ -405,29 +424,31 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
 
           for (let i = 0; i < streakCount; i++) {
             const st = streaks[i];
-            st.u += st.speed * inwardSpeedMultiplier * dt;
+            // Outward motion: progress advances forward (0 -> 1)
+            st.u += st.speed * forwardSpeedMultiplier * dt;
             if (st.u >= 1.0) st.u -= 1.0;
 
             const progress = st.u;
-            // Smooth glide towards black hole void boundary
-            const r = blackHoleRadius + Math.pow(1.0 - progress, 1.2) * (st.cylinderRadius - blackHoleRadius);
+            // Emerge from tunnel opening and accelerate outward toward screen edges
+            const r = blackHoleRadius + Math.pow(progress, 1.4) * (st.cylinderRadius - blackHoleRadius);
 
             const px = cx + Math.cos(st.baseAngle) * r;
             const py = cy + Math.sin(st.baseAngle) * r * 0.88;
 
-            if (px < -60 || px > width + 60 || py < -60 || py > height + 60) continue;
+            if (px < -80 || px > width + 80 || py < -80 || py > height + 80) continue;
 
-            const inwardAngle = Math.atan2(cy - py, cx - px);
-            const streakLen = Math.max(2.0, (st.length + s * 30) * Math.pow(1.0 - progress, 0.8));
+            const outwardAngle = st.baseAngle;
+            const streakLen = Math.max(2.0, (st.length + s * 30) * Math.pow(progress, 0.8));
 
-            // Dissolve smoothly right as it reaches the black hole event horizon
-            const horizonFade = Math.min(1.0, Math.max(0.0, (r - blackHoleRadius) / 22));
-            const alpha = horizonFade * Math.min(1.0, (1.0 - progress) / 0.08) * baseAlphaMultiplier;
+            // Smooth fade-in at tunnel center, smooth fade-out as passing camera
+            const spawnFade = Math.min(1.0, progress / 0.10);
+            const edgeFade = Math.min(1.0, (1.0 - progress) / 0.08);
+            const alpha = spawnFade * edgeFade * baseAlphaMultiplier;
             if (alpha <= 0.01) continue;
 
             ctx.save();
             ctx.translate(px, py);
-            ctx.rotate(inwardAngle);
+            ctx.rotate(outwardAngle);
             ctx.strokeStyle = st.color;
             ctx.globalAlpha = alpha;
 
@@ -439,31 +460,52 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
           }
 
           // -----------------------------------------------------------
-          // STEP 2: Ultra-Dense Pre-Cached GPU Sprite Streams (Plunging into Black Hole Gap)
+          // STEP 2: Cyber Sprites & Glyphs Streaming Forward Toward Camera
           // -----------------------------------------------------------
           const elements = cyberElementsRef.current;
           const elementCount = elements.length;
 
           for (let i = 0; i < elementCount; i++) {
             const el = elements[i];
-            el.u += el.speed * inwardSpeedMultiplier * dt;
+            // Forward outward motion
+            el.u += el.speed * forwardSpeedMultiplier * dt;
             if (el.u >= 1.0) el.u -= 1.0;
 
             const progress = el.u;
-            // Smooth inward plunge to the black hole void boundary
-            const r = blackHoleRadius + Math.pow(1.0 - progress, 1.25) * (el.cylinderRadius - blackHoleRadius);
+            // 3D perspective expansion from tunnel center outward to screen boundary
+            const r = blackHoleRadius + Math.pow(progress, 1.45) * (el.cylinderRadius - blackHoleRadius);
 
             const px = cx + Math.cos(el.baseAngle) * r;
             const py = cy + Math.sin(el.baseAngle) * r * 0.88;
 
             if (px < -260 || px > width + 260 || py < -260 || py > height + 260) continue;
 
-            const inwardAngle = Math.atan2(cy - py, cx - px);
-            const scaleFactor = Math.max(0.18, Math.pow(1.0 - progress, 0.85)) * el.baseScale * (1.0 - s * 0.35);
+            // CORRECT TEXT ORIENTATION:
+            // Ensure numbers and Hindi alphabets are NEVER flipped or reversed.
+            // When rotating along radial beam, if angle is in left half of unit circle (|rot| > PI/2),
+            // flip by PI (180 deg) so text is always right-side-up and left-to-right readable.
+            let rot = el.baseAngle;
+            while (rot > Math.PI) rot -= Math.PI * 2;
+            while (rot <= -Math.PI) rot += Math.PI * 2;
 
-            // Dissolve smoothly as it crosses into the black hole gap
-            const horizonFade = Math.min(1.0, Math.max(0.0, (r - blackHoleRadius) / 30));
-            const alpha = el.opacity * horizonFade * Math.min(1.0, (1.0 - progress) / 0.08) * baseAlphaMultiplier;
+            if (rot > Math.PI / 2) {
+              rot -= Math.PI;
+            } else if (rot < -Math.PI / 2) {
+              rot += Math.PI;
+            }
+
+            // Single characters stay gracefully upright
+            if (el.isSingleGlyph) {
+              rot = rot * 0.40;
+            }
+
+            // Original scale factor profile: starts compact at center, smoothly reaches original size as it approaches screen edges
+            const scaleFactor = Math.max(0.18, Math.pow(progress, 0.85)) * el.baseScale;
+
+            // Smooth spawn from center void + fade out beyond viewport
+            const spawnFade = Math.min(1.0, progress / 0.10);
+            const edgeFade = Math.min(1.0, (1.0 - progress) / 0.08);
+            const alpha = el.opacity * spawnFade * edgeFade * baseAlphaMultiplier;
             if (alpha <= 0.01) continue;
 
             const tex = el.texture;
@@ -472,21 +514,26 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
 
             ctx.save();
             ctx.translate(px, py);
-            ctx.rotate(inwardAngle);
+            ctx.rotate(rot);
             ctx.globalAlpha = alpha;
             ctx.drawImage(tex, -drawW / 2, -drawH / 2, drawW, drawH);
             ctx.restore();
           }
 
           // -----------------------------------------------------------
-          // STEP 3: Natural Soft Black Hole Singularity Void Core
+          // STEP 3: Pure Natural Soft Black Hole Singularity Void Core (Fades smoothly with transition)
           // -----------------------------------------------------------
-          const voidGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, blackHoleRadius * 1.05);
-          voidGrad.addColorStop(0, '#000000');
-          voidGrad.addColorStop(0.85, 'rgba(0, 1, 4, 0.98)');
-          voidGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-          ctx.fillStyle = voidGrad;
-          ctx.fillRect(0, 0, width, height);
+          const voidAlpha = Math.min(1.0, b * 3.2);
+          if (voidAlpha > 0.01) {
+            // Expands as the user plunges into the wormhole, giving the feeling of entering through it
+            const dynamicRadius = blackHoleRadius * (1.0 + Math.pow(s, 1.6) * 2.8);
+            const voidGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, dynamicRadius * 1.05);
+            voidGrad.addColorStop(0, `rgba(0, 0, 0, ${voidAlpha})`);
+            voidGrad.addColorStop(0.75, `rgba(0, 1, 4, ${voidAlpha * 0.95})`);
+            voidGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = voidGrad;
+            ctx.fillRect(0, 0, width, height);
+          }
 
           if (b >= 0.98) {
             ctx.fillStyle = '#000000';
@@ -563,3 +610,4 @@ export const BlackHoleTransition = forwardRef<BlackHoleTransitionRef, BlackHoleT
 
 BlackHoleTransition.displayName = 'BlackHoleTransition';
 export default BlackHoleTransition;
+
