@@ -99,7 +99,7 @@ export default function CurrencyPage() {
       <PartnerProductsGrid
         showHeader={false}
         items={coinMintingProducts}
-        className="-mt-4 md:-mt-8"
+        className="mt-6 md:mt-10"
       />
 
       {/* Security Printing Section with Glowing UV Republic of India Graphic & Overlaid Text */}
