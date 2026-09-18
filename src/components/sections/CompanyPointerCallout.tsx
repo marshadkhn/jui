@@ -125,10 +125,25 @@ export const CompanyPointerCallout: React.FC<CompanyPointerCalloutProps> = ({
               </button>
             </div>
 
-            {/* Company Name */}
-            <div className="text-sm font-extrabold tracking-tight text-white leading-snug">
-              {company.name}
-            </div>
+            {/* Company Logo & Name */}
+            {company.logo ? (
+              <div className="flex items-center gap-3">
+                <div className="bg-white rounded-lg px-2.5 py-1 min-w-[60px] max-w-[120px] h-9 flex items-center justify-center shadow-sm flex-shrink-0">
+                  <img
+                    src={company.logo}
+                    alt={company.name}
+                    className="max-h-7 max-w-full w-auto object-contain"
+                  />
+                </div>
+                <div className="text-sm font-extrabold tracking-tight text-white leading-snug">
+                  {company.name}
+                </div>
+              </div>
+            ) : (
+              <div className="text-sm font-extrabold tracking-tight text-white leading-snug">
+                {company.name}
+              </div>
+            )}
 
             {/* Product / Solution summary if present */}
             {company.product && (

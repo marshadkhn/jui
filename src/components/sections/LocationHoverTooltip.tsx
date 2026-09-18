@@ -14,7 +14,7 @@ export const LocationHoverTooltip: React.FC<LocationHoverTooltipProps> = ({
 }) => {
   if (!company || !screenPos) return null;
   const shortName = getShortCompanyName(company);
-  if (!shortName) return null;
+  if (!shortName && !company.logo) return null;
 
   return (
     <div
@@ -26,18 +26,21 @@ export const LocationHoverTooltip: React.FC<LocationHoverTooltipProps> = ({
         pointerEvents: 'none',
         zIndex: 99999,
       }}
-      className="pointer-events-none select-none flex items-center gap-2 rounded-lg bg-[#050c14]/95 px-3 py-1.5 text-xs font-bold text-white shadow-[0_4px_20px_rgba(0,0,0,0.85),0_0_12px_rgba(0,209,255,0.35)] border border-cyan-400/50 backdrop-blur-md whitespace-nowrap tracking-wide animate-in fade-in zoom-in-95 duration-100"
+      className="pointer-events-none select-none flex items-center justify-center rounded-xl bg-[#050c14]/95 shadow-[0_4px_25px_rgba(0,0,0,0.85),0_0_15px_rgba(0,209,255,0.4)] border border-cyan-400/50 backdrop-blur-md whitespace-nowrap tracking-wide animate-in fade-in zoom-in-95 duration-100"
     >
-      {company.logo && (
-        <div className="flex items-center justify-center h-4 max-w-[48px] bg-white/10 rounded px-1 py-0.5 border border-white/10">
+      {company.logo ? (
+        <div className="flex items-center justify-center bg-white rounded-lg px-3 py-1.5 min-h-[40px] min-w-[80px] max-w-[180px] shadow-sm">
           <img
             src={company.logo}
-            alt={shortName}
-            className="h-full w-auto object-contain max-h-4"
+            alt={shortName || company.name}
+            className="h-9 w-auto max-h-9 max-w-[160px] object-contain"
           />
         </div>
+      ) : (
+        <span className="px-3 py-1.5 text-xs font-bold text-white">
+          {shortName}
+        </span>
       )}
-      <span>{shortName}</span>
     </div>
   );
 };

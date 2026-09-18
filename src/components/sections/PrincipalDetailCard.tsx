@@ -53,8 +53,17 @@ export const PrincipalDetailCard: React.FC<PrincipalDetailCardProps> = ({
               </button>
             </div>
 
-            {/* Company Name */}
+            {/* Company Name & Logo */}
             <div className="mt-4">
+              {company.logo && (
+                <div className="mb-3 inline-flex items-center justify-center bg-white rounded-xl px-3.5 py-2 min-h-[44px] min-w-[90px] max-w-[180px] shadow-sm">
+                  <img
+                    src={company.logo}
+                    alt={company.name}
+                    className="max-h-9 max-w-full w-auto object-contain"
+                  />
+                </div>
+              )}
               <div className="text-[11px] font-bold uppercase tracking-wider text-white/40">
                 Company Name
               </div>

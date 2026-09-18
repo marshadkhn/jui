@@ -142,7 +142,7 @@ const PartnerProductCard: React.FC<{ item: ProductItem; className?: string }> = 
   return (
     <motion.div
       variants={cardSpaceVariants}
-      className={`group relative flex flex-col rounded-2xl bg-[#060c14]/90 backdrop-blur-xl border border-white/10 p-5 h-[235px] sm:h-[245px] md:h-[255px] overflow-hidden transition-all duration-300 hover:border-cyan-400/50 hover:shadow-[0_0_35px_rgba(0,209,255,0.22),0_10px_30px_rgba(0,0,0,0.85)] cursor-pointer select-none ${className}`}
+      className={`group relative flex flex-col rounded-2xl bg-[#060c14]/90 backdrop-blur-xl border border-white/10 p-5 h-[250px] sm:h-[260px] md:h-[270px] overflow-hidden transition-all duration-300 hover:border-cyan-400/50 hover:shadow-[0_0_35px_rgba(0,209,255,0.22),0_10px_30px_rgba(0,0,0,0.85)] cursor-pointer select-none ${className}`}
     >
       {/* Subtle Radial Glow on Hover */}
       <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -157,24 +157,28 @@ const PartnerProductCard: React.FC<{ item: ProductItem; className?: string }> = 
         </div>
       </div>
 
-      {/* Default View: Perfectly Centered B&W Logo (No Empty Gap) */}
-      <div className="flex-1 w-full flex items-center justify-center transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-95">
-        <img
-          src={item.imageSrc}
-          alt={displayName}
-          className="max-h-16 md:max-h-20 max-w-[85%] object-contain grayscale opacity-60 transition-all duration-300"
-        />
-      </div>
-
-      {/* Hover Revealed Content: Full Card Takeover with Coloured Logo -> Name -> Description -> Visit Website */}
-      <div className="absolute inset-x-0 bottom-0 top-[42px] p-5 pt-2 flex flex-col justify-between bg-[#060c14]/95 backdrop-blur-2xl opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none group-hover:pointer-events-auto z-20">
-        {/* Top: Coloured & Scaled Down Logo */}
-        <div className="w-full flex items-center justify-start h-8 flex-shrink-0">
+      {/* Default View: Large, High-Visibility Clean White Logo Card */}
+      <div className="flex-1 w-full flex items-center justify-center transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-95 py-3">
+        <div className="w-full max-w-[220px] h-20 sm:h-24 bg-white rounded-xl p-3 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.35)] border border-white/20 transition-transform duration-300 group-hover:scale-105">
           <img
             src={item.imageSrc}
             alt={displayName}
-            className="max-h-8 max-w-[65%] object-contain grayscale-0 opacity-100"
+            className="max-h-14 sm:max-h-16 max-w-full w-auto object-contain"
           />
+        </div>
+      </div>
+
+      {/* Hover Revealed Content: Full Card Takeover with Coloured Logo -> Name -> Description -> Visit Website */}
+      <div className="absolute inset-x-0 bottom-0 top-[42px] p-5 pt-3 flex flex-col justify-between bg-[#060c14]/95 backdrop-blur-2xl opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none group-hover:pointer-events-auto z-20">
+        {/* Top: Coloured Logo in Clean High-Contrast Badge */}
+        <div className="w-full flex items-center justify-start flex-shrink-0">
+          <div className="bg-white rounded-lg px-3 py-1.5 h-11 min-w-[80px] max-w-[160px] flex items-center justify-center shadow-sm border border-white/20">
+            <img
+              src={item.imageSrc}
+              alt={displayName}
+              className="max-h-8 max-w-full w-auto object-contain"
+            />
+          </div>
         </div>
 
         {/* Middle: Company Name & Description */}
