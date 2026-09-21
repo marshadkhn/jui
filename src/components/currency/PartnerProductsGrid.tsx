@@ -157,28 +157,24 @@ const PartnerProductCard: React.FC<{ item: ProductItem; className?: string }> = 
         </div>
       </div>
 
-      {/* Default View: Large, High-Visibility Clean White Logo Card */}
-      <div className="flex-1 w-full flex items-center justify-center transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-95 py-3">
-        <div className="w-full max-w-[220px] h-20 sm:h-24 bg-white rounded-xl p-3 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.35)] border border-white/20 transition-transform duration-300 group-hover:scale-105">
+      {/* Default View: Logo with White Overlay directly on Card */}
+      <div className="flex-1 w-full flex items-center justify-center transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-95 py-2 px-3">
+        <img
+          src={item.imageSrc}
+          alt={displayName}
+          className="max-h-20 sm:max-h-24 max-w-[88%] w-auto object-contain brightness-0 invert opacity-95 transition-all duration-300 group-hover:opacity-100 group-hover:scale-105"
+        />
+      </div>
+
+      {/* Hover Revealed Content: Full Card Takeover with Logo -> Name -> Description -> Visit Website */}
+      <div className="absolute inset-x-0 bottom-0 top-[42px] p-5 pt-3 flex flex-col justify-between bg-[#060c14]/95 backdrop-blur-2xl opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none group-hover:pointer-events-auto z-20">
+        {/* Top: Logo with White Overlay */}
+        <div className="w-full flex items-center justify-start flex-shrink-0">
           <img
             src={item.imageSrc}
             alt={displayName}
-            className="max-h-14 sm:max-h-16 max-w-full w-auto object-contain"
+            className="max-h-10 max-w-[160px] w-auto object-contain brightness-0 invert opacity-95"
           />
-        </div>
-      </div>
-
-      {/* Hover Revealed Content: Full Card Takeover with Coloured Logo -> Name -> Description -> Visit Website */}
-      <div className="absolute inset-x-0 bottom-0 top-[42px] p-5 pt-3 flex flex-col justify-between bg-[#060c14]/95 backdrop-blur-2xl opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] pointer-events-none group-hover:pointer-events-auto z-20">
-        {/* Top: Coloured Logo in Clean High-Contrast Badge */}
-        <div className="w-full flex items-center justify-start flex-shrink-0">
-          <div className="bg-white rounded-lg px-3 py-1.5 h-11 min-w-[80px] max-w-[160px] flex items-center justify-center shadow-sm border border-white/20">
-            <img
-              src={item.imageSrc}
-              alt={displayName}
-              className="max-h-8 max-w-full w-auto object-contain"
-            />
-          </div>
         </div>
 
         {/* Middle: Company Name & Description */}
