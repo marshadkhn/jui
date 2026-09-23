@@ -208,11 +208,11 @@ const ProductSectionItem = ({
           {data.number === '1' && (
             <div className="mt-6 pl-6 z-50">
               <Image
-                src="/auth.png"
+                src="/dharak.png"
                 alt="Auth Certificate"
                 width={180}
                 height={100}
-                className="object-contain brightness-0 invert opacity-40 hover:opacity-90 transition-all duration-300"
+                className="object-contain  opacity-100 hover:opacity-80 transition-all duration-300"
               />
             </div>
           )}
