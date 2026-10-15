@@ -52,8 +52,8 @@ export function Model({ progress, ...props }: React.JSX.IntrinsicElements['group
   const lastP = React.useRef<number | null>(null)
   const accumulatedP = React.useRef(0)
 
-  // Sync animation time with scroll progress in the same direction on scroll up or down
-  useFrame(() => {
+  // Sync animation time with scroll progress when provided, or play smooth breathing loop in standalone hero mode
+  useFrame((state) => {
     if (progress) {
       const p = progress.get()
       if (lastP.current !== null) {
@@ -67,6 +67,16 @@ export function Model({ progress, ...props }: React.JSX.IntrinsicElements['group
         if (action) {
           const duration = action.getClip().duration
           action.time = (acc * duration) % duration
+        }
+      })
+    } else {
+      // Standalone idle loop: smoothly unfold and showcase card layers
+      const t = state.clock.getElapsedTime() * 0.5
+      const cycle = (Math.sin(t) + 1) * 0.5
+      Object.values(actions).forEach((action) => {
+        if (action) {
+          const duration = action.getClip().duration
+          action.time = cycle * duration
         }
       })
     }

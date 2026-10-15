@@ -7,10 +7,10 @@ import JuiLogo from './shared/JuiLogo';
 const menuItems = [
   { name: 'JUI GLOBAL', href: '/' },
   { name: 'CURRENCY', href: '/currency' },
-  { name: 'CARD', href: '#' },
+  { name: 'CARD', href: '/card' },
   { name: 'PAINT', href: '#' },
   { name: 'PARTNERS', href: '/partners' },
-  { name: 'CONTACT', href: '#contact' },
+  { name: 'CONTACT', href: '/contact' },
 ];
 
 const Navbar = () => {

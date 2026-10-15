@@ -735,10 +735,8 @@ const ModelScene = ({
   const { scrollYProgress: defaultScroll } = useScroll();
   const activeGlobalScroll = globalScroll || defaultScroll;
 
-  const isCurrencyPage = pathname === '/currency';
-  const isAboutPage = pathname === '/about';
-  const isPartnersPage = pathname === '/partners';
-  const shouldShowEarth = showEarth !== undefined ? showEarth : (!isCurrencyPage && !isAboutPage && !isPartnersPage);
+  const isHomePage = pathname === '/' || pathname === '';
+  const shouldShowEarth = showEarth !== undefined ? showEarth : isHomePage;
 
   if (!mounted) return null;
 

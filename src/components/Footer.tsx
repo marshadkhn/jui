@@ -8,12 +8,12 @@ const Footer = () => {
   const footerLinks = {
     company: [
       { name: 'About Us', href: '/about' },
-      { name: 'JUI Global', href: '#' },
+      { name: 'Contact Us', href: '/contact' },
       { name: 'Global Network', href: '/partners' },
     ],
     expertise: [
       { name: 'Currency Printing', href: '/currency' },
-      { name: 'Card Technology', href: '#' },
+      { name: 'Card Technology', href: '/card' },
       { name: 'Paints & Coatings', href: '#' },
     ],
     corporateOffice: {

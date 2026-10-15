@@ -3,94 +3,170 @@
 import React from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import {
+  ShieldCheck,
+  Building2,
+  Wrench,
+  Boxes,
+  Award,
+  Layers,
+  Cpu,
+  Coins,
+  ArrowRight,
+  CheckCircle2,
+  PhoneCall,
+  Sparkles,
+  Compass,
+  FileCheck2,
+} from 'lucide-react';
 
-const STATS = [
-  { value: '30+', label: 'Years of Excellence', sub: 'Established in 1997 in Mumbai' },
-  { value: '50+', label: 'Global Principals', sub: 'World-renowned technology partners' },
-  { value: '4', label: 'Core Industries', sub: 'Currency, Card, Mint & Security Paper' },
-  { value: '100%', label: 'Sovereign Trust', sub: 'Serving India’s national security institutions' },
-];
-
-const PILLARS = [
+// Factual Credentials based on official historical records from juiglobal.com
+const CREDENTIALS = [
   {
-    tag: 'BANKNOTE & SECURITY',
-    title: 'Currency & Security Printing',
-    description:
-      'Providing end-to-end consulting, representation, and specialized engineering systems for banknote numbering, security thread embedding, intaglio printing, and high-speed envelope converting.',
-    points: [
-      'High-speed automated numbering systems',
-      'Banknote paper sheeters & finishing lines',
-      'Rotary stamp and document micro-perforation',
-    ],
+    value: 'Since 1997',
+    label: 'Decades of Excellence',
+    sub: 'Established in 1997 in Mumbai, delivering sovereign & high-value tender execution',
   },
   {
-    tag: 'CREDENTIALS & ID',
-    title: 'Smart Card & Identity Systems',
-    description:
-      'Supplying central issuance and personalization infrastructure for national IDs, passports, banking chips, and biometric citizen identification across India.',
-    points: [
-      'High-volume central issuance machines',
-      'Dual-interface card embedding & milling',
-      'Physical and cryptographic key personalization',
-    ],
+    value: '4 Core Sectors',
+    label: 'Specialized Domains',
+    sub: 'Banknote printing, smart cards, mint industry, and security paper mills',
   },
   {
-    tag: 'PRECISION MINTING',
-    title: 'Minting & Coin Production',
-    description:
-      'Partnering with world-leading European mint engineering firms to supply state-of-the-art coin blanking, 3D laser die engraving, optical coin sorting, and sachet packaging lines.',
-    points: [
-      'High-tonnage hydraulic medal & coin presses',
-      '3D laser die engraving & micro-frosting',
-      'Automated high-speed optical blank inspection',
-    ],
+    value: 'Complete Supply',
+    label: 'Turnkey Portfolio',
+    sub: 'Machineries, raw materials, spare parts, and consumable supplies',
   },
   {
-    tag: 'MATERIALS & COATINGS',
-    title: 'Security Paper & Specialty Inks',
-    description:
-      'Facilitating high-security substrate technology, watermarking wire, chemical authentication agents, and industrial paint & ink mixing systems for sovereign security facilities.',
-    points: [
-      'Security paper cylinder mould wire cloth',
-      'Anti-counterfeiting optical taggants & dyes',
-      'High-throughput industrial dispersion & mixing',
-    ],
+    value: 'Engineering Team',
+    label: 'Local Technical Support',
+    sub: 'Dedicated in-house service engineers for prompt after-sales support',
   },
 ];
 
-const LOCATIONS = [
+// Core Industry Verticals representing the old site's business scope
+const BUSINESS_SECTORS = [
   {
-    type: 'Registered & Corporate Office',
-    city: 'Mumbai',
-    address: 'A wing 305, Everest Grande, Mahakali Caves Road, Andheri East, Mumbai - 400 093, India.',
-    badge: 'HQ',
+    icon: Coins,
+    tag: 'BANKNOTE & SECURITY PRINTING',
+    title: 'Banknote & Security Printing',
+    description:
+      'Started with a steadfast focus on the currency and security printing market, representing world-renowned European engineering firms for high-speed automated numbering, intaglio presses, and security finishing lines.',
+    capabilities: [
+      'Automated high-speed numbering systems (Leibinger partner)',
+      'Banknote paper sheeters, slitters, and envelope finishing',
+      'Rotary stamp and high-security document micro-perforation',
+    ],
   },
   {
-    type: 'Works & Logistics Hub',
-    city: 'Bhiwandi',
-    address: 'J6-26 Bhumi World, Mumbai - Nashik Express Way, Pimplas, Bhiwandi, Thane, Maharashtra 421302.',
-    badge: 'Facility',
+    icon: Cpu,
+    tag: 'SMART CARD & ID INDUSTRY',
+    title: 'Smart Card & Raw Materials (RT Print)',
+    description:
+      'Premier manufacturer and supplier catering to the smart card, banking card, and telecom industry across India with certified raw materials, machine systems, and electronic components.',
+    capabilities: [
+      'PVC & PVC-ABS core sheets for digital inkjet and offset printing',
+      'Coated and uncoated overlays with high-bonding formulations',
+      'SMARTRAC RFID inlays, magnetic tapes, and tipping foils',
+    ],
   },
   {
-    type: 'Works & Warehouse Facility',
-    city: 'Turbhe, Navi Mumbai',
-    address: 'C-1, Punit Industrial Premises, Plot No. D 11/11-A, M.I.D.C., T.T.C., Opp. Turbhe Rly. Stn., Navi Mumbai – 400 705.',
-    badge: 'Logistics',
+    icon: ShieldCheck,
+    tag: 'MINT & SECURITY PAPER MILLS',
+    title: 'Mint Industry & Security Paper Mills',
+    description:
+      'Turnkey engineering and materials supply for India’s sovereign mints and security paper manufacturing mills, adhering to stringent government tender specifications.',
+    capabilities: [
+      'High-speed coin blanking lines and optical blank sorting',
+      '3D laser coin die engraving and micro-frosting systems',
+      'Cylinder mould wire cloth for security paper watermarking',
+    ],
+  },
+  {
+    icon: Wrench,
+    tag: 'SPARES, CONSUMABLES & SERVICE',
+    title: 'Spares Stocking & Engineering Support',
+    description:
+      'Maintaining dedicated warehouse facilities in Mumbai for rapid stocking and dispatch of essential spares and consumables, backed by experienced resident service engineers.',
+    capabilities: [
+      'Mumbai warehouse stocking of critical machinery spare parts',
+      'On-site machinery installation, calibration, and commissioning',
+      'Long-term annual maintenance contracts and preventive servicing',
+    ],
+  },
+];
+
+// Group Companies as featured on juiglobal.com
+const GROUP_COMPANIES = [
+  {
+    name: 'JUI Print Technology Pvt. Ltd.',
+    domain: 'Banknote, Security Printing & Mints',
+    summary:
+      'Official representative and systems integrator for world-class European engineering firms supplying intaglio presses, numbering boxes, coin blanking lines, and security paper watermarking.',
+    link: '/contact',
+  },
+  {
+    name: 'RT Print Technology',
+    domain: 'Smart Card Machinery & Raw Materials',
+    summary:
+      'Engaged in manufacturing, conversion, and nationwide supply of certified card raw materials including PVC core, coated overlays, magnetic tapes, and RFID smart inlays.',
+    link: '/contact',
+  },
+  {
+    name: 'Leibinger Group Partner',
+    domain: 'High-Precision Electronic Numbering',
+    summary:
+      'Strategic Indian representation for Paul Leibinger GmbH, delivering mechanical and electronic rotary numbering machines and optical verification across security printing presses.',
+    link: '/contact',
+  },
+  {
+    name: 'Jyoturja',
+    domain: 'Engineering & Industrial Clean Energy',
+    summary:
+      'Allied industrial equipment and infrastructure solutions supporting high-technology manufacturing and sustainable energy applications.',
+    link: '/contact',
+  },
+];
+
+// Core Operating Pillars from the old site's core motto
+const CORE_VALUES = [
+  {
+    icon: Award,
+    title: 'Fair Dealings',
+    desc: 'Uncompromising integrity and transparency in all sovereign and commercial relationships over three decades.',
+  },
+  {
+    icon: Compass,
+    title: 'Professional Capabilities',
+    desc: 'Deep technical competence in navigating complex sovereign tenders, technology transfer, and machinery integration.',
+  },
+  {
+    icon: CheckCircle2,
+    title: 'Customer Care Attitude',
+    desc: 'Dedicated customer-first approach with local resident engineers and round-the-clock technical responsiveness.',
   },
 ];
 
 export default function AboutPage() {
   return (
     <main className="relative min-h-screen w-full bg-black text-white overflow-hidden pt-32 pb-24 px-6 md:px-12 lg:px-20 selection:bg-cyan-400/30">
-      {/* Background Atmosphere Glows */}
+      {/* Background Atmosphere Glows matching JUI Design System */}
       <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute top-[10%] left-[-10%] w-[500px] h-[500px] bg-cyan-500/10 blur-[140px] rounded-full" />
-        <div className="absolute top-[50%] right-[-10%] w-[600px] h-[600px] bg-blue-600/10 blur-[160px] rounded-full" />
+        <div className="absolute top-[8%] left-[-10%] w-[550px] h-[550px] bg-cyan-500/10 blur-[150px] rounded-full" />
+        <div className="absolute top-[45%] right-[-10%] w-[650px] h-[650px] bg-blue-600/10 blur-[170px] rounded-full" />
+        <div className="absolute bottom-[5%] left-[20%] w-[450px] h-[450px] bg-teal-500/5 blur-[160px] rounded-full" />
+        <div
+          className="absolute inset-0 opacity-[0.03]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, #ffffff 1px, transparent 0)`,
+            backgroundSize: '40px 40px',
+          }}
+        />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto flex flex-col gap-28">
-        {/* Hero Section */}
-        <section className="flex flex-col items-start max-w-4xl pt-6">
+      <div className="relative z-10 max-w-7xl mx-auto flex flex-col gap-24">
+        {/* 1. HERO SECTION */}
+        <section className="flex flex-col items-start max-w-4xl pt-4">
           <motion.div
             className="flex items-center gap-3 mb-6"
             initial={{ opacity: 0, x: -20 }}
@@ -99,7 +175,7 @@ export default function AboutPage() {
           >
             <div className="w-10 h-[2px] bg-cyan-400 shadow-[0_0_10px_#00D1FF]" />
             <span className="text-cyan-400 font-mono text-[11px] font-bold tracking-[0.35em] uppercase">
-              Est. 1997 · Mumbai, India
+              Established 1997 · Mumbai, India
             </span>
           </motion.div>
 
@@ -109,7 +185,11 @@ export default function AboutPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.1 }}
           >
-            Pioneering the Gateway to India&apos;s <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-white">Security & Minting</span> Industry.
+            Pioneering Representation in{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-white">
+              Banknote, Security & Card
+            </span>{' '}
+            Industry.
           </motion.h1>
 
           <motion.p
@@ -118,7 +198,7 @@ export default function AboutPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.2 }}
           >
-            For nearly three decades, JUI Global has served as the trusted bridge connecting world-renowned international technology leaders with India’s sovereign currency printing, minting, security paper manufacturing, and identity document institutions.
+            JUI Group is engaged in the representation of world-renowned international companies in the field of Banknote & Security Printing, Mint Industry, Security Paper Mills, and the Smart Card Industry in India. Specialized in high-security, high-value tenders with established credentials as a trusted supplier of machineries, raw materials, spares, and consumables.
           </motion.p>
 
           <motion.div
@@ -128,151 +208,277 @@ export default function AboutPage() {
             transition={{ duration: 0.85, delay: 0.3 }}
           >
             <Link
-              href="/currency"
-              className="px-8 py-3.5 rounded-lg border border-cyan-400/50 bg-cyan-400/10 text-cyan-200 hover:bg-cyan-400/20 hover:text-white transition-all text-xs font-bold tracking-[0.2em] uppercase backdrop-blur-md shadow-[0_0_20px_rgba(0,209,255,0.2)]"
+              href="/contact"
+              className="px-8 py-3.5 rounded-lg border border-cyan-400/50 bg-cyan-400/10 text-cyan-200 hover:bg-cyan-400/20 hover:text-white transition-all text-xs font-bold tracking-[0.2em] uppercase backdrop-blur-md shadow-[0_0_20px_rgba(0,209,255,0.2)] flex items-center gap-2"
             >
-              Explore Solutions
+              <span>Connect With Us</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </Link>
             <Link
-              href="/#product-sections"
+              href="/currency"
               className="px-8 py-3.5 rounded-lg border border-white/20 bg-white/5 text-white/90 hover:bg-white/10 hover:border-white/40 transition-all text-xs font-bold tracking-[0.2em] uppercase backdrop-blur-md"
             >
-              Interactive Showcase
+              Currency Division
+            </Link>
+            <Link
+              href="/partners"
+              className="px-8 py-3.5 rounded-lg border border-white/[0.08] bg-transparent text-[#8BAAB8] hover:text-white hover:border-cyan-400/40 transition-all text-xs font-mono tracking-wider"
+            >
+              Global Principals
             </Link>
           </motion.div>
         </section>
 
-        {/* Stats Grid */}
+        {/* 2. CREDENTIALS & STATS (Real data from juiglobal.com) */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {STATS.map((stat, i) => (
+          {CREDENTIALS.map((item, i) => (
             <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 30 }}
+              key={item.label}
+              initial={{ opacity: 0, y: 25 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.1 }}
-              className="relative rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 backdrop-blur-md flex flex-col justify-between hover:border-cyan-400/40 transition-colors group"
+              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="relative rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 backdrop-blur-md flex flex-col justify-between hover:border-cyan-400/40 transition-all group"
             >
-              <div className="text-5xl font-black text-cyan-400 tracking-tight mb-4 font-mono group-hover:scale-105 transition-transform duration-300">
-                {stat.value}
+              <div className="text-3xl sm:text-4xl font-extrabold text-cyan-400 tracking-tight mb-3 font-mono group-hover:scale-105 transition-transform duration-300">
+                {item.value}
               </div>
               <div>
                 <div className="text-white font-bold text-base mb-1 tracking-tight">
-                  {stat.label}
+                  {item.label}
                 </div>
                 <div className="text-[#8BAAB8] text-xs font-medium leading-relaxed">
-                  {stat.sub}
+                  {item.sub}
                 </div>
               </div>
             </motion.div>
           ))}
         </section>
 
-        {/* Core Expertise Pillars */}
-        <section className="flex flex-col gap-12">
-          <div className="flex flex-col gap-3">
-            <span className="text-cyan-400 font-mono text-[11px] font-bold tracking-[0.25em] uppercase">
-              Core Capabilities
+        {/* 3. CORE CORPORATE PROFILE & HISTORICAL JOURNEY */}
+        <section className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-8 md:p-14 backdrop-blur-xl">
+          <div className="max-w-3xl mb-12">
+            <span className="text-cyan-400 font-mono text-[11px] font-bold tracking-[0.25em] uppercase block mb-3">
+              Corporate Overview
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight">
-              Four Pillars of Sovereign Engineering
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
+              Three Decades of Trust in Sovereign High-Security Tenders
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {PILLARS.map((pillar, idx) => (
-              <motion.div
-                key={pillar.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 lg:p-10 flex flex-col justify-between hover:border-cyan-400/35 transition-all group backdrop-blur-md"
-              >
-                <div>
-                  <span className="text-[10px] font-mono font-bold tracking-[0.25em] text-cyan-300/80 uppercase block mb-3">
-                    {pillar.tag}
-                  </span>
-                  <h3 className="text-2xl font-bold tracking-tight text-white mb-4 group-hover:text-cyan-400 transition-colors">
-                    {pillar.title}
-                  </h3>
-                  <p className="text-[#8BAAB8] text-sm leading-relaxed mb-6 font-normal">
-                    {pillar.description}
-                  </p>
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 text-sm text-[#8BAAB8] leading-relaxed">
+            {/* Column 1: Genesis & Roots */}
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 space-y-4 hover:border-cyan-400/30 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-2">
+                <FileCheck2 className="w-5 h-5" />
+              </div>
+              <h3 className="text-lg font-bold text-white tracking-tight">
+                Established Roots Since 1997
+              </h3>
+              <p>
+                Established in 1997 with a steadfast focus on the Currency & Security Printing market, JUI Group expanded further catering to the smart card industry, having established strong roots in handling high-security and high-value tender business since 1997.
+              </p>
+              <p>
+                Today, the activity is consolidated to provide end-to-end representation for leading European technology providers to Indian sovereign institutions.
+              </p>
+            </div>
 
-                <ul className="space-y-2.5 pt-4 border-t border-white/[0.06]">
-                  {pillar.points.map((pt) => (
-                    <li key={pt} className="flex items-center gap-3 text-xs text-white/85">
-                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#00D1FF]" />
-                      <span>{pt}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
+            {/* Column 2: Mumbai Infrastructure */}
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 space-y-4 hover:border-cyan-400/30 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-2">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <h3 className="text-lg font-bold text-white tracking-tight">
+                Strategic Mumbai Infrastructure
+              </h3>
+              <p>
+                Headquarters located in the heart of Mumbai’s commercial business district (Andheri East), having close proximity to international and domestic airports, arterial expressways, and financial centers.
+              </p>
+              <p>
+                Supported by dedicated warehouse facilities for prompt stocking of critical machinery spares, consumables, and certified raw materials for rapid pan-India dispatch.
+              </p>
+            </div>
+
+            {/* Column 3: Service Engineering & Reputation */}
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 space-y-4 hover:border-cyan-400/30 transition-colors">
+              <div className="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-2">
+                <Wrench className="w-5 h-5" />
+              </div>
+              <h3 className="text-lg font-bold text-white tracking-tight">
+                Technical Staff & Service Engineers
+              </h3>
+              <p>
+                Staffed by a dedicated team of professionals including qualified service engineers who provide after-sales technical support, machine installations, calibration, and preventive maintenance.
+              </p>
+              <p>
+                The Group enjoys the highest reputation amongst its global Principals and Indian Clientele alike for its fair dealings, professional capabilities, and customer-care attitude.
+              </p>
+            </div>
           </div>
         </section>
 
-        {/* Corporate Infrastructure & Locations */}
+        {/* 4. THE FOUR CORE BUSINESS SECTORS */}
         <section className="flex flex-col gap-10">
           <div className="flex flex-col gap-3">
             <span className="text-cyan-400 font-mono text-[11px] font-bold tracking-[0.25em] uppercase">
-              Infrastructure & Operations
+              Operational Scope
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Offices & Warehouse Facilities
+              Four Core Pillars of Representation
             </h2>
+            <p className="text-[#8BAAB8] text-sm max-w-2xl leading-relaxed">
+              Consistently delivering machineries, raw materials, spares, and consumables across critical national security sectors.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {LOCATIONS.map((loc, i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {BUSINESS_SECTORS.map((sector, idx) => {
+              const IconComp = sector.icon;
+              return (
+                <motion.div
+                  key={sector.title}
+                  initial={{ opacity: 0, y: 25 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 lg:p-10 flex flex-col justify-between hover:border-cyan-400/35 transition-all group backdrop-blur-md"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-4">
+                      <span className="text-[10px] font-mono font-bold tracking-[0.25em] text-cyan-300/80 uppercase">
+                        {sector.tag}
+                      </span>
+                      <div className="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
+                        <IconComp className="w-5 h-5" />
+                      </div>
+                    </div>
+
+                    <h3 className="text-2xl font-bold tracking-tight text-white mb-3 group-hover:text-cyan-400 transition-colors">
+                      {sector.title}
+                    </h3>
+                    <p className="text-[#8BAAB8] text-sm leading-relaxed mb-6 font-normal">
+                      {sector.description}
+                    </p>
+                  </div>
+
+                  <ul className="space-y-2.5 pt-4 border-t border-white/[0.06]">
+                    {sector.capabilities.map((cap) => (
+                      <li key={cap} className="flex items-start gap-2.5 text-xs text-white/85">
+                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#00D1FF] shrink-0 mt-1.5" />
+                        <span>{cap}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* 5. GROUP COMPANIES (Featured on the old site) */}
+        <section className="flex flex-col gap-10">
+          <div className="flex flex-col gap-3">
+            <span className="text-cyan-400 font-mono text-[11px] font-bold tracking-[0.25em] uppercase">
+              Corporate Entities
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+              Group Companies & Strategic Brands
+            </h2>
+            <p className="text-[#8BAAB8] text-sm max-w-2xl leading-relaxed">
+              Consolidated under JUI Group, delivering focused engineering, raw materials manufacturing, and international technology integration.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {GROUP_COMPANIES.map((company, idx) => (
               <motion.div
-                key={loc.city}
-                initial={{ opacity: 0, y: 25 }}
+                key={company.name}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="rounded-xl border border-white/[0.08] bg-white/[0.02] p-6 flex flex-col justify-between hover:border-cyan-400/40 transition-colors"
+                transition={{ duration: 0.5, delay: idx * 0.08 }}
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md flex flex-col justify-between hover:border-cyan-400/40 transition-all group"
               >
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-4">
-                    <span className="text-cyan-400 font-mono text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-cyan-400/30 bg-cyan-400/10">
-                      {loc.badge}
-                    </span>
-                    <span className="text-white/60 font-mono text-[11px]">
-                      {loc.city}
-                    </span>
+                  <div className="text-[10px] font-mono text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded inline-block mb-3 border border-cyan-400/20">
+                    {company.domain}
                   </div>
-                  <h4 className="text-white font-bold text-base mb-2">
-                    {loc.type}
-                  </h4>
+                  <h3 className="text-base font-bold text-white tracking-tight mb-2 group-hover:text-cyan-300 transition-colors">
+                    {company.name}
+                  </h3>
                   <p className="text-[#8BAAB8] text-xs leading-relaxed">
-                    {loc.address}
+                    {company.summary}
                   </p>
+                </div>
+
+                <div className="pt-5 mt-5 border-t border-white/[0.06]">
+                  <Link
+                    href={company.link}
+                    className="text-xs font-bold text-cyan-400 hover:text-white uppercase tracking-wider inline-flex items-center gap-1.5 transition-colors"
+                  >
+                    Contact Division <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
               </motion.div>
             ))}
           </div>
         </section>
 
-        {/* Bottom Call to Action Card */}
+        {/* 6. REPUTATION & CORE VALUES (From old site: "fair dealings, professional capabilities and customer care attitude") */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {CORE_VALUES.map((val, idx) => {
+            const IconComp = val.icon;
+            return (
+              <motion.div
+                key={val.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 flex flex-col justify-between hover:border-cyan-400/40 transition-colors backdrop-blur-md"
+              >
+                <div>
+                  <div className="w-12 h-12 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-5">
+                    <IconComp className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold text-white mb-2 tracking-tight">
+                    {val.title}
+                  </h3>
+                  <p className="text-[#8BAAB8] text-xs leading-relaxed">
+                    {val.desc}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
+        </section>
+
+        {/* 7. BOTTOM CALL TO ACTION BANNER */}
         <section className="rounded-3xl border border-cyan-400/30 bg-gradient-to-r from-cyan-950/40 via-black to-slate-950/50 p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-8 backdrop-blur-xl shadow-[0_0_50px_rgba(0,209,255,0.1)]">
           <div className="max-w-xl">
             <h3 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight mb-3">
-              Explore Our Global Principals Network
+              Engage With Our Engineering & Procurement Desk
             </h3>
             <p className="text-[#8BAAB8] text-sm leading-relaxed">
-              Discover our world-leading technology partners across Germany, Switzerland, the United Kingdom, and the United States.
+              Explore how JUI Group bridges world-leading international technology with India’s sovereign institutions, banknote presses, mints, and card manufacturers.
             </p>
           </div>
 
-          <Link
-            href="/#product-sections"
-            className="px-8 py-4 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold text-xs tracking-[0.2em] uppercase transition-all duration-200 shrink-0 shadow-[0_0_25px_rgba(0,209,255,0.5)] hover:scale-105"
-          >
-            View 3D Interactive Map
-          </Link>
+          <div className="flex flex-wrap items-center gap-4 shrink-0">
+            <Link
+              href="/contact"
+              className="px-8 py-4 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold text-xs tracking-[0.2em] uppercase transition-all duration-200 shadow-[0_0_25px_rgba(0,209,255,0.5)] hover:scale-105 flex items-center gap-2"
+            >
+              <span>Get in Touch</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="/partners"
+              className="px-8 py-4 rounded-xl border border-white/20 bg-white/5 text-white/90 hover:bg-white/10 hover:border-white/40 font-extrabold text-xs tracking-[0.2em] uppercase transition-all duration-200"
+            >
+              Principals Network
+            </Link>
+          </div>
         </section>
       </div>
     </main>

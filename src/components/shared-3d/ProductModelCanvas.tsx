@@ -28,13 +28,14 @@ interface ModelProps {
   shouldSpin?: boolean;
   spinSpeed?: number;
   progress?: MotionValue<number>;
+  standalone?: boolean;
 }
 
 /**
  * AtmosphericLights - Creates a dynamic "Lighting Reveal" 
  * as the model centers in the viewport.
  */
-const AtmosphericLights = ({ progress }: { progress?: MotionValue<number> }) => {
+const AtmosphericLights = ({ progress, standalone }: { progress?: MotionValue<number>; standalone?: boolean }) => {
   const fallback = useMotionValue(0.5);
   const activeProgress = progress || fallback;
   const reveal = useTransform(
@@ -48,6 +49,12 @@ const AtmosphericLights = ({ progress }: { progress?: MotionValue<number> }) => 
   const pointLightRef = useRef<THREE.PointLight>(null);
 
   useFrame(() => {
+    if (standalone) {
+      if (ambientRef.current) ambientRef.current.intensity = 0.9;
+      if (dirLightRef.current) dirLightRef.current.intensity = 2.4;
+      if (pointLightRef.current) pointLightRef.current.intensity = 2.2;
+      return;
+    }
     const val = reveal.get();
     if (ambientRef.current) ambientRef.current.intensity = 0.6 * val;
     if (dirLightRef.current) dirLightRef.current.intensity = 1.8 * val;
@@ -56,10 +63,16 @@ const AtmosphericLights = ({ progress }: { progress?: MotionValue<number> }) => 
 
   return (
     <>
-      <ambientLight ref={ambientRef} intensity={0.6} />
-      <directionalLight ref={dirLightRef} position={[10, 10, 10]} intensity={1.5} />
+      <ambientLight ref={ambientRef} intensity={standalone ? 0.9 : 0.6} />
+      <directionalLight ref={dirLightRef} position={[10, 10, 10]} intensity={standalone ? 2.4 : 1.5} />
       {/* Neutral highlight */}
-      <pointLight ref={pointLightRef} position={[-10, 5, 2]} intensity={1} color="#ffffff" />
+      <pointLight ref={pointLightRef} position={[-10, 5, 2]} intensity={standalone ? 2.2 : 1} color="#ffffff" />
+      {standalone && (
+        <>
+          <pointLight position={[6, -6, -2]} intensity={3.5} color="#00D1FF" />
+          <pointLight position={[0, 8, 5]} intensity={2.5} color="#EAF6FF" />
+        </>
+      )}
     </>
   );
 };
@@ -137,7 +150,10 @@ const ProductModelCanvas = (props: ModelProps) => {
     setIsMobile(window.innerWidth < 768);
   }, []);
 
-  const isFirstSection = props.path && (props.path.includes('Note_printer') || props.path.includes('Currency'));
+  const isFirstSection = Boolean(
+    props.standalone ||
+    (props.path && (props.path.includes('Note_printer') || props.path.includes('Currency')))
+  );
 
   const fallbackProgress = useMotionValue(0.5);
   const activeProgress = props.progress || fallbackProgress;
@@ -200,10 +216,14 @@ const ProductModelCanvas = (props: ModelProps) => {
   return (
     <div 
       className="relative w-full h-full min-h-[400px]"
-      style={{
-        maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
-        WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)'
-      }}
+      style={
+        props.standalone
+          ? undefined
+          : {
+              maskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)'
+            }
+      }
     >
       {/* Space Glow Aura — Set to neutral white/low opacity */}
       <motion.div
@@ -233,16 +253,16 @@ const ProductModelCanvas = (props: ModelProps) => {
         <Suspense fallback={null}>
           <AdaptiveDpr pixelated />
 
-          <AtmosphericLights progress={props.progress} />
+          <AtmosphericLights progress={props.progress} standalone={props.standalone} />
 
-          <Float speed={0.3} rotationIntensity={0.2} floatIntensity={0.2}>
+          <Float speed={0.4} rotationIntensity={0.25} floatIntensity={0.25}>
             {/* Pass the animated scale and opacity values here */}
             <DynamicMotionWrapper scaleValue={modelDynamicScale} opacityValue={modelOpacity}>
               <GltfModel {...props} isMobile={isMobile} />
             </DynamicMotionWrapper>
           </Float>
 
-          <Environment preset="studio" environmentIntensity={0.2} />
+          <Environment preset="studio" environmentIntensity={props.standalone ? 0.9 : 0.2} />
 
           {!isMobile && (
             <ContactShadows
