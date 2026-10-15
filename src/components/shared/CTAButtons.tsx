@@ -1,10 +1,12 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 interface CTAButtonsProps {
   label?: string;
+  href?: string;
   onActionClick?: () => void;
   onContactClick?: () => void;
   className?: string;
@@ -16,6 +18,7 @@ interface CTAButtonsProps {
 
 const CTAButtons = ({
   label = 'Contact Us',
+  href,
   onActionClick,
   onContactClick,
   className = '',
@@ -53,39 +56,14 @@ const CTAButtons = ({
     hover: { x: isRight ? (isSm ? 5 : 8) : (isSm ? -5 : -8) }
   };
 
-  return (
+  const buttonContent = (
     <motion.div
       className={`flex items-center ${isSm ? 'gap-2' : 'gap-4'} group cursor-pointer ${reverseOrder ? 'flex-row-reverse justify-end' : ''} ${fullWidth ? 'w-full' : ''} ${className}`}
       initial="initial"
       whileHover="hover"
       variants={containerVariants}
-      onClick={onContactClick} // General click area
+      onClick={onContactClick}
     >
-      {/* Arrow button commented out as requested */}
-      {/* <motion.button
-        onClick={onActionClick}
-        variants={buttonVariants}
-        transition={{ type: 'spring', stiffness: 400, damping: 15 }}
-        className={`${isSm ? 'w-10 h-10' : 'w-14 h-14'} border flex items-center justify-center transition-colors pointer-events-none shrink-0 rounded-full`}
-      >
-        <motion.svg
-          width={isSm ? "16" : "24"}
-          height={isSm ? "16" : "24"}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth={isSm ? "2" : "1.5"}
-          variants={arrowVariants}
-          transition={{ duration: 0.3 }}
-        >
-          {isRight ? (
-            <path d="M5 12H19M19 12L12 5M19 12L12 19" />
-          ) : (
-            <path d="M19 12H5M5 12L12 19M5 12L12 5" />
-          )}
-        </motion.svg>
-      </motion.button> */}
-
       <motion.button
         onClick={onContactClick}
         variants={buttonVariants}
@@ -96,6 +74,16 @@ const CTAButtons = ({
       </motion.button>
     </motion.div>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className={fullWidth ? 'w-full block' : 'inline-block'}>
+        {buttonContent}
+      </Link>
+    );
+  }
+
+  return buttonContent;
 };
 
 export default CTAButtons;

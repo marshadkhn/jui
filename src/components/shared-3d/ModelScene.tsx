@@ -736,7 +736,9 @@ const ModelScene = ({
   const activeGlobalScroll = globalScroll || defaultScroll;
 
   const isCurrencyPage = pathname === '/currency';
-  const shouldShowEarth = showEarth !== undefined ? showEarth : !isCurrencyPage;
+  const isAboutPage = pathname === '/about';
+  const isPartnersPage = pathname === '/partners';
+  const shouldShowEarth = showEarth !== undefined ? showEarth : (!isCurrencyPage && !isAboutPage && !isPartnersPage);
 
   if (!mounted) return null;
 

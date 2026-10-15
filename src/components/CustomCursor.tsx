@@ -6,10 +6,8 @@ import { motion, useSpring, useMotionValue } from "framer-motion";
 const CustomCursor = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isEarthSection, setIsEarthSection] = useState(false);
   const [mounted, setMounted] = useState(false);
-
-  // In local development, always use default system cursor
-  const isLocalDev = process.env.NODE_ENV === "development";
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -20,13 +18,30 @@ const CustomCursor = () => {
   const cursorY = useSpring(mouseY, springConfig);
 
   useEffect(() => {
-    if (isLocalDev) return;
-
     setMounted(true);
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     if (isTouchDevice) return;
 
     document.documentElement.classList.add("custom-cursor-active");
+
+    const checkEarthSection = () => {
+      setIsEarthSection(document.documentElement.classList.contains('earth-section-active'));
+    };
+    checkEarthSection();
+
+    const observer = new MutationObserver(() => {
+      checkEarthSection();
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+    const handleEarthSectionEvent = (e: Event) => {
+      const customEvent = e as CustomEvent<{ active: boolean }>;
+      if (typeof customEvent.detail?.active === 'boolean') {
+        setIsEarthSection(customEvent.detail.active);
+      } else {
+        checkEarthSection();
+      }
+    };
 
     const moveMouse = (e: MouseEvent) => {
       mouseX.set(e.clientX);
@@ -51,26 +66,38 @@ const CustomCursor = () => {
       setIsHovered(isClickable);
     };
 
+    const handleCustomHover = (e: Event) => {
+      const customEvent = e as CustomEvent<{ isHovered: boolean }>;
+      if (typeof customEvent.detail?.isHovered === 'boolean') {
+        setIsHovered(customEvent.detail.isHovered);
+      }
+    };
+
     const handleMouseLeave = () => {
       setIsVisible(false);
     };
 
     window.addEventListener("mousemove", moveMouse, { passive: true });
     window.addEventListener("mouseover", handleMouseOver, { passive: true });
+    window.addEventListener("custom-cursor-hover", handleCustomHover as EventListener);
+    window.addEventListener("earth-section-change", handleEarthSectionEvent as EventListener);
     document.addEventListener("mouseleave", handleMouseLeave);
 
     return () => {
+      observer.disconnect();
       document.documentElement.classList.remove("custom-cursor-active");
       window.removeEventListener("mousemove", moveMouse);
       window.removeEventListener("mouseover", handleMouseOver);
+      window.removeEventListener("custom-cursor-hover", handleCustomHover as EventListener);
+      window.removeEventListener("earth-section-change", handleEarthSectionEvent as EventListener);
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [mouseX, mouseY, isVisible, isLocalDev]);
+  }, [mouseX, mouseY, isVisible]);
 
-  if (isLocalDev || !mounted) return null;
+  if (!mounted || isEarthSection) return null;
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+    <div className="fixed inset-0 pointer-events-none z-[999999] overflow-hidden">
       <motion.div
         style={{
           x: cursorX,

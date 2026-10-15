@@ -17,20 +17,41 @@
   --text-secondary: var(--text-secondary);
 }
 
-/* Custom cursor active only in production via dynamic class */
+/* Custom cursor active via dynamic class (disabled on Earth India section) */
 @media (hover: hover) {
-  html.custom-cursor-active, 
-  html.custom-cursor-active body {
-    cursor: none;
+  html.custom-cursor-active:not(.earth-section-active), 
+  html.custom-cursor-active:not(.earth-section-active) *,
+  html.custom-cursor-active:not(.earth-section-active) body,
+  html.custom-cursor-active:not(.earth-section-active) canvas {
+    cursor: none !important;
   }
 
-  html.custom-cursor-active a, 
-  html.custom-cursor-active button, 
-  html.custom-cursor-active [role="button"], 
-  html.custom-cursor-active input, 
-  html.custom-cursor-active select, 
-  html.custom-cursor-active textarea {
+  html.custom-cursor-active:not(.earth-section-active) a, 
+  html.custom-cursor-active:not(.earth-section-active) button, 
+  html.custom-cursor-active:not(.earth-section-active) [role="button"], 
+  html.custom-cursor-active:not(.earth-section-active) input, 
+  html.custom-cursor-active:not(.earth-section-active) select, 
+  html.custom-cursor-active:not(.earth-section-active) textarea {
     cursor: none !important;
+  }
+
+  /* Force standard system cursor when viewing Earth India section */
+  html.earth-section-active,
+  html.earth-section-active body,
+  html.earth-section-active canvas {
+    cursor: default !important;
+  }
+
+  html.earth-section-active.earth-marker-hover,
+  html.earth-section-active.earth-marker-hover body,
+  html.earth-section-active.earth-marker-hover canvas,
+  html.earth-section-active a,
+  html.earth-section-active button,
+  html.earth-section-active [role="button"],
+  html.earth-section-active .cursor-pointer,
+  html.earth-section-active [style*="cursor: pointer"],
+  html.earth-section-active [style*="cursor:pointer"] {
+    cursor: pointer !important;
   }
 }
 

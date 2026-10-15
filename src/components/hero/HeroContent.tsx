@@ -5,8 +5,8 @@ import { motion } from 'framer-motion';
 
 const HEADLINE = ['Premier', 'Gateway', 'to'];
 const HEADLINE_ACCENT = ["India's"];
-const HEADLINE2 = ['Security', '&', 'Currency'];
-const HEADLINE3 = ['Industry.'];
+const HEADLINE2 = ['Security', 'Printing ', 'Industry'];
+const HEADLINE3 = [''];
 
 const container = {
   hidden: {},
@@ -37,7 +37,7 @@ const HeroContent = () => {
       >
         <div className="w-8 h-px bg-accent" />
         <span className="text-accent text-[10px] font-bold tracking-[0.5em] uppercase">
-          Est. 1992 · Mumbai, India
+          Est. 1997 · Mumbai, India
         </span>
       </motion.div>
 
@@ -75,19 +75,19 @@ const HeroContent = () => {
             ))}
           </div>
           {/* Line 3 */}
-          <div className="block">
+          {/* <div className="block">
             {HEADLINE3.map((w, i) => (
               <motion.span key={i} variants={word} className="inline-block mr-[0.22em]">
                 {w}
               </motion.span>
             ))}
-          </div>
+          </div> */}
         </motion.h1>
       </div>
 
       {/* Divider line */}
       <motion.div
-        className="w-16 h-px  my-6 md:my-8"
+        className="w-16 h-px  my-3 md:my-6"
         initial={{ scaleX: 0, originX: 0 }}
         animate={{ scaleX: 1 }}
         transition={{ duration: 0.8, delay: 1.1, ease: [0.22, 1, 0.36, 1] }}
@@ -100,8 +100,7 @@ const HeroContent = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
       >
-        Connecting world-class innovation with India&apos;s Banknote, Mint, and Smart Card industries.
-        Trusted by governments and enterprises across 30+ countries.
+        Connecting world-class innovation with India&apos;s Banknote, Security, Mint & Smart Card Industries.
       </motion.p>
 
 

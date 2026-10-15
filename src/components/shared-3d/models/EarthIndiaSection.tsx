@@ -434,6 +434,16 @@ export function EarthIndiaModel({
     selectedMarkerRef.current = markersById[selectedLocationId] ?? null;
   }, [selectedLocationId, markersById, onScreenPosChange]);
 
+  useEffect(() => {
+    return () => {
+      if (typeof window !== 'undefined') {
+        document.documentElement.classList.remove('earth-marker-hover');
+        window.dispatchEvent(new CustomEvent('custom-cursor-hover', { detail: { isHovered: false } }));
+        document.body.style.cursor = '';
+      }
+    };
+  }, []);
+
   // 🌍 Resolve the globe mesh actually mounted in the rendered scene graph.
   // `terreMeshRef` is captured while cloning, so its matrixWorld can be missing
   // the parent group transforms — the live one is the reliable reference.
@@ -652,7 +662,10 @@ export function EarthIndiaModel({
   const handlePointerMove = (e: ThreeEvent<PointerEvent>) => {
     const hitId = getHitLocationId(e);
     if (hitId != null) {
-      document.body.style.cursor = 'pointer';
+      if (typeof window !== 'undefined') {
+        document.documentElement.classList.add('earth-marker-hover');
+        window.dispatchEvent(new CustomEvent('custom-cursor-hover', { detail: { isHovered: true } }));
+      }
       const marker = markersById[hitId];
       if (marker) {
         hoveredMarkerRef.current = marker;
@@ -667,7 +680,10 @@ export function EarthIndiaModel({
         }
       }
     } else {
-      document.body.style.cursor = 'default';
+      if (typeof window !== 'undefined') {
+        document.documentElement.classList.remove('earth-marker-hover');
+        window.dispatchEvent(new CustomEvent('custom-cursor-hover', { detail: { isHovered: false } }));
+      }
       if (hoveredMarkerRef.current !== null) {
         hoveredMarkerRef.current = null;
         onHoverCompany?.(null, null);
@@ -676,7 +692,10 @@ export function EarthIndiaModel({
   };
 
   const handlePointerOut = () => {
-    document.body.style.cursor = 'default';
+    if (typeof window !== 'undefined') {
+      document.documentElement.classList.remove('earth-marker-hover');
+      window.dispatchEvent(new CustomEvent('custom-cursor-hover', { detail: { isHovered: false } }));
+    }
     if (hoveredMarkerRef.current !== null) {
       hoveredMarkerRef.current = null;
       onHoverCompany?.(null, null);

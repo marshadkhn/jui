@@ -41,7 +41,7 @@ const WhatWeDo = () => {
   const sectionRef = React.useRef<HTMLDivElement>(null);
 
   const [isMobile, setIsMobile] = useState(false);
-  const [mounted, setMounted]   = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setIsMobile(window.innerWidth < 1024);
@@ -60,7 +60,7 @@ const WhatWeDo = () => {
   const rawOpacity = useTransform(scrollYProgress, (latest) => {
     if (latest < 0.30) return latest / 0.30;
     if (latest < 0.70) return 1;
-    if (latest < 1.0)  return 1 - (latest - 0.70) / 0.30;
+    if (latest < 1.0) return 1 - (latest - 0.70) / 0.30;
     return 0;
   });
   const opacity = useSpring(rawOpacity, springOpts);
@@ -84,7 +84,7 @@ const WhatWeDo = () => {
   });
 
   // Spring-smooth every model transform so motion is silky
-  const modelX    = useSpring(rawModelX,    springOpts);
+  const modelX = useSpring(rawModelX, springOpts);
   const modelRotX = useSpring(rawModelRotX, springOpts);
   const modelRotY = useSpring(rawModelRotY, springOpts);
   const modelRotZ = useSpring(rawModelRotZ, springOpts);
@@ -92,16 +92,16 @@ const WhatWeDo = () => {
   // Exit animation for text (wider window)
   const rawYOffset = useTransform(scrollYProgress, (latest) => {
     if (latest < 0.70) return 0;
-    if (latest < 1.0)  return ((latest - 0.70) / 0.30) * -100;
+    if (latest < 1.0) return ((latest - 0.70) / 0.30) * -100;
     return -100;
   });
   const rawScale = useTransform(scrollYProgress, (latest) => {
     if (latest < 0.70) return 1;
-    if (latest < 1.0)  return 1 - ((latest - 0.70) / 0.30) * 0.2;
+    if (latest < 1.0) return 1 - ((latest - 0.70) / 0.30) * 0.2;
     return 0.8;
   });
-  const yOffset     = useSpring(rawYOffset, springOpts);
-  const scaleEffect = useSpring(rawScale,   springOpts);
+  const yOffset = useSpring(rawYOffset, springOpts);
+  const scaleEffect = useSpring(rawScale, springOpts);
 
 
   return (
@@ -121,46 +121,46 @@ const WhatWeDo = () => {
 
           <div className="w-full h-full relative z-10 flex justify-center items-center">
             {mounted && (
-            <Canvas
-              dpr={isMobile ? [1, 1] : [1, 2]}
-              camera={{ position: [0, 0, 8], fov: 35 }}
-              gl={{ antialias: !isMobile, alpha: true, powerPreference: "high-performance" }}
-            >
-              <Suspense fallback={null}>
-                <ambientLight intensity={0.5} />
-                <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
-                <pointLight position={[-1, 0.5, 0]} intensity={0.2} color="#00f2ff" />
+              <Canvas
+                dpr={isMobile ? [1, 1] : [1, 2]}
+                camera={{ position: [0, 0, 8], fov: 35 }}
+                gl={{ antialias: !isMobile, alpha: true, powerPreference: "high-performance" }}
+              >
+                <Suspense fallback={null}>
+                  <ambientLight intensity={0.5} />
+                  <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} />
+                  <pointLight position={[-1, 0.5, 0]} intensity={0.2} color="#00f2ff" />
 
-                <Float
-                  speed={0.5}
-                  rotationIntensity={0} // Kept straight
-                  floatIntensity={0.5}
-                  floatingRange={[-0.2, 0.2]}
-                >
-                  <AnimatingModelWrapper
-                    modelX={modelX}
-                    modelRotX={modelRotX}
-                    modelRotY={modelRotY}
-                    modelRotZ={modelRotZ}
+                  <Float
+                    speed={0.5}
+                    rotationIntensity={0} // Kept straight
+                    floatIntensity={0.5}
+                    floatingRange={[-0.2, 0.2]}
                   >
-                    <Center position={[0, 0.5, 0]}>
-                      <WhatWeDoModel scale={1.8} />
-                    </Center>
-                  </AnimatingModelWrapper>
-                </Float>
+                    <AnimatingModelWrapper
+                      modelX={modelX}
+                      modelRotX={modelRotX}
+                      modelRotY={modelRotY}
+                      modelRotZ={modelRotZ}
+                    >
+                      <Center position={[0, 0.5, 0]}>
+                        <WhatWeDoModel scale={1.8} />
+                      </Center>
+                    </AnimatingModelWrapper>
+                  </Float>
 
-                <Environment preset="city" environmentIntensity={0.2} />
-                {!isMobile && (
-                  <ContactShadows
-                    position={[0, -1.5, 0]}
-                    opacity={0.4}
-                    scale={10}
-                    blur={2.5}
-                    far={4}
-                  />
-                )}
-              </Suspense>
-            </Canvas>
+                  <Environment preset="city" environmentIntensity={0.2} />
+                  {!isMobile && (
+                    <ContactShadows
+                      position={[0, -1.5, 0]}
+                      opacity={0.4}
+                      scale={10}
+                      blur={2.5}
+                      far={4}
+                    />
+                  )}
+                </Suspense>
+              </Canvas>
             )}
           </div>
         </motion.div>
@@ -182,10 +182,10 @@ const WhatWeDo = () => {
             </div>
 
             <p className="text-white text-xl lg:text-2xl leading-[1.4] mb-12">
-              We provide diversified solutions specializing in currency & security printing materials, card industry technologies, and high-performance industrial coatings
+              Representation, consulting, and trading services for world-renowned companies in India’s currency and security printing, security paper manufacturing, and minting industries.
             </p>
 
-            <CTAButtons />
+            <CTAButtons label="About Us" href="/about" />
           </div>
         </motion.div>
       </div>

@@ -53,7 +53,7 @@ const sections: SectionData[] = [
     number: '1',
     title: 'Currency & Security Printing',
     description:
-      'We are a global logistics and investment firm, creating connections that power the future of trade.',
+      '3 decades of experience in representation & consulting of world-renowned companies.',
     modelPath: '/AnimatedModels/Note_printer2-transformed.glb',
     modelScale: 2.2,
     modelPosition: [3.5, -0.4, -10],
@@ -64,7 +64,7 @@ const sections: SectionData[] = [
     number: '2',
     title: 'Card Industry Technology',
     description:
-      'We are a global logistics and investment firm, creating connections that power the future of trade.',
+      'Indenting and trading of specialised raw materials for the banking and ID card industry, including card-grade plastics such as PVC, ABS and PC; magnetic tapes; inlays; spares; and other components used in the production of debit cards, credit cards, SIM cards and smart cards.',
     modelPath: '/AnimatedModels/Card-transformed.glb',
     modelScale: 2,
     modelPosition: [2, 0, -12],
@@ -166,14 +166,14 @@ const ProductSectionItem = ({
           className={`relative pointer-events-auto ${data.number === '1' ? 'max-w-2xl' : 'max-w-lg'}`}
           style={{ opacity: textOpacity, y: textY, display: textDisplay }}
         >
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <span
               className="font-bold leading-none select-none text-[28px] md:text-[46px] text-white/95"
               style={{ letterSpacing: '0.04em' }}
             >
               {data.number}
             </span>
-          </div>
+          </div> */}
 
           <h2
             className="text-white font-bold mb-4 tracking-[-0.01em]"
@@ -191,9 +191,9 @@ const ProductSectionItem = ({
 
           {data.number === '1' ? (
             <div className="mt-8 py-1 space-y-4 max-w-lg">
-              <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
+              {/* <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
                 Core Capabilities
-              </div>
+              </div> */}
               <div className="grid grid-cols-2 gap-3">
                 <CTAButtons label="Currency" arrowDirection="right" reverseOrder={true} size="sm" fullWidth={true} />
                 <CTAButtons label="Security" arrowDirection="right" reverseOrder={true} size="sm" fullWidth={true} />
@@ -360,6 +360,21 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
   //  • back in Position 1 → the default card opens again
   //  • a clicked card shows where it was clicked and is dismissed on the next scroll
   useMotionValueEvent(globalScroll, 'change', (v: number) => {
+    // 🌍 Earth India Section cursor management:
+    // When Earth India section is active on screen (scroll >= 0.74), show default cursor and disable custom cursor
+    const isIndiaActive = v >= 0.74 && v <= 1.0;
+    if (isIndiaActive) {
+      if (!document.documentElement.classList.contains('earth-section-active')) {
+        document.documentElement.classList.add('earth-section-active');
+        window.dispatchEvent(new CustomEvent('earth-section-change', { detail: { active: true } }));
+      }
+    } else {
+      if (document.documentElement.classList.contains('earth-section-active')) {
+        document.documentElement.classList.remove('earth-section-active');
+        window.dispatchEvent(new CustomEvent('earth-section-change', { detail: { active: false } }));
+      }
+    }
+
     if (userPickedRef.current) {
       if (Math.abs(v - pickScrollRef.current) > SCROLL_DISMISS_DELTA) {
         userPickedRef.current = false;
@@ -451,10 +466,20 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
       // Ignore
     }
 
+    const initialV = globalScroll.get();
+    if (initialV >= 0.74 && initialV <= 1.0) {
+      document.documentElement.classList.add('earth-section-active');
+      window.dispatchEvent(new CustomEvent('earth-section-change', { detail: { active: true } }));
+    }
+
     const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.documentElement.classList.remove('earth-section-active');
+      window.dispatchEvent(new CustomEvent('earth-section-change', { detail: { active: false } }));
+    };
+  }, [globalScroll]);
 
   const saveState = (updated: Record<string, number>) => {
     try {
@@ -584,8 +609,15 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
 
   return (
     <motion.div
+      id="partners"
       className="absolute inset-0 h-full w-full pointer-events-auto"
       style={{ opacity, display, zIndex: 60 }}
+      onPointerEnter={() => {
+        if (globalScroll.get() >= 0.74) {
+          document.documentElement.classList.add('earth-section-active');
+          window.dispatchEvent(new CustomEvent('earth-section-change', { detail: { active: true } }));
+        }
+      }}
     >
       <div className="w-full h-full relative">
         {mounted && (

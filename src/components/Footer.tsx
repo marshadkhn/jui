@@ -7,9 +7,9 @@ import JuiLogo from './shared/JuiLogo';
 const Footer = () => {
   const footerLinks = {
     company: [
-      { name: 'About Us', href: '#' },
+      { name: 'About Us', href: '/about' },
       { name: 'JUI Global', href: '#' },
-      { name: 'Global Network', href: '#india-section' },
+      { name: 'Global Network', href: '/partners' },
     ],
     expertise: [
       { name: 'Currency Printing', href: '/currency' },
@@ -40,7 +40,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="relative w-full bg-[#000000] z-[70] pt-28 pb-14 px-6 md:px-12 lg:px-16 flex flex-col justify-between snap-start shadow-[0_-30px_70px_rgba(0,0,0,0.98)]">
+    <footer id="contact" className="relative w-full bg-[#000000] z-[70] pt-28 pb-14 px-6 md:px-12 lg:px-16 flex flex-col justify-between snap-start shadow-[0_-30px_70px_rgba(0,0,0,0.98)]">
       {/* Top Transition Blur - Creates the "merged" effect with India section */}
       <div className="absolute top-1 left-0 w-full h-72 -translate-y-full pointer-events-none z-50">
         <div
