@@ -73,9 +73,9 @@ const sections: SectionData[] = [
   },
   {
     number: '3',
-    title: 'Paints',
+    title: 'PAINTS',
     description:
-      'We are a global logistics and investment firm, creating connections that power the future of trade.',
+      'Machines for the paint, coating, and chemical industry.',
     modelPath: '/models/Paint_mixer-transformed.glb',
     modelScale: 1,
     modelPosition: [3.5, 1, -6],
@@ -163,7 +163,13 @@ const ProductSectionItem = ({
       {/* Text Content Overlay */}
       <div className="w-full h-full relative z-10 flex flex-col md:flex-row items-center justify-start px-6 md:px-12 lg:px-20">
         <motion.div
-          className={`relative pointer-events-auto ${data.number === '1' ? 'max-w-2xl' : 'max-w-lg'}`}
+          className={`relative pointer-events-auto ${
+            data.number === '1'
+              ? 'max-w-2xl'
+              : data.number === '3'
+              ? 'max-w-xl md:max-w-2xl'
+              : 'max-w-lg'
+          }`}
           style={{ opacity: textOpacity, y: textY, display: textDisplay }}
         >
           {/* <div className="mb-6">
@@ -176,20 +182,83 @@ const ProductSectionItem = ({
           </div> */}
 
           <h2
-            className="text-white font-bold mb-4 tracking-[-0.01em]"
+            className="text-white font-bold mb-2 md:mb-3 tracking-[-0.01em]"
             style={{ fontSize: 'clamp(2rem, 3.5vw, 3rem)' }}
           >
             {data.title}
           </h2>
 
           <p
-            className="text-white/90 text-lg leading-relaxed mb-6"
-            style={{ maxWidth: '420px' }}
+            className={`text-white/80 text-base md:text-lg leading-relaxed ${
+              data.number === '3' ? 'mb-6 md:mb-7' : 'mb-7 md:mb-8'
+            }`}
+            style={{ maxWidth: data.number === '3' ? '540px' : '420px' }}
           >
             {data.description}
           </p>
 
-          {data.number === '1' ? (
+          {data.number === '3' ? (
+            <div className="space-y-6 md:space-y-7 max-w-xl">
+              {/* NIEMANN */}
+              <div className="space-y-3">
+                <p className="text-white/90 text-sm md:text-base leading-relaxed">
+                  Representing <span className="text-white font-bold">NIEMANN</span>, a world leader in manufacturing equipment for Dispersion, Mixing &amp; Fine grinding.
+                </p>
+
+                <div className="pt-0.5">
+                  <a
+                    href="https://www.niemann.de/en/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block transition-transform duration-200 hover:scale-105 origin-left cursor-pointer"
+                    title="Visit NIEMANN Website"
+                  >
+                    <Image
+                      src="/niemann-logo.svg"
+                      alt="NIEMANN"
+                      width={80}
+                      height={46}
+                      style={{ width: 'auto' }}
+                      className="h-8 md:h-9 object-contain opacity-95 hover:opacity-100 transition-opacity"
+                    />
+                  </a>
+                </div>
+
+                <div className="flex items-center gap-3 pt-0.5 text-xs md:text-sm text-white/90">
+                  <span>NIEMANN test centre in India.</span>
+                  <span className="text-[10px] md:text-[11px] font-bold tracking-[0.14em] uppercase text-accent bg-accent/10 border border-accent/30 px-2.5 py-0.5 rounded-full">
+                    Coming Soon
+                  </span>
+                </div>
+              </div>
+
+              {/* RENZMANN */}
+              <div className="space-y-3 pt-1.5">
+                <p className="text-white/90 text-sm md:text-base font-bold tracking-wide uppercase leading-relaxed">
+                  RENZMANN WASHING MACHINES FOR THE PAINT INDUSTRY.
+                </p>
+
+                <div className="pt-0.5">
+                  <a
+                    href="https://www.renzmann.com/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block transition-transform duration-200 hover:scale-105 origin-left cursor-pointer"
+                    title="Visit RENZMANN Website"
+                  >
+                    <Image
+                      src="/renzmann-logo.svg"
+                      alt="RENZMANN"
+                      width={160}
+                      height={24}
+                      style={{ width: 'auto' }}
+                      className="h-4.5 md:h-5 max-h-[22px] object-contain opacity-95 hover:opacity-100 transition-opacity"
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          ) : data.number === '1' ? (
             <div className="mt-8 py-1 space-y-4 max-w-lg">
               {/* <div className="text-[9px] font-bold uppercase tracking-[0.3em] text-white/40">
                 Core Capabilities
@@ -212,7 +281,8 @@ const ProductSectionItem = ({
                 alt="Auth Certificate"
                 width={180}
                 height={100}
-                className="object-contain  opacity-100 hover:opacity-80 transition-all duration-300"
+                style={{ width: 'auto', height: 'auto' }}
+                className="object-contain opacity-100 hover:opacity-80 transition-all duration-300"
               />
             </div>
           )}

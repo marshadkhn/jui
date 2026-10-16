@@ -172,11 +172,16 @@ const ProductModelCanvas = (props: ModelProps) => {
       return;
     }
 
-    return props.progress.on('change', (val) => {
-      // Render canvas when it's active in the viewport scroll window
-      const visible = val > 0.001 && val < 0.999;
+    const checkVisibility = (val: number) => {
+      // Keep canvas mounted while in or near the active scroll range
+      const visible = val >= -0.05 && val <= 1.05;
       setIsVisible(visible);
-    });
+    };
+
+    // Check initial progress state on mount
+    checkVisibility(props.progress.get());
+
+    return props.progress.on('change', checkVisibility);
   }, [props.progress, isFirstSection]);
 
   // Scale starts at 80% of full size — model is already big when it fades in (no ant-size reveal)
@@ -187,7 +192,7 @@ const ProductModelCanvas = (props: ModelProps) => {
       : [0.0, 0.15, 0.80, 1.0],
     isFirstSection
       ? [props.scale || 1, props.scale || 1]
-      : [(props.scale || 1) * 0.8, props.scale || 1, props.scale || 1, (props.scale || 1) * 10]
+      : [(props.scale || 1) * 0.8, props.scale || 1, props.scale || 1, (props.scale || 1) * 1.5]
   );
 
   const auraScale = useTransform(
@@ -207,10 +212,10 @@ const ProductModelCanvas = (props: ModelProps) => {
     activeProgress,
     isFirstSection
       ? [0.0, 1.0]
-      : [0.0, 0.08, 0.40, 0.82, 1.0],
+      : [0.0, 0.04, 0.96, 1.0],
     isFirstSection
       ? [1, 1]
-      : [0, 0, 1, 1, 0]
+      : [0, 1, 1, 0]
   );
 
   return (

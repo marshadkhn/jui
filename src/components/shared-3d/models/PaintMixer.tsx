@@ -29,8 +29,39 @@ type GLTFResult = GLTF & {
 
 export function Model(props: React.JSX.IntrinsicElements['group']) {
   const group = React.useRef<THREE.Group>(null)
-  const { nodes, materials, animations } = useGLTF('/models/Paint_mixer-transformed.glb') as unknown as GLTFResult
+  const { scene, animations } = useGLTF('/models/Paint_mixer-transformed.glb') as unknown as GLTFResult
   const { actions } = useAnimations(animations, group)
+
+  const clonedScene = React.useMemo(() => {
+    const clone = scene.clone(true)
+    clone.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        child.castShadow = true
+        child.receiveShadow = true
+        const mesh = child as THREE.Mesh
+        if (mesh.material) {
+          const mat = (Array.isArray(mesh.material) ? mesh.material[0] : mesh.material) as THREE.MeshPhysicalMaterial
+          // Ensure black machine body has solid, sleek presence on dark background
+          if (mat.name === 'Black' || (mat.transmission && mat.transmission > 0.3)) {
+            mat.transmission = 0
+            mat.opacity = 1
+            mat.transparent = false
+            mat.roughness = 0.35
+            mat.metalness = 0.8
+            mat.color = new THREE.Color('#1e293b')
+            mat.needsUpdate = true
+          }
+          // Enhance vibrant cyan neon accents
+          if (mat.name === 'Neon') {
+            mat.emissive = new THREE.Color('#00D1FF')
+            mat.emissiveIntensity = 2.5
+            mat.needsUpdate = true
+          }
+        }
+      }
+    })
+    return clone
+  }, [scene])
 
   React.useEffect(() => {
     if (actions && actions['Paint_mixerAction']) {
@@ -40,12 +71,7 @@ export function Model(props: React.JSX.IntrinsicElements['group']) {
 
   return (
     <group ref={group} {...props} dispose={null}>
-      <group name="Scene">
-        <group name="Paint_mixer">
-          <mesh name="Cylinder001" castShadow receiveShadow geometry={nodes.Cylinder001.geometry} material={materials.Neon} />
-          <mesh name="Cylinder001_1" castShadow receiveShadow geometry={nodes.Cylinder001_1.geometry} material={materials.Black} />
-        </group>
-      </group>
+      <primitive object={clonedScene} />
     </group>
   )
 }
