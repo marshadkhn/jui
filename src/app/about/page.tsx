@@ -69,24 +69,7 @@ const BUSINESS_SECTORS = [
   },
 ];
 
-// Core Operating Pillars from the old site's core motto
-const CORE_VALUES = [
-  {
-    icon: Award,
-    title: 'Fair Dealings',
-    desc: 'Uncompromising integrity and transparency in all sovereign and commercial relationships over three decades.',
-  },
-  {
-    icon: Compass,
-    title: 'Professional Capabilities',
-    desc: 'Deep technical competence in navigating complex sovereign tenders, technology transfer, and machinery integration.',
-  },
-  {
-    icon: CheckCircle2,
-    title: 'Customer Care Attitude',
-    desc: 'Dedicated customer-first approach with local resident engineers and round-the-clock technical responsiveness.',
-  },
-];
+
 
 export default function AboutPage() {
   return (
@@ -264,9 +247,7 @@ export default function AboutPage() {
                       <span className="text-[10px] font-mono font-bold tracking-[0.25em] text-cyan-300/80 uppercase">
                         {sector.tag}
                       </span>
-                      <div className="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
-                        <IconComp className="w-5 h-5" />
-                      </div>
+
                     </div>
 
                     <h3 className="text-2xl font-bold tracking-tight text-white mb-3 group-hover:text-cyan-400 transition-colors">
@@ -291,34 +272,7 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* 6. REPUTATION & CORE VALUES (From old site: "fair dealings, professional capabilities and customer care attitude") */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {CORE_VALUES.map((val, idx) => {
-            const IconComp = val.icon;
-            return (
-              <motion.div
-                key={val.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 flex flex-col justify-between hover:border-cyan-400/40 transition-colors backdrop-blur-md"
-              >
-                <div>
-                  <div className="w-12 h-12 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-5">
-                    <IconComp className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white mb-2 tracking-tight">
-                    {val.title}
-                  </h3>
-                  <p className="text-[#8BAAB8] text-xs leading-relaxed">
-                    {val.desc}
-                  </p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </section>
+
 
         {/* 7. BOTTOM CALL TO ACTION BANNER */}
         <section className="rounded-3xl border border-cyan-400/30 bg-gradient-to-r from-cyan-950/40 via-black to-slate-950/50 p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-8 backdrop-blur-xl shadow-[0_0_50px_rgba(0,209,255,0.1)]">

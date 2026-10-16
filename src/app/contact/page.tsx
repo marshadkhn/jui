@@ -172,159 +172,7 @@ export default function ContactPage() {
           </motion.div>
         </section>
 
-        {/* 2. QUICK ACCESS METRICS & DIRECT CHANNELS */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Card 1: Main Line */}
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="relative rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md flex flex-col justify-between hover:border-cyan-400/40 transition-all group"
-          >
-            <div>
-              <div className="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-110 transition-transform">
-                <Phone className="w-5 h-5" />
-              </div>
-              <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#8BAAB8] mb-1">
-                Central Telephony
-              </div>
-              <div className="text-xl font-bold text-white tracking-tight mb-2">
-                +91 22 6137 8200
-              </div>
-              <p className="text-[#8BAAB8] text-xs leading-relaxed">
-                Fax line: +91 22 6137 8299. Direct connection to board line and department extensions.
-              </p>
-            </div>
-            <div className="pt-5 mt-5 border-t border-white/[0.06] flex items-center justify-between">
-              <a
-                href="tel:+912261378200"
-                className="text-cyan-400 hover:text-cyan-300 text-xs font-bold tracking-wider uppercase inline-flex items-center gap-1.5"
-              >
-                Call Office <ArrowRight className="w-3 h-3" />
-              </a>
-              <button
-                type="button"
-                onClick={() => handleCopy('+91 22 6137 8200', 'phone')}
-                className="text-white/40 hover:text-white transition-colors"
-                title="Copy phone"
-              >
-                {copiedKey === 'phone' ? (
-                  <Check className="w-3.5 h-3.5 text-cyan-400" />
-                ) : (
-                  <Copy className="w-3.5 h-3.5" />
-                )}
-              </button>
-            </div>
-          </motion.div>
 
-          {/* Card 2: Official Correspondence */}
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="relative rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md flex flex-col justify-between hover:border-cyan-400/40 transition-all group"
-          >
-            <div>
-              <div className="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-110 transition-transform">
-                <Mail className="w-5 h-5" />
-              </div>
-              <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#8BAAB8] mb-1">
-                Corporate Dispatch
-              </div>
-              <div className="text-lg font-bold text-white tracking-tight mb-2 truncate">
-                jui@juiglobal.com
-              </div>
-              <p className="text-[#8BAAB8] text-xs leading-relaxed">
-                Smart Card Inquiries: <span className="text-white/80">rtpt@juiglobal.com</span>. Fast-track routing to relevant principals.
-              </p>
-            </div>
-            <div className="pt-5 mt-5 border-t border-white/[0.06] flex items-center justify-between">
-              <a
-                href="mailto:jui@juiglobal.com"
-                className="text-cyan-400 hover:text-cyan-300 text-xs font-bold tracking-wider uppercase inline-flex items-center gap-1.5"
-              >
-                Compose Email <ArrowRight className="w-3 h-3" />
-              </a>
-              <button
-                type="button"
-                onClick={() => handleCopy('jui@juiglobal.com', 'email')}
-                className="text-white/40 hover:text-white transition-colors"
-                title="Copy email"
-              >
-                {copiedKey === 'email' ? (
-                  <Check className="w-3.5 h-3.5 text-cyan-400" />
-                ) : (
-                  <Copy className="w-3.5 h-3.5" />
-                )}
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Card 3: Sovereign Response SLA */}
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="relative rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md flex flex-col justify-between hover:border-cyan-400/40 transition-all group"
-          >
-            <div>
-              <div className="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-110 transition-transform">
-                <Clock className="w-5 h-5" />
-              </div>
-              <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#8BAAB8] mb-1">
-                Response Protocol
-              </div>
-              <div className="text-xl font-bold text-white tracking-tight mb-2">
-                &lt; 24h Response SLA
-              </div>
-              <p className="text-[#8BAAB8] text-xs leading-relaxed">
-                Standard technical questions answered within one business cycle. Emergency sovereign channels available 24/7.
-              </p>
-            </div>
-            <div className="pt-5 mt-5 border-t border-white/[0.06] flex items-center justify-between">
-              <span className="text-[11px] font-mono text-cyan-300/80">
-                IST Timezone (UTC +5:30)
-              </span>
-              <div className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
-            </div>
-          </motion.div>
-
-          {/* Card 4: Operating Locations */}
-          <motion.div
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="relative rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md flex flex-col justify-between hover:border-cyan-400/40 transition-all group"
-          >
-            <div>
-              <div className="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mb-5 group-hover:scale-110 transition-transform">
-                <Building2 className="w-5 h-5" />
-              </div>
-              <div className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#8BAAB8] mb-1">
-                Strategic Infrastructure
-              </div>
-              <div className="text-xl font-bold text-white tracking-tight mb-2">
-                3 Key Hubs
-              </div>
-              <p className="text-[#8BAAB8] text-xs leading-relaxed">
-                Andheri Corporate HQ, Turbhe Manufacturing Works & Bhiwandi Pan-India Freight Hub.
-              </p>
-            </div>
-            <div className="pt-5 mt-5 border-t border-white/[0.06] flex items-center justify-between">
-              <a
-                href="#facilities-section"
-                className="text-cyan-400 hover:text-cyan-300 text-xs font-bold tracking-wider uppercase inline-flex items-center gap-1.5"
-              >
-                Inspect Facilities <ArrowRight className="w-3 h-3" />
-              </a>
-              <Warehouse className="w-3.5 h-3.5 text-white/40" />
-            </div>
-          </motion.div>
-        </section>
 
         {/* 3. INTERACTIVE MULTI-FACILITY DIRECTORY & MAP */}
         <section id="facilities-section" className="flex flex-col gap-10 scroll-mt-28">
@@ -346,11 +194,10 @@ export default function ContactPage() {
                   <button
                     key={loc.id}
                     onClick={() => setActiveTab(loc.id as any)}
-                    className={`px-4 py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all duration-200 cursor-pointer ${
-                      isActive
+                    className={`px-4 py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all duration-200 cursor-pointer ${isActive
                         ? 'bg-cyan-400 text-black shadow-[0_0_15px_rgba(0,209,255,0.4)]'
                         : 'text-[#8BAAB8] hover:text-white hover:bg-white/[0.04]'
-                    }`}
+                      }`}
                   >
                     {loc.shortName}
                   </button>
