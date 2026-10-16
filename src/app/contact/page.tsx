@@ -13,14 +13,8 @@ import {
   Building2,
   Warehouse,
   ExternalLink,
-  ShieldCheck,
-  Layers,
-  Cpu,
-  Coins,
   Copy,
   Check,
-  ChevronRight,
-  Sparkles,
   ArrowRight,
 } from 'lucide-react';
 
@@ -42,12 +36,6 @@ const LOCATIONS = [
     directionsUrl:
       'https://maps.google.com/?q=JUI+GROUP+305+Everest+Grande+Mahakali+Caves+Road+Andheri+East+Mumbai',
     image: '/jui_office.jpg',
-    highlights: [
-      'Executive Leadership & International Principal Relations',
-      'Banknote & Sovereign Security Printing Project Management',
-      'Confidential Technology Transfer & Client Demonstration Suites',
-      'Direct Liaison for Reserve Bank of India & SPMCIL Institutions',
-    ],
   },
   {
     id: 'turbhe',
@@ -66,12 +54,6 @@ const LOCATIONS = [
     directionsUrl:
       'https://maps.google.com/?q=Punit+Industrial+Premises+MIDC+TTC+Turbhe+Navi+Mumbai',
     image: null,
-    highlights: [
-      'PVC & PVC-ABS Core Materials for Credit, Telecom & ID Cards',
-      'Smart Card Overlays (Coated, Uncoated, High-Bonding Grades)',
-      'SMARTRAC RFID Inlays, Magnetic Tapes & Tipping Foils Staging',
-      'Card Equipment Maintenance, Calibration & Spare Parts Inventory',
-    ],
   },
   {
     id: 'bhiwandi',
@@ -90,56 +72,6 @@ const LOCATIONS = [
     directionsUrl:
       'https://maps.google.com/?q=Bhumi+World+Industrial+Park+Bhiwandi+Maharashtra',
     image: null,
-    highlights: [
-      'Heavy Converting, Banknote Paper Sheeting & Slitting Staging',
-      'High-bay Warehousing for Security Paper & Specialty Inks',
-      'Express Pan-India Fleet Dispatch & Air Cargo Forwarding Liaison',
-      'Temperature-Controlled Secure Substrate Storage Zone',
-    ],
-  },
-];
-
-// Group Companies & Divisions
-const GROUP_COMPANIES = [
-  {
-    name: 'JUI Print Technology Pvt. Ltd.',
-    shortCode: 'JUI PRINT',
-    icon: Coins,
-    role: 'Sovereign Banknote & Security Printing',
-    description:
-      'Official representative and systems integrator for world-class European engineering firms supplying intaglio presses, numbering boxes, coin blanking lines, and security paper watermarking.',
-    specialties: ['Banknote Numbering', 'Coin Blanking & Sorting', 'Security Paper Cylinder Wire'],
-    email: 'jui@juiglobal.com',
-  },
-  {
-    name: 'RT Print Technology',
-    shortCode: 'RT PRINT',
-    icon: Cpu,
-    role: 'Card Industry Machinery & Raw Materials',
-    description:
-      'Premier manufacturer and supplier of raw materials for credit cards, smart cards, telecom SIM cards, PVC cores, coated overlays, tipping foils, and RFID transponders.',
-    specialties: ['PVC & PVC-ABS Cores', 'RFID Smart Inlays', 'High-Bonding Coated Overlays'],
-    email: 'rtpt@juiglobal.com',
-  },
-  {
-    name: 'Leibinger Group Partner',
-    shortCode: 'LEIBINGER',
-    icon: Layers,
-    role: 'High-Precision Automated Numbering',
-    description:
-      'Strategic partner for mechanical and electronic rotary numbering machines, optical check verification, and high-speed document authentication across India’s security presses.',
-    specialties: ['Electronic Numbering', 'Optical Security Checks', 'Rotary Micro-Perforation'],
-    email: 'jui@juiglobal.com',
-  },
-  {
-    name: 'Jyoturja',
-    shortCode: 'JYOTURJA',
-    icon: Sparkles,
-    role: 'Allied Engineering & Energy Solutions',
-    description:
-      'Engineering and technology arm focused on specialized industrial equipment, green energy applications, and modern infrastructure enhancement for manufacturing facilities.',
-    specialties: ['Specialized Machinery', 'Industrial Systems', 'Clean Tech Integration'],
-    email: 'jui@juiglobal.com',
   },
 ];
 
@@ -217,18 +149,18 @@ export default function ContactPage() {
             transition={{ duration: 0.85, delay: 0.3 }}
           >
             <a
-              href="#direct-contacts"
-              className="px-8 py-3.5 rounded-lg border border-cyan-400/50 bg-cyan-400/10 text-cyan-200 hover:bg-cyan-400/20 hover:text-white transition-all text-xs font-bold tracking-[0.2em] uppercase backdrop-blur-md shadow-[0_0_20px_rgba(0,209,255,0.2)] flex items-center gap-2"
-            >
-              <span>Direct Division Contacts</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
-            <a
               href="#facilities-section"
-              className="px-8 py-3.5 rounded-lg border border-white/20 bg-white/5 text-white/90 hover:bg-white/10 hover:border-white/40 transition-all text-xs font-bold tracking-[0.2em] uppercase backdrop-blur-md flex items-center gap-2"
+              className="px-8 py-3.5 rounded-lg border border-cyan-400/50 bg-cyan-400/10 text-cyan-200 hover:bg-cyan-400/20 hover:text-white transition-all text-xs font-bold tracking-[0.2em] uppercase backdrop-blur-md shadow-[0_0_20px_rgba(0,209,255,0.2)] flex items-center gap-2"
             >
               <span>Explore Facilities & Map</span>
               <MapPin className="w-3.5 h-3.5 text-cyan-400" />
+            </a>
+            <a
+              href="mailto:jui@juiglobal.com"
+              className="px-8 py-3.5 rounded-lg border border-white/20 bg-white/5 text-white/90 hover:bg-white/10 hover:border-white/40 transition-all text-xs font-bold tracking-[0.2em] uppercase backdrop-blur-md flex items-center gap-2"
+            >
+              <span>Send Email</span>
+              <Mail className="w-3.5 h-3.5 text-cyan-400" />
             </a>
             <a
               href="tel:+912261378200"
@@ -555,21 +487,6 @@ export default function ContactPage() {
                       </div>
                     </div>
                   </div>
-
-                  {/* Highlights list */}
-                  <div className="pt-4 border-t border-white/[0.06]">
-                    <div className="text-[11px] uppercase tracking-wider text-[#8BAAB8] font-mono mb-3">
-                      Facility Capabilities
-                    </div>
-                    <ul className="space-y-2">
-                      {activeLocation.highlights.map((h) => (
-                        <li key={h} className="flex items-start gap-2.5 text-xs text-white/80">
-                          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#00D1FF] shrink-0 mt-1.5" />
-                          <span>{h}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
                 </div>
 
                 {/* Bottom Action */}
@@ -588,13 +505,6 @@ export default function ContactPage() {
 
               {/* Right Column: Embedded Google Map (Span 7) */}
               <div className="lg:col-span-7 rounded-3xl border border-white/[0.08] overflow-hidden bg-black/60 relative min-h-[420px] lg:min-h-full flex flex-col">
-                <div className="absolute top-4 left-4 z-20 flex items-center gap-2 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
-                  <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-                  <span className="text-[11px] font-mono text-white/90">
-                    Live Geographic Satellite Feed
-                  </span>
-                </div>
-
                 <iframe
                   title={`${activeLocation.title} Google Map`}
                   src={activeLocation.mapEmbed}
@@ -607,396 +517,6 @@ export default function ContactPage() {
           </AnimatePresence>
         </section>
 
-        {/* 4. DEPARTMENT ROUTING & DIRECT DIVISION CONTACTS */}
-        <section id="direct-contacts" className="scroll-mt-28 flex flex-col gap-10">
-          <div className="flex flex-col gap-3">
-            <span className="text-cyan-400 font-mono text-[11px] font-bold tracking-[0.25em] uppercase">
-              Departmental Matrix
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Direct Division Contacts & Sovereign Protocols
-            </h2>
-            <p className="text-[#8BAAB8] text-sm max-w-2xl leading-relaxed">
-              Connect directly with our specialized technical directors across sovereign banknote printing,
-              smart card raw materials, coin minting lines, and automated numbering systems.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Division 1: RT Print (Cards & RFID) */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md hover:border-cyan-400/40 transition-all flex flex-col justify-between group">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded border border-cyan-400/20">
-                    Cards & RFID
-                  </span>
-                  <span className="text-xs text-white/40 font-mono">Works · Turbhe</span>
-                </div>
-                <h3 className="text-base font-bold text-white tracking-tight mb-2 group-hover:text-cyan-300 transition-colors">
-                  RT Print Technology (Smart Card Materials)
-                </h3>
-                <p className="text-[#8BAAB8] text-xs leading-relaxed mb-4">
-                  PVC/ABS core, smartcard overlays, tipping foil, and SMARTRAC RFID inlay supplies for banking & ID card issuance.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-white/[0.06] space-y-2">
-                <a
-                  href="mailto:rtpt@juiglobal.com"
-                  className="text-xs font-mono text-cyan-300 hover:text-white flex items-center gap-2 transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span className="truncate">rtpt@juiglobal.com</span>
-                </a>
-                <a
-                  href="tel:+912261378200"
-                  className="text-xs font-mono text-white/70 hover:text-cyan-300 flex items-center gap-2 transition-colors"
-                >
-                  <Phone className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>+91 22 6137 8200</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Division 2: Currency & Banknote */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md hover:border-cyan-400/40 transition-all flex flex-col justify-between group">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded border border-cyan-400/20">
-                    Sovereign Press
-                  </span>
-                  <span className="text-xs text-white/40 font-mono">Corporate HQ</span>
-                </div>
-                <h3 className="text-base font-bold text-white tracking-tight mb-2 group-hover:text-cyan-300 transition-colors">
-                  Banknote & Security Printing Division
-                </h3>
-                <p className="text-[#8BAAB8] text-xs leading-relaxed mb-4">
-                  Numbering machines, intaglio presses, sheeters, watermark wire, and high-security currency paper finishing.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-white/[0.06] space-y-2">
-                <a
-                  href="mailto:jui@juiglobal.com"
-                  className="text-xs font-mono text-cyan-300 hover:text-white flex items-center gap-2 transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span className="truncate">jui@juiglobal.com</span>
-                </a>
-                <a
-                  href="tel:+912261378200"
-                  className="text-xs font-mono text-white/70 hover:text-cyan-300 flex items-center gap-2 transition-colors"
-                >
-                  <Phone className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>+91 22 6137 8200</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Division 3: Minting & Security Substrates */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md hover:border-cyan-400/40 transition-all flex flex-col justify-between group">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded border border-cyan-400/20">
-                    Mints & Mills
-                  </span>
-                  <span className="text-xs text-white/40 font-mono">Specialized Lines</span>
-                </div>
-                <h3 className="text-base font-bold text-white tracking-tight mb-2 group-hover:text-cyan-300 transition-colors">
-                  Minting & Security Substrates
-                </h3>
-                <p className="text-[#8BAAB8] text-xs leading-relaxed mb-4">
-                  Coin blanking lines, laser die engraving, cylinder mould wire cloth, and automated coin optical inspection.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-white/[0.06] space-y-2">
-                <a
-                  href="mailto:jui@juiglobal.com"
-                  className="text-xs font-mono text-cyan-300 hover:text-white flex items-center gap-2 transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span className="truncate">jui@juiglobal.com</span>
-                </a>
-                <a
-                  href="tel:+912261378200"
-                  className="text-xs font-mono text-white/70 hover:text-cyan-300 flex items-center gap-2 transition-colors"
-                >
-                  <Phone className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>+91 22 6137 8200</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Division 4: Automated Numbering Systems */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md hover:border-cyan-400/40 transition-all flex flex-col justify-between group">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded border border-cyan-400/20">
-                    Numbering & QC
-                  </span>
-                  <span className="text-xs text-white/40 font-mono">Leibinger Partner</span>
-                </div>
-                <h3 className="text-base font-bold text-white tracking-tight mb-2 group-hover:text-cyan-300 transition-colors">
-                  Automated Numbering & Leibinger Systems
-                </h3>
-                <p className="text-[#8BAAB8] text-xs leading-relaxed mb-4">
-                  Mechanical & electronic rotary numbering units, verification optics, and genuine spare parts engineering.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-white/[0.06] space-y-2">
-                <a
-                  href="mailto:jui@juiglobal.com"
-                  className="text-xs font-mono text-cyan-300 hover:text-white flex items-center gap-2 transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span className="truncate">jui@juiglobal.com</span>
-                </a>
-                <a
-                  href="tel:+912261378200"
-                  className="text-xs font-mono text-white/70 hover:text-cyan-300 flex items-center gap-2 transition-colors"
-                >
-                  <Phone className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>+91 22 6137 8200</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Division 5: Logistics & Warehousing */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md hover:border-cyan-400/40 transition-all flex flex-col justify-between group">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded border border-cyan-400/20">
-                    Warehousing & Dispatch
-                  </span>
-                  <span className="text-xs text-white/40 font-mono">Bhiwandi Hub</span>
-                </div>
-                <h3 className="text-base font-bold text-white tracking-tight mb-2 group-hover:text-cyan-300 transition-colors">
-                  Pan-India Logistics & Converting Hub
-                </h3>
-                <p className="text-[#8BAAB8] text-xs leading-relaxed mb-4">
-                  Custom slitting, sheeter staging, temperature-controlled substrate storage, and bonded pan-India distribution.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-white/[0.06] space-y-2">
-                <a
-                  href="mailto:jui@juiglobal.com"
-                  className="text-xs font-mono text-cyan-300 hover:text-white flex items-center gap-2 transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span className="truncate">jui@juiglobal.com</span>
-                </a>
-                <a
-                  href="tel:+912261378200"
-                  className="text-xs font-mono text-white/70 hover:text-cyan-300 flex items-center gap-2 transition-colors"
-                >
-                  <Phone className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>+91 22 6137 8200</span>
-                </a>
-              </div>
-            </div>
-
-            {/* Division 6: Executive Directorate */}
-            <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md hover:border-cyan-400/40 transition-all flex flex-col justify-between group">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-[10px] font-mono font-bold text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded border border-cyan-400/20">
-                    Executive Desk
-                  </span>
-                  <span className="text-xs text-white/40 font-mono">Andheri HQ</span>
-                </div>
-                <h3 className="text-base font-bold text-white tracking-tight mb-2 group-hover:text-cyan-300 transition-colors">
-                  Corporate Directorate & International Principals
-                </h3>
-                <p className="text-[#8BAAB8] text-xs leading-relaxed mb-4">
-                  Sovereign client advisory, European technology representation, technology transfers, and strategic joint ventures.
-                </p>
-              </div>
-              <div className="pt-4 border-t border-white/[0.06] space-y-2">
-                <a
-                  href="mailto:jui@juiglobal.com"
-                  className="text-xs font-mono text-cyan-300 hover:text-white flex items-center gap-2 transition-colors"
-                >
-                  <Mail className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span className="truncate">jui@juiglobal.com</span>
-                </a>
-                <a
-                  href="tel:+912261378200"
-                  className="text-xs font-mono text-white/70 hover:text-cyan-300 flex items-center gap-2 transition-colors"
-                >
-                  <Phone className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>+91 22 6137 8200</span>
-                </a>
-              </div>
-            </div>
-          </div>
-
-          {/* Sovereign Institutional Notice Card */}
-          <div className="rounded-3xl border border-cyan-400/30 bg-gradient-to-br from-cyan-950/40 via-black to-slate-900/60 p-8 sm:p-10 backdrop-blur-md shadow-[0_0_35px_rgba(0,209,255,0.12)]">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="max-w-3xl">
-                <div className="flex items-center gap-3 mb-3">
-                  <ShieldCheck className="w-5 h-5 text-cyan-400" />
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-cyan-300">
-                    Priority Sovereign Channel
-                  </span>
-                </div>
-                <h4 className="text-xl sm:text-2xl font-bold text-white tracking-tight mb-2">
-                  Central Banks & Sovereign Security Press Authorities
-                </h4>
-                <p className="text-[#8BAAB8] text-xs sm:text-sm leading-relaxed">
-                  Institutional officials from Reserve Bank of India, SPMCIL, BRBNMPL, security paper
-                  mills, and government mints can request an executive briefing session at our Andheri
-                  corporate headquarters.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 shrink-0">
-                <a
-                  href="tel:+912261378200"
-                  className="px-6 py-3.5 rounded-xl border border-cyan-400/50 bg-cyan-400/10 text-cyan-200 hover:bg-cyan-400 hover:text-black font-extrabold text-xs tracking-wider uppercase transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(0,209,255,0.2)]"
-                >
-                  <Phone className="w-4 h-4" />
-                  <span>+91 22 6137 8200</span>
-                </a>
-                <a
-                  href="mailto:jui@juiglobal.com"
-                  className="px-6 py-3.5 rounded-xl border border-white/20 bg-white/5 text-white hover:bg-white/10 font-medium text-xs tracking-wider uppercase transition-all flex items-center gap-2"
-                >
-                  <Mail className="w-4 h-4 text-cyan-400" />
-                  <span>jui@juiglobal.com</span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 5. GROUP ENTITIES & STRATEGIC PILLARS (Referenced from old site) */}
-        <section className="flex flex-col gap-10">
-          <div className="flex flex-col gap-3">
-            <span className="text-cyan-400 font-mono text-[11px] font-bold tracking-[0.25em] uppercase">
-              Corporate Ecosystem
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Group Companies & Specialized Divisions
-            </h2>
-            <p className="text-[#8BAAB8] text-sm max-w-2xl leading-relaxed">
-              Consolidated under JUI Global, each specialized entity delivers dedicated precision
-              engineering, raw material processing, and technology integration.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {GROUP_COMPANIES.map((company, idx) => {
-              const IconComp = company.icon;
-              return (
-                <motion.div
-                  key={company.name}
-                  initial={{ opacity: 0, y: 25 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: idx * 0.08 }}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md flex flex-col justify-between hover:border-cyan-400/40 transition-all group"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="w-10 h-10 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition-transform">
-                        <IconComp className="w-5 h-5" />
-                      </div>
-                      <span className="text-[10px] font-mono text-white/50 tracking-wider">
-                        {company.shortCode}
-                      </span>
-                    </div>
-
-                    <h3 className="text-base font-bold text-white tracking-tight mb-1 group-hover:text-cyan-300 transition-colors">
-                      {company.name}
-                    </h3>
-                    <div className="text-[11px] text-cyan-400/80 font-mono mb-3">
-                      {company.role}
-                    </div>
-                    <p className="text-[#8BAAB8] text-xs leading-relaxed mb-5">
-                      {company.description}
-                    </p>
-
-                    <div className="space-y-1.5 pt-4 border-t border-white/[0.06]">
-                      {company.specialties.map((spec) => (
-                        <div key={spec} className="text-[11px] text-white/75 flex items-center gap-2">
-                          <span className="w-1 h-1 rounded-full bg-cyan-400 shrink-0" />
-                          <span>{spec}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="pt-5 mt-5 border-t border-white/[0.06]">
-                    <a
-                      href={`mailto:${company.email}?subject=Inquiry regarding ${company.name}`}
-                      className="text-xs font-bold text-cyan-400 hover:text-white uppercase tracking-wider inline-flex items-center gap-1.5 transition-colors"
-                    >
-                      Connect with Division <ChevronRight className="w-3.5 h-3.5" />
-                    </a>
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* 6. FREQUENTLY ASKED INQUIRY QUESTIONS */}
-        <section className="rounded-3xl border border-white/[0.08] bg-white/[0.02] p-8 md:p-12 backdrop-blur-md">
-          <div className="max-w-2xl mb-8">
-            <span className="text-cyan-400 font-mono text-[11px] font-bold tracking-[0.25em] uppercase block mb-2">
-              Procurement & Engagement
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Inquiry & Partnership FAQ
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs">
-            <div className="space-y-2">
-              <h4 className="text-sm font-bold text-white">
-                How do we arrange a visit to the JUI Corporate Office or Turbhe facility?
-              </h4>
-              <p className="text-[#8BAAB8] leading-relaxed">
-                Visits to our Mumbai headquarters at Everest Grande, Andheri East, or technical
-                evaluations at Turbhe require prior appointment due to security and client privacy
-                protocols. Please send an inquiry or call +91 22 6137 8200 at least 48 hours in
-                advance.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="text-sm font-bold text-white">
-                Can card manufacturers request PVC/ABS and RFID inlay samples?
-              </h4>
-              <p className="text-[#8BAAB8] leading-relaxed">
-                Yes. RT Print Technology routinely provides raw material swatch sheets, high-bonding
-                overlay samples, and RFID inlay test units for qualified card manufacturers and
-                issuance bureaus across India.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="text-sm font-bold text-white">
-                How does JUI Global handle tender participation and sovereign NDAs?
-              </h4>
-              <p className="text-[#8BAAB8] leading-relaxed">
-                We possess thirty years of experience managing sovereign procurement procedures,
-                bilateral non-disclosure agreements, and compliance requirements for central banks
-                and security document authorities.
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <h4 className="text-sm font-bold text-white">
-                What are the pan-India shipping and customs clearance capabilities?
-              </h4>
-              <p className="text-[#8BAAB8] leading-relaxed">
-                From our Bhiwandi logistics hub and Mumbai air/sea ports, we manage duty-paid and
-                bonded delivery across all Indian states with dedicated freight handlers and secure
-                chain-of-custody tracking.
-              </p>
-            </div>
-          </div>
-        </section>
 
         {/* 7. BOTTOM CALL TO ACTION BANNER */}
         <section className="rounded-3xl border border-cyan-400/30 bg-gradient-to-r from-cyan-950/40 via-black to-slate-950/50 p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-8 backdrop-blur-xl shadow-[0_0_50px_rgba(0,209,255,0.1)]">

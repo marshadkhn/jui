@@ -7,42 +7,15 @@ import {
   ShieldCheck,
   Building2,
   Wrench,
-  Boxes,
   Award,
-  Layers,
   Cpu,
   Coins,
   ArrowRight,
   CheckCircle2,
-  PhoneCall,
-  Sparkles,
   Compass,
   FileCheck2,
 } from 'lucide-react';
 
-// Factual Credentials based on official historical records from juiglobal.com
-const CREDENTIALS = [
-  {
-    value: 'Since 1997',
-    label: 'Decades of Excellence',
-    sub: 'Established in 1997 in Mumbai, delivering sovereign & high-value tender execution',
-  },
-  {
-    value: '4 Core Sectors',
-    label: 'Specialized Domains',
-    sub: 'Banknote printing, smart cards, mint industry, and security paper mills',
-  },
-  {
-    value: 'Complete Supply',
-    label: 'Turnkey Portfolio',
-    sub: 'Machineries, raw materials, spare parts, and consumable supplies',
-  },
-  {
-    value: 'Engineering Team',
-    label: 'Local Technical Support',
-    sub: 'Dedicated in-house service engineers for prompt after-sales support',
-  },
-];
 
 // Core Industry Verticals representing the old site's business scope
 const BUSINESS_SECTORS = [
@@ -93,38 +66,6 @@ const BUSINESS_SECTORS = [
       'On-site machinery installation, calibration, and commissioning',
       'Long-term annual maintenance contracts and preventive servicing',
     ],
-  },
-];
-
-// Group Companies as featured on juiglobal.com
-const GROUP_COMPANIES = [
-  {
-    name: 'JUI Print Technology Pvt. Ltd.',
-    domain: 'Banknote, Security Printing & Mints',
-    summary:
-      'Official representative and systems integrator for world-class European engineering firms supplying intaglio presses, numbering boxes, coin blanking lines, and security paper watermarking.',
-    link: '/contact',
-  },
-  {
-    name: 'RT Print Technology',
-    domain: 'Smart Card Machinery & Raw Materials',
-    summary:
-      'Engaged in manufacturing, conversion, and nationwide supply of certified card raw materials including PVC core, coated overlays, magnetic tapes, and RFID smart inlays.',
-    link: '/contact',
-  },
-  {
-    name: 'Leibinger Group Partner',
-    domain: 'High-Precision Electronic Numbering',
-    summary:
-      'Strategic Indian representation for Paul Leibinger GmbH, delivering mechanical and electronic rotary numbering machines and optical verification across security printing presses.',
-    link: '/contact',
-  },
-  {
-    name: 'Jyoturja',
-    domain: 'Engineering & Industrial Clean Energy',
-    summary:
-      'Allied industrial equipment and infrastructure solutions supporting high-technology manufacturing and sustainable energy applications.',
-    link: '/contact',
   },
 ];
 
@@ -229,31 +170,6 @@ export default function AboutPage() {
           </motion.div>
         </section>
 
-        {/* 2. CREDENTIALS & STATS (Real data from juiglobal.com) */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {CREDENTIALS.map((item, i) => (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="relative rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 backdrop-blur-md flex flex-col justify-between hover:border-cyan-400/40 transition-all group"
-            >
-              <div className="text-3xl sm:text-4xl font-extrabold text-cyan-400 tracking-tight mb-3 font-mono group-hover:scale-105 transition-transform duration-300">
-                {item.value}
-              </div>
-              <div>
-                <div className="text-white font-bold text-base mb-1 tracking-tight">
-                  {item.label}
-                </div>
-                <div className="text-[#8BAAB8] text-xs font-medium leading-relaxed">
-                  {item.sub}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </section>
 
         {/* 3. CORE CORPORATE PROFILE & HISTORICAL JOURNEY */}
         <section className="rounded-3xl border border-white/[0.08] bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-8 md:p-14 backdrop-blur-xl">
@@ -372,55 +288,6 @@ export default function AboutPage() {
                 </motion.div>
               );
             })}
-          </div>
-        </section>
-
-        {/* 5. GROUP COMPANIES (Featured on the old site) */}
-        <section className="flex flex-col gap-10">
-          <div className="flex flex-col gap-3">
-            <span className="text-cyan-400 font-mono text-[11px] font-bold tracking-[0.25em] uppercase">
-              Corporate Entities
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Group Companies & Strategic Brands
-            </h2>
-            <p className="text-[#8BAAB8] text-sm max-w-2xl leading-relaxed">
-              Consolidated under JUI Group, delivering focused engineering, raw materials manufacturing, and international technology integration.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {GROUP_COMPANIES.map((company, idx) => (
-              <motion.div
-                key={company.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.08 }}
-                className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-7 backdrop-blur-md flex flex-col justify-between hover:border-cyan-400/40 transition-all group"
-              >
-                <div>
-                  <div className="text-[10px] font-mono text-cyan-400 bg-cyan-400/10 px-2.5 py-1 rounded inline-block mb-3 border border-cyan-400/20">
-                    {company.domain}
-                  </div>
-                  <h3 className="text-base font-bold text-white tracking-tight mb-2 group-hover:text-cyan-300 transition-colors">
-                    {company.name}
-                  </h3>
-                  <p className="text-[#8BAAB8] text-xs leading-relaxed">
-                    {company.summary}
-                  </p>
-                </div>
-
-                <div className="pt-5 mt-5 border-t border-white/[0.06]">
-                  <Link
-                    href={company.link}
-                    className="text-xs font-bold text-cyan-400 hover:text-white uppercase tracking-wider inline-flex items-center gap-1.5 transition-colors"
-                  >
-                    Contact Division <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
           </div>
         </section>
 
