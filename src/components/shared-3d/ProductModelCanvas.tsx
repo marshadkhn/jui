@@ -14,7 +14,7 @@ import { Model as PaintMixer } from './models/PaintMixer';
 
 // Preload all product models so they are ready by the time the loader finishes
 // Preload transformed models
-useGLTF.preload('/AnimatedModels/Note_printer2-transformed.glb');
+useGLTF.preload('/AnimatedModels/Note_printer_machine-transformed.glb');
 useGLTF.preload('/AnimatedModels/Card-transformed.glb');
 useGLTF.preload('/models/Paint_mixer-transformed.glb');
 
@@ -119,7 +119,7 @@ const GltfModel = ({
   });
 
   const SelectedModel = useMemo(() => {
-    if (path.includes('Note_printer') || path.includes('whatWeDo')) return <NotePrinter isMobile={isMobile} progress={progress} />;
+    if (path.includes('Note_printer') || path.includes('whatWeDo')) return <NotePrinter isMobile={isMobile} progress={progress} modelPath={path} />;
     if (path.includes('Card')) return <Card isMobile={isMobile} progress={progress} />;
     if (path.includes('Paint_mixer')) return <PaintMixer />;
     return null;

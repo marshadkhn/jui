@@ -54,7 +54,7 @@ const sections: SectionData[] = [
     title: 'Currency & Security Printing',
     description:
       '3 decades of experience in representation & consulting of world-renowned companies.',
-    modelPath: '/AnimatedModels/Note_printer2-transformed.glb',
+    modelPath: '/AnimatedModels/Note_printer_machine-transformed.glb',
     modelScale: 2.2,
     modelPosition: [3.5, -0.4, -10],
     rotationOffset: [0.2, -0.8, 0],
