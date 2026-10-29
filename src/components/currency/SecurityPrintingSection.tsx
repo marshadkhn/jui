@@ -50,7 +50,7 @@ const securityBadges = [
 
 export default function SecurityPrintingSection({
   title = 'Security Printing',
-  description = 'We provide diversified solutions specializing in currency & security printing materials, card industry technologies, and high-performance industrial coatings',
+  description = 'World-renowned engineering and manufacturing solutions for high-security printing, including passport and banknote converting, micro-perforation, stamp production, intaglio & gravure pre-press, and secure card issuance.',
 }: SecurityPrintingSectionProps) {
   return (
     <section className="relative w-full h-[70vh] sm:h-[80vh] md:h-[88vh] lg:h-[94vh] min-h-[560px] max-h-[960px] overflow-hidden flex items-center justify-center my-6 md:my-10 z-20 bg-transparent">

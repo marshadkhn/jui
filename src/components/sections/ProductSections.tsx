@@ -207,7 +207,7 @@ const ProductSectionItem = ({
 
                 <div className="pt-0.5">
                   <a
-                    href="https://www.niemann.de/en/"
+                    href="https://www.niemann.in/en/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block transition-transform duration-200 hover:scale-105 origin-left cursor-pointer"
@@ -240,7 +240,7 @@ const ProductSectionItem = ({
 
                 <div className="pt-0.5">
                   <a
-                    href="https://www.renzmann.com/"
+                    href="https://www.renzmann.com/en/"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-block transition-transform duration-200 hover:scale-105 origin-left cursor-pointer"

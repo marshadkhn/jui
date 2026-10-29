@@ -32,13 +32,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "Germany",
     "city": "Kornwestheim",
     "address": "Leibnizstrasse 9, 70806 Kornwestheim, Germany",
-    "website": "https://www.acsys.de/",
+    "website": "https://acsyslaser.com/en/industries/mint-print/",
     "lat": 48.8691247,
     "lng": 9.1993914,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.8691247,9.1993914",
     "notes": "",
     "u": 0.525554,
-    "v": 0.771495
+    "v": 0.771495,
+    "vThree": 0.228505
   },
   {
     "id": 2,
@@ -51,13 +52,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "Germany",
     "city": "Neuwied",
     "address": "Sohler Weg 65, 56564 Neuwied, Germany",
-    "website": "https://www.bwconverting.com/",
+    "website": "https://www.bwconverting.com/brand/w-d",
     "lat": 50.4337726,
     "lng": 7.4798967,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=50.4337726,7.4798967",
     "notes": "",
     "u": 0.520777,
-    "v": 0.780188
+    "v": 0.780188,
+    "vThree": 0.219812
   },
   {
     "id": 3,
@@ -71,13 +73,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "Germany",
     "city": "Nuertingen",
     "address": "Schlosserstrasse 15, 72622 Nuertingen, Germany",
-    "website": "https://www.bwpapersystems.com/",
+    "website": "https://www.bwpapersystems.com/products/banknote-production",
     "lat": 48.6389846,
     "lng": 9.3417186,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.6389846,9.3417186",
     "notes": "",
     "u": 0.525949,
-    "v": 0.770217
+    "v": 0.770217,
+    "vThree": 0.229783
   },
   {
     "id": 4,
@@ -99,7 +102,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=49.175969,9.198693",
     "notes": "",
     "u": 0.525552,
-    "v": 0.7732
+    "v": 0.7732,
+    "vThree": 0.2268
   },
   {
     "id": 5,
@@ -119,7 +123,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.161145,11.5445446",
     "notes": "",
     "u": 0.532068,
-    "v": 0.767562
+    "v": 0.767562,
+    "vThree": 0.232438
   },
   {
     "id": 6,
@@ -135,13 +140,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "Germany",
     "city": "Moerfelden-Walldorf",
     "address": "Opelstrasse 17-19, 64546 Moerfelden-Walldorf, Germany",
-    "website": "https://www.mabeg.de/",
+    "website": "https://www.mabegsystems.com/en/",
     "lat": 49.9667569,
     "lng": 8.5614041,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=49.9667569,8.5614041",
     "notes": "",
     "u": 0.523782,
-    "v": 0.777593
+    "v": 0.777593,
+    "vThree": 0.222407
   },
   {
     "id": 7,
@@ -154,13 +160,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "Germany",
     "city": "Schwelm",
     "address": "Ruhrstrasse 51, 58332 Schwelm, Germany",
-    "website": "https://www.melzergmbh.com/",
+    "website": "https://www.melzermaschinenbau.de/en/",
     "lat": 51.2896221,
     "lng": 7.2719127,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=51.2896221,7.2719127",
     "notes": "",
     "u": 0.5202,
-    "v": 0.784942
+    "v": 0.784942,
+    "vThree": 0.215058
   },
   {
     "id": 8,
@@ -173,13 +180,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "Germany",
     "city": "Kirchheim bei Munich",
     "address": "Benzstrasse 5B, 85551 Kirchheim bei Muenchen, Germany",
-    "website": "https://www.mlt-gmbh.com/",
+    "website": "https://www.microlasertech.com/en/industries/laser-system-currency-identity/",
     "lat": 48.17772,
     "lng": 11.76761,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=48.17772,11.76761",
     "notes": "",
     "u": 0.532688,
-    "v": 0.767654
+    "v": 0.767654,
+    "vThree": 0.232346
   },
   {
     "id": 9,
@@ -194,13 +202,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "Germany",
     "city": "Tuttlingen",
     "address": "Daimlerstrasse 14, 78532 Tuttlingen, Germany",
-    "website": "https://leibinger-group.com/",
+    "website": "https://leibinger-group.com/numbering_machines",
     "lat": 47.9923744,
     "lng": 8.8256998,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=47.9923744,8.8256998",
     "notes": "",
     "u": 0.524516,
-    "v": 0.766624
+    "v": 0.766624,
+    "vThree": 0.233376
   },
   {
     "id": 10,
@@ -213,13 +222,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "Germany",
     "city": "Bad Rappenau",
     "address": "Buchaeckerring 27, 74906 Bad Rappenau, Germany",
-    "website": "https://www.wista-gmbh.de/",
+    "website": "https://wista.com/en/",
     "lat": 49.215344,
     "lng": 9.0666682,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=49.215344,9.0666682",
     "notes": "",
     "u": 0.525185,
-    "v": 0.773419
+    "v": 0.773419,
+    "vThree": 0.226581
   },
   {
     "id": 11,
@@ -238,7 +248,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=45.6032377,9.4141371",
     "notes": "",
     "u": 0.52615,
-    "v": 0.753351
+    "v": 0.753351,
+    "vThree": 0.246649
   },
   {
     "id": 12,
@@ -257,7 +268,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=43.5816465,11.8707078",
     "notes": "",
     "u": 0.532974,
-    "v": 0.74212
+    "v": 0.74212,
+    "vThree": 0.25788
   },
   {
     "id": 13,
@@ -277,7 +289,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=45.4489555,9.2443037",
     "notes": "",
     "u": 0.525679,
-    "v": 0.752494
+    "v": 0.752494,
+    "vThree": 0.247506
   },
   {
     "id": 14,
@@ -290,13 +303,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "Italy",
     "city": "Ceprano, FR",
     "address": "Via Pennea 10, 03024 Ceprano FR, Italy",
-    "website": "https://www.tecnoprintsrl.io/",
+    "website": "http://www.tecno-print.com/en/index/home-4.html",
     "lat": 41.5291215,
     "lng": 13.5030324,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=41.5291215,13.5030324",
     "notes": "",
     "u": 0.537508,
-    "v": 0.730717
+    "v": 0.730717,
+    "vThree": 0.269283
   },
   {
     "id": 15,
@@ -309,13 +323,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "France",
     "city": "Chassieu",
     "address": "10 Rue Ampere, 69680 Chassieu, France",
-    "website": "https://www.in-core.com/",
+    "website": "https://www.incore-systemes.com/",
     "lat": 45.7306506,
     "lng": 4.9747613,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=45.7306506,4.9747613",
     "notes": "",
     "u": 0.513819,
-    "v": 0.754059
+    "v": 0.754059,
+    "vThree": 0.245941
   },
   {
     "id": 16,
@@ -328,13 +343,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "France",
     "city": "Pessac",
     "address": "3 Rue Eugene Chevreul, 33600 Pessac, France",
-    "website": "https://www.proditec.com/",
+    "website": "https://proditec.com/minting-solutions/",
     "lat": 44.7779761,
     "lng": -0.6646108,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=44.7779761,-0.6646108",
     "notes": "",
     "u": 0.498154,
-    "v": 0.748767
+    "v": 0.748767,
+    "vThree": 0.251233
   },
   {
     "id": 17,
@@ -355,7 +371,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=19.1246527,72.871866",
     "notes": "",
     "u": 0.702422,
-    "v": 0.606248
+    "v": 0.606248,
+    "vThree": 0.393752
   },
   {
     "id": 18,
@@ -375,7 +392,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=15.359887,73.9548242",
     "notes": "",
     "u": 0.70543,
-    "v": 0.585333
+    "v": 0.585333,
+    "vThree": 0.414667
   },
   {
     "id": 19,
@@ -388,13 +406,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "USA",
     "city": "Shakopee, MN",
     "address": "1187 Park Pl, Shakopee, MN 55379, USA",
-    "website": "https://www.entrust.com/",
+    "website": "https://www.entrust.com/products/issuance-systems/central?_gl=1*p046vw*_up*MQ..*_ga*Mzk2NzAzMzAyLjE3ODgzNDY1OTY.*_ga_LRSG0BP0M6*czE3ODgzNDY1OTUkbzEkZzAkdDE3ODgzNDY1OTUkajYwJGwwJGgwJGRFQ1NMQlpxVHBVQW05MDFXVC0zTWUyMHZiT3NnS1hjcDV3*_ga_6QRW66BW5T*czE3ODgzNDY1OTUkbzEkZzAkdDE3ODgzNDY1OTUkajYwJGwwJGgwJGRzWnJQYW5LaWZBTEhhbWd0M2F1enE1ZzJMUkhiX1N0cmhR",
     "lat": 44.7867819,
     "lng": -93.4571122,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=44.7867819,-93.4571122",
     "notes": "",
     "u": 0.240397,
-    "v": 0.748815
+    "v": 0.748815,
+    "vThree": 0.251185
   },
   {
     "id": 20,
@@ -413,7 +432,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=40.2443428,-75.6923904",
     "notes": "",
     "u": 0.289743,
-    "v": 0.72358
+    "v": 0.72358,
+    "vThree": 0.27642
   },
   {
     "id": 21,
@@ -427,13 +447,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "USA / India",
     "city": "Wilmington, MA",
     "address": "850 Main St, Wilmington, MA 01887, USA",
-    "website": "https://www.kovalus.com/",
+    "website": "https://www.kovalus.com/technologies/membrane-filtration/feg-plus-modules/",
     "lat": 42.5295638,
     "lng": -71.157643,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=42.5295638,-71.157643",
     "notes": "Source doc listed the GTS URL by mistake. Coordinates are the US HQ; India office address not in source doc.",
     "u": 0.30234,
-    "v": 0.736275
+    "v": 0.736275,
+    "vThree": 0.263725
   },
   {
     "id": 22,
@@ -447,13 +468,14 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "Austria",
     "city": "Leobersdorf",
     "address": "Hirtenberger Str. 1, 2544 Leobersdorf, Austria",
-    "website": "https://www.gwt.at/",
+    "website": "https://www.gwt.at/wasser-und-waermetechnik/en/taetigkeitsbereiche/wischlaugenaufbereitung/",
     "lat": 47.9358865,
     "lng": 16.2266286,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=47.9358865,16.2266286",
     "notes": "",
     "u": 0.545074,
-    "v": 0.76631
+    "v": 0.76631,
+    "vThree": 0.23369
   },
   {
     "id": 23,
@@ -473,7 +495,8 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=41.5345696,2.2310929",
     "notes": "",
     "u": 0.506197,
-    "v": 0.730748
+    "v": 0.730748,
+    "vThree": 0.269252
   },
   {
     "id": 24,
@@ -486,13 +509,136 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "country": "UK",
     "city": "High Wycombe",
     "address": "Mountford House, 4 Grafton St, High Wycombe HP12 3AJ, UK",
-    "website": "http://www.apseng.co.uk/",
+    "website": "https://www.apsworldwide.com/",
     "lat": 51.6351346,
     "lng": -0.773433,
     "mapsUrl": "https://www.google.com/maps/search/?api=1&query=51.6351346,-0.773433",
     "notes": "",
     "u": 0.497852,
-    "v": 0.786862
+    "v": 0.786862,
+    "vThree": 0.213138
+  },
+  {
+    "id": 25,
+    "name": "Niemann",
+    "shortName": "Niemann",
+    "segments": [
+      "Paints"
+    ],
+    "product": "Dispersing , Mixing , Fine Grinding",
+    "country": "Germany",
+    "city": "Neuenkirchen Melle",
+    "address": "Nordlandstra\u00dfe 16, 9326 Melle-Neuenkirchen, Germany",
+    "website": "https://www.niemann.in/en/",
+    "lat": 52.142082,
+    "lng": 8.400285,
+    "mapsUrl": "https://www.google.com/maps/place//data=!4m2!3m1!1s0x47ba1ea6a1f6c96f:0x4eea2fee13bcd6eb?entry=gemini&utm_source=gemini&utm_campaign=gem-default",
+    "notes": "",
+    "u": 0.523334,
+    "v": 0.789678,
+    "vThree": 0.210322,
+    "logo": "/niemann-logo.svg"
+  },
+  {
+    "id": 26,
+    "name": "Renzmann",
+    "shortName": "Renzmann",
+    "segments": [
+      "Paints"
+    ],
+    "product": "Industrial Washing machines",
+    "country": "Germany",
+    "city": "Monzingen",
+    "address": "Industriestrasse 1, 55569 Monzingen",
+    "website": "https://www.renzmann.com/en/",
+    "lat": 49.792648,
+    "lng": 7.590033,
+    "mapsUrl": "https://www.google.com/maps/place//data=!4m2!3m1!1s0x47be004a27134659:0xec1aaa506183d473?entry=gemini&utm_source=gemini&utm_campaign=gem-default",
+    "notes": "",
+    "u": 0.521083,
+    "v": 0.776626,
+    "vThree": 0.223374,
+    "logo": "/renzmann-logo.svg"
+  },
+  {
+    "id": 27,
+    "name": "Tullis Russell",
+    "shortName": "Tullis Russell",
+    "segments": [
+      "Security"
+    ],
+    "product": "Coated and Gummed paper for stamps",
+    "country": "UK",
+    "city": "Bollington",
+    "address": "Church Street, Bollington, Macclesfield, Cheshire SK10 5QF, United Kingdom",
+    "website": "https://www.tullisrussell.com/",
+    "lat": 53.296955,
+    "lng": -2.09313,
+    "mapsUrl": "https://www.google.com/maps/place//data=!4m2!3m1!1s0x487a4bd29f1268b1:0x8b26da33224307ce?entry=gemini&utm_source=gemini&utm_campaign=gem-default",
+    "notes": "",
+    "u": 0.494186,
+    "v": 0.796094,
+    "vThree": 0.203906
+  },
+  {
+    "id": 28,
+    "name": "DMA Innotec international ,Ltd",
+    "shortName": "DMA Innotec",
+    "segments": [
+      "Security"
+    ],
+    "product": "Electro-Mechanical Engraving machine for Gravure Cylinders",
+    "country": "Taiwan",
+    "city": "Changhua County",
+    "address": "Building D, No. 35, Xinggong Rd., Shengang Twp., Changhua Cnty., 50971 Taiwan",
+    "website": "https://dma-innotec.com/",
+    "lat": 24.1465,
+    "lng": 120.4878,
+    "mapsUrl": "https://www.google.com/maps/place//data=!4m2!3m1!1s0x346940e18059c4b3:0x2a68944fe27c788b?entry=gemini&utm_source=gemini&utm_campaign=gem-default",
+    "notes": "",
+    "u": 0.834688,
+    "v": 0.634147,
+    "vThree": 0.365853
+  },
+  {
+    "id": 29,
+    "name": "Gietz",
+    "shortName": "Gietz",
+    "segments": [
+      "Security"
+    ],
+    "product": "Hologram application machine",
+    "country": "Switzerland",
+    "city": "Gossau SG",
+    "address": "Mooswiesstrasse 20 , 9200 Gossau SG, Switzerland",
+    "website": "https://www.gietz.ch/en/",
+    "lat": 47.413129,
+    "lng": 9.257551,
+    "mapsUrl": "https://maps.app.goo.gl/N3PwkWgj7Eo8eRgX9",
+    "notes": "",
+    "u": 0.525715,
+    "v": 0.763406,
+    "vThree": 0.236594
+  },
+  {
+    "id": 30,
+    "name": "SPGPrints",
+    "shortName": "SPGPrints",
+    "segments": [
+      "Security"
+    ],
+    "product": "DLE machines",
+    "country": "Netherlands",
+    "city": "Boxmeer",
+    "address": "Raamstraat 3, 5831 AT Boxmeer, Netherlands",
+    "website": "https://www.spgprints.com/industrial-printing-label-screen-printing",
+    "lat": 51.638657,
+    "lng": 5.941729,
+    "mapsUrl": "https://maps.app.goo.gl/MGwqFHtQrW7gnupZ6",
+    "notes": "",
+    "u": 0.516505,
+    "v": 0.786881,
+    "vThree": 0.213119
   }
 ];
 
@@ -504,5 +650,5 @@ export function getShortCompanyName(company: PrincipalCompany | null | undefined
     .trim();
 }
 
-export const SEGMENTS = ['All', 'Currency', 'Security', 'Mint', 'Paper Mill'] as const;
+export const SEGMENTS = ['All', 'Currency', 'Security', 'Mint', 'Paper Mill', 'Paints'] as const;
 export type SegmentType = (typeof SEGMENTS)[number];

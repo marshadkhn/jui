@@ -45,7 +45,7 @@ interface CoinMintingSectionProps {
 
 export default function CoinMintingSection({
   title = "Coin Minting",
-  description = "We provide diversified solutions specializing in currency & security printing materials, card industry technologies, and high-performance industrial coatings",
+  description = "Turnkey engineering and precision machinery for sovereign mints, including high-tonnage hydraulic medal presses, 3D laser engraving, high-speed optical coin inspection, and automated coin counting & packaging lines.",
 }: CoinMintingSectionProps) {
   return (
     <section className="relative w-full h-[75vh] sm:h-[82vh] md:h-[88vh] lg:h-[94vh] min-h-[580px] max-h-[1000px] flex items-center justify-center my-4 md:my-8 z-20">

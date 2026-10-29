@@ -14,7 +14,8 @@ const Footer = () => {
     expertise: [
       { name: 'Currency Printing', href: '/currency' },
       { name: 'Card Technology', href: '/card' },
-      { name: 'Paints & Coatings', href: '#' },
+      { name: 'Paints & Coatings', href: '/?section=paints' },
+      { name: 'Mint & Security', href: '/currency' },
     ],
     corporateOffice: {
       label: 'Registered and Corporate Office',

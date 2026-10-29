@@ -418,7 +418,7 @@ export function EarthIndiaModel({
     box.getCenter(center);
 
     return { clonedScene: clone, normScale, offset: center, markerGroup: group, markersById: byId };
-  }, [scene, size, enableFlicker, needleLocationId]);
+  }, [scene, size, enableFlicker, needleLocationId, LOCATION_POINTS]);
 
   // 📍 Anchor the callout to the selected marker (works for clicks and for the
   // default location that opens on its own, with no click involved)

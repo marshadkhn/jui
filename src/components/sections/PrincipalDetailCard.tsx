@@ -15,6 +15,7 @@ const segmentColors: Record<string, { bg: string; text: string; border: string }
   Security: { bg: 'rgba(0, 209, 255, 0.15)', text: '#38bdf8', border: 'rgba(0, 209, 255, 0.4)' },
   Mint: { bg: 'rgba(245, 158, 11, 0.15)', text: '#fbbf24', border: 'rgba(245, 158, 11, 0.4)' },
   'Paper Mill': { bg: 'rgba(168, 85, 247, 0.15)', text: '#c084fc', border: 'rgba(168, 85, 247, 0.4)' },
+  Paints: { bg: 'rgba(244, 63, 94, 0.15)', text: '#fb7185', border: 'rgba(244, 63, 94, 0.4)' },
 };
 
 export const PrincipalDetailCard: React.FC<PrincipalDetailCardProps> = ({
