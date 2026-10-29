@@ -78,6 +78,16 @@ export const defaultCurrencyItems: ProductItem[] = [
   // Top Row (3 Logos Centered)
   {
     id: '1',
+    title: 'NUMBERING SYSTEMS',
+    companyName: 'Paul Leibinger GmbH & Co. KG',
+    country: 'Germany',
+    city: 'Tuttlingen',
+    description: 'High-precision mechanical and electronic numbering systems engineered for banknote and security document printing.',
+    website: 'https://leibinger-group.com/numbering_machines',
+    imageSrc: '/Currency/Paul Leibinger GmbH & Co. KG.png',
+  },
+  {
+    id: '2',
     title: 'SHEET & NOTE COUNTING MACHINES',
     companyName: 'GTS GmbH',
     country: 'Germany',
@@ -87,7 +97,7 @@ export const defaultCurrencyItems: ProductItem[] = [
     imageSrc: '/Currency/GTS GmbH.png',
   },
   {
-    id: '2',
+    id: '3',
     title: 'WIPING SOLUTION RECOVERY (WSRTP)',
     companyName: 'GWT GmbH',
     country: 'Austria',
@@ -96,8 +106,9 @@ export const defaultCurrencyItems: ProductItem[] = [
     website: 'https://www.gwt.at/wasser-und-waermetechnik/en/taetigkeitsbereiche/wischlaugenaufbereitung/',
     imageSrc: '/Currency/GWT GmbH.png',
   },
+  // Bottom Row (4 Logos)
   {
-    id: '3',
+    id: '4',
     title: 'SIMULTAN OFFSET BLANKETS',
     companyName: 'I.T.G. GmbH Graphic Products',
     country: 'Germany',
@@ -106,9 +117,8 @@ export const defaultCurrencyItems: ProductItem[] = [
     website: 'https://www.itg-graph.com/',
     imageSrc: '/Currency/I.T.G. GmbH Graphic Products.png',
   },
-  // Bottom Row (4 Logos)
   {
-    id: '4',
+    id: '5',
     title: 'UF MEMBRANES FOR WSRTP',
     companyName: 'KOVALUS Separation Solutions',
     country: 'USA / India',
@@ -118,7 +128,7 @@ export const defaultCurrencyItems: ProductItem[] = [
     imageSrc: '/Currency/KOVALUS Separation Solutions.png',
   },
   {
-    id: '5',
+    id: '6',
     title: 'SHEET FEEDER & TRANSPORT SYSTEMS',
     companyName: 'MABEG Systems GmbH',
     country: 'Germany',
@@ -128,7 +138,7 @@ export const defaultCurrencyItems: ProductItem[] = [
     imageSrc: '/Currency/MABEG Systems GmbH.png',
   },
   {
-    id: '6',
+    id: '7',
     title: 'TRACK & TRACE SYSTEM',
     companyName: 'PARVIS Systems and Services S.p.A.',
     country: 'Italy',
@@ -136,16 +146,6 @@ export const defaultCurrencyItems: ProductItem[] = [
     description: 'Real-time automated production tracking, computerized banknote numbering control, and quality verification systems.',
     website: 'https://www.parvis.it/',
     imageSrc: '/Currency/PARVIS Systems and Services S.p.A.png',
-  },
-  {
-    id: '7',
-    title: 'NUMBERING SYSTEMS',
-    companyName: 'Paul Leibinger GmbH & Co. KG',
-    country: 'Germany',
-    city: 'Tuttlingen',
-    description: 'High-precision mechanical and electronic numbering systems engineered for banknote and security document printing.',
-    website: 'https://leibinger-group.com/numbering_machines',
-    imageSrc: '/Currency/Paul Leibinger GmbH & Co. KG.png',
   },
 ];
 

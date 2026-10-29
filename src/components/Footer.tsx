@@ -18,7 +18,7 @@ const Footer = () => {
       { name: 'Mint & Security', href: '/currency' },
     ],
     corporateOffice: {
-      label: 'Registered and Corporate Office',
+      label: 'Office',
       address: 'A wing 305, Everest Grande, Mahakali Caves Road, Andheri East, Mumbai - 400 093, India.',
     },
     worksAndWarehouse: {
@@ -59,7 +59,7 @@ const Footer = () => {
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         {/* Main Footer Content — Balanced 4 - 2 - 2 - 4 Column Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 xl:gap-12 mb-20">
-          
+
           {/* Column 1: Brand (Span 4) */}
           <div className="lg:col-span-4 flex flex-col justify-between space-y-6">
             <div className="space-y-6">
