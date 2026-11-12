@@ -210,11 +210,17 @@ function FloatingDocumentMesh({
 
     // Interactive 3D Parallax Tilt
     if (groupRef.current) {
-      const mouseTiltX = (mouseWorld.y / (planeHeight * 0.5)) * -0.06;
-      const mouseTiltY = (mouseWorld.x / (planeWidth * 0.5)) * 0.08;
+      // Check if mouseWorld is in valid plane range (not off-screen sentinel like -100)
+      const isMouseValid = isHovered && Math.abs(mouseWorld.x) <= planeWidth && Math.abs(mouseWorld.y) <= planeHeight;
+      const mouseTiltX = isMouseValid
+        ? THREE.MathUtils.clamp((mouseWorld.y / (planeHeight * 0.5)) * -0.06, -0.08, 0.08)
+        : 0;
+      const mouseTiltY = isMouseValid
+        ? THREE.MathUtils.clamp((mouseWorld.x / (planeWidth * 0.5)) * 0.08, -0.10, 0.10)
+        : 0;
 
-      targetRotation.current.x = 0.1 + (isHovered ? mouseTiltX : 0);
-      targetRotation.current.y = -0.14 + (isHovered ? mouseTiltY : 0);
+      targetRotation.current.x = 0.1 + mouseTiltX;
+      targetRotation.current.y = -0.14 + mouseTiltY;
 
       groupRef.current.rotation.x = THREE.MathUtils.lerp(
         groupRef.current.rotation.x,
@@ -261,22 +267,31 @@ export default function SecurityPrintingCanvas() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  const updateMouseCoords = (clientX: number, clientY: number) => {
     if (!containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
-    const xNorm = (e.clientX - rect.left) / rect.width - 0.5;
-    const yNorm = -((e.clientY - rect.top) / rect.height - 0.5);
+    const xNorm = (clientX - rect.left) / rect.width - 0.5;
+    const yNorm = -((clientY - rect.top) / rect.height - 0.5);
 
     const worldW = isMobile ? 10.5 : 14.5;
     const worldH = isMobile ? 5.9 : 8.15;
     setMouseWorld(new THREE.Vector2(xNorm * worldW, yNorm * worldH));
   };
 
+  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsHovered(true);
+    updateMouseCoords(e.clientX, e.clientY);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    updateMouseCoords(e.clientX, e.clientY);
+  };
+
   return (
     <div
       ref={containerRef}
       className="relative w-full h-full min-h-[500px] sm:min-h-[620px] md:min-h-[720px] lg:min-h-[820px] cursor-crosshair overflow-hidden flex items-center justify-center bg-transparent select-none"
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={handleMouseEnter}
       onMouseLeave={() => {
         setIsHovered(false);
         setMouseWorld(new THREE.Vector2(-100, -100));

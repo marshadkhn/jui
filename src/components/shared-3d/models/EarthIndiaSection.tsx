@@ -113,9 +113,9 @@ export function EarthIndiaModel({
   const tmpQuatRef = useRef(new THREE.Quaternion());
   const lastAnchorRef = useRef<{ x: number; y: number } | null>(null);
   const settledFramesRef = useRef(0);
-  const { scene } = useGLTF('/AnimatedModels/Erarth_india_section.glb');
+  const { scene } = useGLTF('/models/Earth1_NO_locations.glb');
 
-  // Clone, normalize bounds, hide the baked texture dots and build the real location markers
+  // Clone, normalize bounds, and build the real location markers
   const { clonedScene, normScale, offset, markerGroup, markersById } = useMemo(() => {
     const clone = scene.clone(true);
     let terreMesh: THREE.Mesh | null = null;
@@ -131,63 +131,17 @@ export function EarthIndiaModel({
         }
 
         if (mesh.material) {
-          const applyMaterialShader = (originalMat: THREE.Material) => {
+          const applyMaterial = (originalMat: THREE.Material) => {
             const mat = originalMat.clone() as THREE.MeshStandardMaterial;
             mesh.material = mat;
             mat.side = THREE.DoubleSide;
-
-            if (mat.isMeshStandardMaterial) {
-              mat.customProgramCacheKey = () => 'earth_india_hide_baked_markers_v2';
-
-              // 🚫 The GLB texture has decorative red dots baked in at approximate
-              // places. They are painted out here so the only markers on the globe
-              // are the real, data-driven ones added below.
-              mat.onBeforeCompile = (shader) => {
-                shader.uniforms.uTime = timeRef.current.uTime;
-
-                shader.fragmentShader = `
-                  uniform float uTime;
-                ` + shader.fragmentShader;
-
-                shader.fragmentShader = shader.fragmentShader.replace(
-                  '#include <opaque_fragment>',
-                  `
-                  #include <opaque_fragment>
-
-                  #ifdef USE_EMISSIVEMAP
-                    vec4 checkSample = texture2D( emissiveMap, vEmissiveMapUv );
-                  #else
-                    #ifdef USE_MAP
-                      vec4 checkSample = texture2D( map, vMapUv );
-                    #else
-                      vec4 checkSample = vec4(0.0);
-                    #endif
-                  #endif
-
-                  // Any texel where red leads both other channels belongs to a baked
-                  // dot (the globe artwork itself is blue/cyan only). The margin is
-                  // deliberately small so the soft anti-aliased dot edges and the
-                  // faint outer rings are caught too, not just the bright centres.
-                  float otherMax = max( checkSample.g, checkSample.b );
-                  bool isBakedMarker = ( checkSample.r > otherMax + 0.012 ) && ( checkSample.r > 0.035 );
-
-                  if (isBakedMarker) {
-                    // Replaced outright — no blend left over, so nothing of the old
-                    // dot survives on the surface.
-                    gl_FragColor.rgb = vec3(0.010, 0.034, 0.060);
-                  }
-                  `
-                );
-              };
-
-              mat.needsUpdate = true;
-            }
+            mat.needsUpdate = true;
           };
 
           if (Array.isArray(mesh.material)) {
-            mesh.material.forEach(applyMaterialShader);
+            mesh.material.forEach(applyMaterial);
           } else {
-            applyMaterialShader(mesh.material);
+            applyMaterial(mesh.material);
           }
         }
       }
@@ -727,4 +681,4 @@ export function EarthIndiaModel({
 export const Model = EarthIndiaModel;
 export default EarthIndiaModel;
 
-useGLTF.preload('/AnimatedModels/Erarth_india_section.glb');
+useGLTF.preload('/models/Earth1_NO_locations.glb');
