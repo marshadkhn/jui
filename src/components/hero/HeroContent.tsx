@@ -44,7 +44,7 @@ const HeroContent = () => {
       {/* Main headline */}
       <div style={{ perspective: '900px' }}>
         <motion.h1
-          className="text-[clamp(1.6rem,5vw,4.2rem)] font-bold leading-[1.02] tracking-[-0.025em] text-white mb-2"
+          className="text-[clamp(1.45rem,4.6vw,4rem)] font-bold leading-[1.02] tracking-[-0.025em] text-white mb-2"
           variants={container}
           initial="hidden"
           animate="visible"
@@ -95,7 +95,7 @@ const HeroContent = () => {
 
       {/* Sub text */}
       <motion.p
-        className="text-text-secondary text-sm md:text-base lg:text-[1.05rem] leading-[1.7] max-w-md mb-10 md:mb-12 font-medium"
+        className="text-text-secondary text-base md:text-lg lg:text-[1.2rem] leading-[1.7] max-w-lg mb-10 md:mb-12 font-medium"
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}

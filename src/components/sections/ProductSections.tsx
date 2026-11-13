@@ -24,12 +24,12 @@ const STORAGE_KEY = 'jui_earth_india_debug_3pos_v6';
 const DEFAULT_LOCATION_ID = 9; // Paul Leibinger GmbH & Co. KG — Tuttlingen, Germany
 
 // Scroll range (globalScroll progress) during which the India globe stage is on screen
-const INDIA_SECTION_SCROLL_START = 0.76;
+const INDIA_SECTION_SCROLL_START = 0.74;
 
 // The default card belongs to Position 1 only. Once the globe starts travelling to
 // Position 2 / 3 it is hidden straight away instead of riding along with the model.
 // (Position 1 holds until 0.835 — see the targetSize / targetRot transforms below.)
-const INDIA_POSITION_1_START = 0.79; // stage has finished fading in
+const INDIA_POSITION_1_START = 0.74; // stage entrance (Leibinger opens at initial)
 const INDIA_POSITION_1_END = 0.835; // globe starts moving to Position 2
 
 // A hand-picked card is dropped as soon as the user scrolls this far, so it never
@@ -73,7 +73,7 @@ const sections: SectionData[] = [
   },
   {
     number: '3',
-    title: 'PAINTS',
+    title: 'Paints & Coating',
     description:
       'Machines for the paint, coating, and chemical industry.',
     modelPath: '/models/Paint_mixer-transformed.glb',
@@ -201,7 +201,7 @@ const ProductSectionItem = ({
             <div className="space-y-6 md:space-y-7 max-w-xl">
               {/* NIEMANN */}
               <div className="space-y-3">
-                <p className="text-white/90 text-sm md:text-base leading-relaxed">
+                <p className="text-white/80 text-base md:text-lg leading-relaxed">
                   Representing <span className="text-white font-bold">NIEMANN</span>, a world leader in manufacturing equipment for Dispersion, Mixing &amp; Fine grinding.
                 </p>
 
@@ -224,7 +224,7 @@ const ProductSectionItem = ({
                   </a>
                 </div>
 
-                <div className="flex items-center gap-3 pt-0.5 text-xs md:text-sm text-white/90">
+                <div className="flex items-center gap-3 pt-0.5 text-base md:text-lg text-white/80 leading-relaxed">
                   <span>NIEMANN test centre in India.</span>
                   <span className="text-[10px] md:text-[11px] font-bold tracking-[0.14em] uppercase text-accent bg-accent/10 border border-accent/30 px-2.5 py-0.5 rounded-full">
                     Coming Soon
@@ -234,8 +234,8 @@ const ProductSectionItem = ({
 
               {/* RENZMANN */}
               <div className="space-y-3 pt-1.5">
-                <p className="text-white/90 text-sm md:text-base font-bold tracking-wide uppercase leading-relaxed">
-                  RENZMANN WASHING MACHINES FOR THE PAINT INDUSTRY.
+                <p className="text-white/80 text-base md:text-lg leading-relaxed">
+                  <span className="text-white font-bold">RENZMANN</span> washing machines for the paint industry.
                 </p>
 
                 <div className="pt-0.5">

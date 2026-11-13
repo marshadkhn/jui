@@ -41,7 +41,6 @@ export const scrollToPaintSection = () => {
 };
 
 const menuItems = [
-  { name: 'JUI GLOBAL', href: '/' },
   { name: 'CURRENCY', href: '/currency' },
   { name: 'CARD', href: '/card' },
   { name: 'PAINT', href: '/?section=paints' },
@@ -60,14 +59,6 @@ const Navbar = () => {
         scrollToPaintSection();
       } else {
         router.push('/?section=paints');
-      }
-    } else if (item.name === 'JUI GLOBAL' && pathname === '/') {
-      e.preventDefault();
-      const lenis = (window as any).lenis;
-      if (lenis && typeof lenis.scrollTo === 'function') {
-        lenis.scrollTo(0, { duration: 1.2 });
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
   };

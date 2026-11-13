@@ -263,8 +263,8 @@ export const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>(({
     }
 
     const inPositionOne = isStandalone
-      ? (v < 0.28)
-      : (v >= 0.79 && v < 0.835);
+      ? (v < 0.35)
+      : (v >= 0.74 && v < 0.835);
 
     if (inPositionOne) {
       if (selectedLocationId !== DEFAULT_LOCATION_ID) {

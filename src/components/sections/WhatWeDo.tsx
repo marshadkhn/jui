@@ -185,7 +185,7 @@ const WhatWeDo = () => {
               Representation, consulting, and trading services for world-renowned companies in India’s currency and security printing, security paper manufacturing, and minting industries.
             </p>
 
-            <CTAButtons label="About Us" href="/about" />
+            <CTAButtons label="Explore" href="/about" />
           </div>
         </motion.div>
       </div>

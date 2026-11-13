@@ -66,8 +66,9 @@ const MARKER_MAX_SHIFT_DEG = 1.6;
 // Measured: a marker drifts ~1.2 px/s from the Float wobble when the globe is at
 // rest, so 25 px/s leaves a wide margin while still catching the spring's tail
 // (the card lands within ~5 px of its final spot).
-const ANCHOR_SETTLE_SPEED_PX_PER_SEC = 25;
-const ANCHOR_SETTLE_FRAMES = 4;
+// 📐 Settle conditions for opening the card callout
+const ANCHOR_SETTLE_SPEED_PX_PER_SEC = 160;
+const ANCHOR_SETTLE_FRAMES = 2;
 
 export type EarthIndiaModelProps = React.ComponentProps<'group'> & {
   autoRotate?: boolean;
@@ -378,7 +379,7 @@ export function EarthIndiaModel({
   // default location that opens on its own, with no click involved)
   useEffect(() => {
     lastAnchorRef.current = null;
-    settledFramesRef.current = 0;
+    settledFramesRef.current = ANCHOR_SETTLE_FRAMES;
 
     if (selectedLocationId == null) {
       selectedMarkerRef.current = null;
@@ -523,7 +524,7 @@ export function EarthIndiaModel({
       const previous = lastAnchorRef.current;
       const speed = previous
         ? Math.hypot(x - previous.x, y - previous.y) / Math.max(delta, 1 / 240)
-        : Infinity;
+        : 0;
       lastAnchorRef.current = { x, y };
 
       if (speed <= ANCHOR_SETTLE_SPEED_PX_PER_SEC) {

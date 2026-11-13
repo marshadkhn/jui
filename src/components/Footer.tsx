@@ -22,7 +22,7 @@ const Footer = () => {
       address: 'A wing 305, Everest Grande, Mahakali Caves Road, Andheri East, Mumbai - 400 093, India.',
     },
     worksAndWarehouse: {
-      label: 'Works and Warehouse',
+      label: 'Works',
       locations: [
         {
           name: 'Bhiwandi',
@@ -65,14 +65,14 @@ const Footer = () => {
             <div className="space-y-6">
               <JuiLogo width={140} height={60} imageClassName="h-14 w-auto" />
               <p className="text-[#8BAAB8] text-[14px] leading-relaxed max-w-sm">
-                We are a global logistics and investment firm, creating connections that power the future of trade through innovation and high-security technology.
+           Premier Gateway to Security Printing Industry     
               </p>
             </div>
             <div className="flex items-center gap-2 pt-2">
-              <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#00D1FF]" />
-              <span className="text-[11px] font-mono uppercase tracking-widest text-[#8BAAB8]/80">
+              {/* <span className="h-2 w-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#00D1FF]" /> */}
+              {/* <span className="text-[11px] font-mono uppercase tracking-widest text-[#8BAAB8]/80">
                 Global Operations Active
-              </span>
+              </span> */}
             </div>
           </div>
 
