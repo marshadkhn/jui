@@ -6,11 +6,13 @@ import { PrincipalCompany, getShortCompanyName } from '@/data/principalsData';
 interface LocationHoverTooltipProps {
   company: PrincipalCompany | null;
   screenPos: { x: number; y: number } | null;
+  onClick?: () => void;
 }
 
 export const LocationHoverTooltip: React.FC<LocationHoverTooltipProps> = ({
   company,
   screenPos,
+  onClick,
 }) => {
   if (!company || !screenPos) return null;
   const shortName = getShortCompanyName(company);
@@ -23,10 +25,20 @@ export const LocationHoverTooltip: React.FC<LocationHoverTooltipProps> = ({
         left: `${screenPos.x}px`,
         top: `${screenPos.y - 14}px`,
         transform: 'translate(-50%, -100%)',
-        pointerEvents: 'none',
+        pointerEvents: onClick ? 'auto' : 'none',
         zIndex: 99999,
       }}
-      className="pointer-events-none select-none flex items-center justify-center rounded-xl bg-[#050c14]/95 shadow-[0_4px_25px_rgba(0,0,0,0.85),0_0_15px_rgba(0,209,255,0.4)] border border-cyan-400/50 backdrop-blur-md whitespace-nowrap tracking-wide animate-in fade-in zoom-in-95 duration-100"
+      onClick={(e) => {
+        if (onClick) {
+          e.stopPropagation();
+          onClick();
+        }
+      }}
+      className={`select-none flex items-center justify-center rounded-xl bg-[#050c14]/95 shadow-[0_4px_25px_rgba(0,0,0,0.85),0_0_15px_rgba(0,209,255,0.4)] border border-cyan-400/50 backdrop-blur-md whitespace-nowrap tracking-wide animate-in fade-in zoom-in-95 duration-100 ${
+        onClick
+          ? 'cursor-pointer pointer-events-auto hover:scale-105 hover:border-cyan-300 hover:shadow-[0_6px_30px_rgba(0,0,0,0.95),0_0_20px_rgba(0,209,255,0.6)] transition-all duration-150'
+          : 'pointer-events-none'
+      }`}
     >
       {company.logo ? (
         <div className="flex items-center justify-center bg-white rounded-lg px-3 py-1.5 min-h-[40px] min-w-[80px] max-w-[180px] shadow-sm">

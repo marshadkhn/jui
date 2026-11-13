@@ -2,9 +2,14 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import JuiLogo from './shared/JuiLogo';
 
 const Footer = () => {
+  const pathname = usePathname();
+  const isCardPage = pathname === '/card' || pathname?.startsWith('/card');
+
   const footerLinks = {
     company: [
       { name: 'About Us', href: '/about' },
@@ -63,9 +68,26 @@ const Footer = () => {
           {/* Column 1: Brand (Span 4) */}
           <div className="lg:col-span-4 flex flex-col justify-between space-y-6">
             <div className="space-y-6">
-              <JuiLogo width={140} height={60} imageClassName="h-14 w-auto" />
+              {isCardPage ? (
+                /* Card page footer: Display BOTH JUI and RT Print Technology logos */
+                <div className="flex items-center gap-5 sm:gap-6 flex-wrap">
+                  <JuiLogo width={120} height={50} imageClassName="h-12 md:h-14 w-auto" />
+                  <div className="h-8 w-[1px] bg-white/20 hidden sm:block" />
+                  <Link href="/" className="relative group inline-block" title="RT Print Technology">
+                    <Image
+                      src="/rtprint.png"
+                      alt="RT Print Technology Logo"
+                      width={260}
+                      height={72}
+                      className="h-11 md:h-13 w-auto object-contain brightness-110 group-hover:brightness-125 transition-all duration-300 group-hover:scale-105"
+                    />
+                  </Link>
+                </div>
+              ) : (
+                <JuiLogo width={140} height={60} imageClassName="h-14 w-auto" />
+              )}
               <p className="text-[#8BAAB8] text-[14px] leading-relaxed max-w-sm">
-           Premier Gateway to Security Printing Industry     
+                Premier Gateway to Security Printing Industry
               </p>
             </div>
             <div className="flex items-center gap-2 pt-2">
@@ -160,7 +182,7 @@ const Footer = () => {
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         <div className="pt-8 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-6">
           <p className="text-white/30 text-[10px] tracking-[0.25em] uppercase font-bold font-mono">
-            © 2024 JUI INDUSTRIES. SECURED HUB.
+            ©{new Date().getFullYear()} JUI GROUP
           </p>
           <div className="flex items-center gap-8">
             {footerLinks.legal.map((link) => (

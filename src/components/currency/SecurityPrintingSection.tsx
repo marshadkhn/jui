@@ -42,15 +42,11 @@ interface SecurityPrintingSectionProps {
   description?: string;
 }
 
-const securityBadges = [
-  'Fluorescent UV Inks',
-  'Intaglio Guilloche Dies',
-  'Watermark Inspection',
-];
+
 
 export default function SecurityPrintingSection({
   title = 'Security Printing',
-  description = 'World-renowned engineering and manufacturing solutions for high-security printing, including passport and banknote converting, micro-perforation, stamp production, intaglio & gravure pre-press, and secure card issuance.',
+  description = 'Representation and consultation to world-leading suppliers of machinery, raw materials, and consumables.',
 }: SecurityPrintingSectionProps) {
   return (
     <section className="relative w-full h-[70vh] sm:h-[80vh] md:h-[88vh] lg:h-[94vh] min-h-[560px] max-h-[960px] overflow-hidden flex items-center justify-center my-6 md:my-10 z-20 bg-transparent">
@@ -80,22 +76,8 @@ export default function SecurityPrintingSection({
 
         {/* Bottom Bar: Security Feature Chips & Interaction Hint */}
         <div className="w-full flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 pointer-events-none">
-          {/* Security Features Chips */}
-          <div className="flex flex-wrap gap-2 pointer-events-auto">
-            {securityBadges.map((badge, i) => (
-              <motion.span
-                key={badge}
-                custom={i}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: false, amount: 0.2 }}
-                variants={badgeVariants}
-                className="px-3 py-1 rounded-full text-[11px] sm:text-xs font-medium tracking-wide text-cyan-200/90 bg-black/60 border border-cyan-500/20 backdrop-blur-md hover:border-cyan-400/50 transition-colors"
-              >
-                {badge}
-              </motion.span>
-            ))}
-          </div>
+          
+          
 
         </div>
       </div>

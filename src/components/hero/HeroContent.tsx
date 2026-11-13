@@ -95,17 +95,13 @@ const HeroContent = () => {
 
       {/* Sub text */}
       <motion.p
-        className="text-text-secondary text-base md:text-lg lg:text-[1.2rem] leading-[1.7] max-w-lg mb-10 md:mb-12 font-medium"
+        className="text-text-secondary text-base md:text-lg lg:text-[1.5rem] leading-[1.7] max-w-[640px]  mb-10 md:mb-12 font-medium"
         initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, delay: 1.0, ease: [0.22, 1, 0.36, 1] }}
       >
         Connecting world-class innovation with India&apos;s Banknote, Security, Mint & Smart Card Industries.
       </motion.p>
-
-
-
-
     </section>
   );
 };

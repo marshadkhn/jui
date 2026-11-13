@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -25,12 +25,12 @@ const LOCATIONS = [
     title: 'Registered & Corporate Office',
     shortName: 'Mumbai HQ (Andheri)',
     badge: 'Headquarters',
-    tagline: 'Executive Directorate & Sovereign Advisory',
+    tagline: '',
     address: '305, Everest Grande, Mahakali Caves Road, Andheri East, Mumbai - 400 093, Maharashtra, India.',
     phone: '+91 22 6137 8200',
     fax: '+91 22 6137 8299',
     emails: ['jui@juiglobal.com', 'rtpt@juiglobal.com'],
-    hours: 'Mon – Sat: 09:30 AM – 06:30 PM IST',
+    hours: 'Mon – Sat: 10:00 AM – 06:30 PM IST',
     mapEmbed:
       'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d10662.243579769984!2d72.8591093868608!3d19.122023816279782!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c825ee066529%3A0xd7628fac7119c9d6!2sJUI+GROUP!5e0!3m2!1sen!2sin!4v1482412706697',
     directionsUrl:
@@ -47,8 +47,8 @@ const LOCATIONS = [
       'C-1, Punit Industrial Premises Co-op. Society Ltd., Plot No. D 11/11-A, M.I.D.C., T.T.C., Opp. Fly Over Bridge, Turbhe Rly. Stn., Thane Belapur Road, Turbhe, Navi Mumbai – 400 705, Maharashtra, India.',
     phone: '+91 22 6137 8200',
     fax: '+91 22 6137 8299',
-    emails: ['rtpt@juiglobal.com', 'jui@juiglobal.com'],
-    hours: 'Mon – Sat: 09:00 AM – 06:30 PM IST',
+    emails: ['jui@juiglobal.com', 'rtpt@juiglobal.com'],
+    hours: 'Mon – Sat: 10:00 AM – 06:30 PM IST',
     mapEmbed:
       'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3770.8222687102717!2d73.01358937582236!3d19.071536782131976!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c140cceca6b7%3A0x6b8c8d8b4b73b221!2sTurbhe%2C%20Navi%20Mumbai%2C%20Maharashtra!5e0!3m2!1sen!2sin!4v1700000000000',
     directionsUrl:
@@ -65,8 +65,8 @@ const LOCATIONS = [
       'J6-26 Bhumi World, Mumbai - Nashik Express Way, Pimplas, Bhiwandi, Thane, Maharashtra 421302, India.',
     phone: '+91 22 6137 8200',
     fax: '+91 22 6137 8299',
-    emails: ['jui@juiglobal.com'],
-    hours: 'Mon – Sat: 08:30 AM – 07:00 PM IST',
+    emails: ['jui@juiglobal.com', 'rtpt@juiglobal.com'],
+    hours: 'Mon – Sat: 10:00 AM – 06:30 PM IST',
     mapEmbed:
       'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3766.452654316972!2d73.05374667582697!3d19.262692281977797!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7bd05697693c7%3A0x867375a2bf85458!2sBhumi%20World%20Industrial%20Park!5e0!3m2!1sen!2sin!4v1700000000001',
     directionsUrl:
@@ -125,7 +125,7 @@ export default function ContactPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.1 }}
           >
-            Get In Touch With{' '}
+            Get In Touch With<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-teal-300 to-white">
               JUI Global
             </span>
@@ -137,9 +137,7 @@ export default function ContactPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.85, delay: 0.2 }}
           >
-            Whether you represent a central bank, government currency printing press, smart card
-            manufacturer, or a global technology principal seeking high-trust market representation
-            in India — our engineering and logistics directors are at your service.
+            3 decades of experience in representing companies in India's currency, security printing, minting, and smart card industries.
           </motion.p>
 
           <motion.div
@@ -182,7 +180,7 @@ export default function ContactPage() {
                 Geographic Presence
               </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-                Offices, Works & Staging Facilities
+                Offices, Works &  Facilities
               </h2>
             </div>
 
@@ -195,8 +193,8 @@ export default function ContactPage() {
                     key={loc.id}
                     onClick={() => setActiveTab(loc.id as any)}
                     className={`px-4 py-2.5 rounded-lg text-xs font-bold tracking-wider transition-all duration-200 cursor-pointer ${isActive
-                        ? 'bg-cyan-400 text-black shadow-[0_0_15px_rgba(0,209,255,0.4)]'
-                        : 'text-[#8BAAB8] hover:text-white hover:bg-white/[0.04]'
+                      ? 'bg-cyan-400 text-black shadow-[0_0_15px_rgba(0,209,255,0.4)]'
+                      : 'text-[#8BAAB8] hover:text-white hover:bg-white/[0.04]'
                       }`}
                   >
                     {loc.shortName}
@@ -244,8 +242,8 @@ export default function ContactPage() {
                         src={activeLocation.image}
                         alt="JUI Corporate Office Building"
                         fill
+                        sizes="(max-width: 1024px) 100vw, 450px"
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        priority
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                       <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
@@ -265,7 +263,7 @@ export default function ContactPage() {
                       <MapPin className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
                       <div>
                         <div className="text-[11px] uppercase tracking-wider text-[#8BAAB8] font-mono mb-1">
-                          Postal Address
+                          Address
                         </div>
                         <p className="text-sm text-white/90 leading-relaxed">
                           {activeLocation.address}
@@ -289,7 +287,7 @@ export default function ContactPage() {
                         </div>
                       </div>
 
-                      <div className="flex items-start gap-3">
+                      {/* <div className="flex items-start gap-3">
                         <Printer className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                         <div>
                           <div className="text-[10px] uppercase tracking-wider text-[#8BAAB8] font-mono">
@@ -299,25 +297,30 @@ export default function ContactPage() {
                             {activeLocation.fax}
                           </span>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="flex items-start gap-3 pt-2">
                       <Mail className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
                       <div>
-                        <div className="text-[10px] uppercase tracking-wider text-[#8BAAB8] font-mono mb-1">
-                          Email Communications
+                        <div className="text-[10px] uppercase tracking-wider text-[#8BAAB8] font-mono mb-1.5">
+                          Email
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                          {activeLocation.emails.map((em) => (
-                            <a
-                              key={em}
-                              href={`mailto:${em}`}
-                              className="text-xs font-mono text-cyan-300 hover:text-white transition-colors underline decoration-cyan-400/40"
-                            >
-                              {em}
-                            </a>
-                          ))}
+                        <div className="flex flex-col gap-1.5">
+                          {activeLocation.emails.map((em, idx) => {
+                            const label = idx === 0 ? 'Communication' : 'Card';
+                            return (
+                              <div key={em} className="flex items-center gap-1.5 text-xs font-mono">
+                                <span className="text-[#8BAAB8] text-[11px]">{label}:</span>
+                                <a
+                                  href={`mailto:${em}`}
+                                  className="text-cyan-300 hover:text-white transition-colors underline decoration-cyan-400/40"
+                                >
+                                  {em}
+                                </a>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>

@@ -3,16 +3,8 @@
 import React, { useRef, useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import {
-  Cpu,
-  Layers,
-  ShieldCheck,
-  ArrowRight,
-  Mail,
-  RotateCw,
-  Sparkles,
-} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Mail, ChevronDown } from 'lucide-react';
 
 // Dynamic import with SSR disabled for Three.js WebGL canvas
 const ProductModelCanvas = dynamic(
@@ -23,13 +15,61 @@ const ProductModelCanvas = dynamic(
   }
 );
 
-const RAW_MATERIALS = [
-  'PVC & PVC-ABS Core Sheets',
-  'Coated & Uncoated Overlays',
-  'SMARTRAC RFID Smart Inlays',
-  'Magnetic Tapes (HiCo / LoCo)',
-  'Metallic Tipping Foils',
-  'Digital Inkjet PVC Cores',
+interface MaterialCategory {
+  id: string;
+  name: string;
+  hasSubItems?: boolean;
+  subItems?: string[];
+}
+
+const MATERIAL_PILLS: MaterialCategory[] = [
+  {
+    id: 'core-sheets',
+    name: 'Core Sheets',
+    hasSubItems: true,
+    subItems: [
+      'PVC Core - 100 to 800 μ',
+      'PVC - ABS',
+      'Recycled PVC',
+      'Transparent PVC',
+      'Hologram - Bright Silver / Rainbow Silver',
+      'PET-G',
+      'PC',
+      'Digital Inkjet PVC',
+    ],
+  },
+  {
+    id: 'overlay',
+    name: 'Overlay',
+    hasSubItems: true,
+    subItems: [
+      'Coated',
+      'Uncoated',
+      'Recycled PVC',
+      'PET-G',
+      'PC',
+    ],
+  },
+  {
+    id: 'pet-film',
+    name: 'PET Film',
+  },
+  {
+    id: 'rfid-inlays',
+    name: 'RFID Inlays & Prelam',
+  },
+  {
+    id: 'metal-blankets',
+    name: 'Metal-Backed Blankets',
+  },
+  {
+    id: 'glue-tape',
+    name: 'Glue Tape',
+  },
+  {
+    id: 'kba-spares',
+    name: 'Spares & Consumables for KBA Genius Machine',
+  },
 ];
 
 const METRICS = [
@@ -45,8 +85,9 @@ export default function CardHeroSection({
   className?: string;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isRotating, setIsRotating] = useState(true);
+  const isRotating = true;
   const [isMobile, setIsMobile] = useState(false);
+  const [activePillId, setActivePillId] = useState<string | null>(null);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -54,6 +95,8 @@ export default function CardHeroSection({
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
+
+  const activeCategory = MATERIAL_PILLS.find((pill) => pill.id === activePillId);
 
   return (
     <section
@@ -127,41 +170,113 @@ export default function CardHeroSection({
             </p>
           </motion.div>
 
-          {/* Raw Materials Pills */}
+          {/* 7 Specialized Material Pills */}
           <motion.div
-            className="flex flex-wrap gap-2 mb-8 max-w-xl"
+            className={`flex flex-wrap gap-2 max-w-xl transition-all duration-200 ${
+              activeCategory ? 'mb-3' : 'mb-8'
+            }`}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            {RAW_MATERIALS.map((mat) => (
-              <span
-                key={mat}
-                className="px-3 py-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] text-white/90 text-xs font-mono tracking-wide backdrop-blur-md hover:border-cyan-400/40 hover:text-cyan-300 transition-colors"
-              >
-                {mat}
-              </span>
-            ))}
+            {MATERIAL_PILLS.map((pill) => {
+              const isActive = activePillId === pill.id;
+              if (pill.hasSubItems) {
+                return (
+                  <button
+                    key={pill.id}
+                    type="button"
+                    onClick={() => setActivePillId(isActive ? null : pill.id)}
+                    className={`group inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg border text-xs font-mono tracking-wide backdrop-blur-md transition-all duration-200 cursor-pointer ${
+                      isActive
+                        ? 'border-cyan-400 bg-cyan-950/80 text-cyan-200 shadow-[0_0_20px_rgba(0,209,255,0.4)] ring-1 ring-cyan-400/60'
+                        : 'border-white/[0.12] bg-white/[0.04] text-white/90 hover:border-cyan-400/60 hover:bg-cyan-950/40 hover:text-cyan-200'
+                    }`}
+                    title={`Click to view ${pill.name} specifications`}
+                    aria-expanded={isActive}
+                  >
+                    <span className="font-medium">{pill.name}</span>
+                    <span
+                      className={`inline-flex items-center justify-center text-[10px] px-1.5 py-0.5 rounded-full font-bold transition-all ${
+                        isActive
+                          ? 'bg-cyan-400 text-black shadow-[0_0_8px_#00D1FF]'
+                          : 'bg-white/10 text-cyan-400 group-hover:bg-cyan-400/20'
+                      }`}
+                    >
+                      {pill.subItems?.length}
+                    </span>
+                    <ChevronDown
+                      className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                        isActive ? 'rotate-180 text-cyan-300' : 'text-slate-400 group-hover:text-cyan-300'
+                      }`}
+                    />
+                  </button>
+                );
+              }
+
+              return (
+                <button
+                  key={pill.id}
+                  type="button"
+                  onClick={() => setActivePillId(null)}
+                  className="inline-flex items-center px-3 py-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] text-white/85 text-xs font-mono tracking-wide backdrop-blur-md hover:border-white/20 hover:text-white transition-colors cursor-default"
+                >
+                  {pill.name}
+                </button>
+              );
+            })}
           </motion.div>
 
-          {/* Technical Credentials Grid */}
-          <motion.div
-            className="grid grid-cols-2 sm:grid-cols-4 gap-4 w-full max-w-xl mb-8 pt-5 border-t border-white/[0.08]"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.25 }}
-          >
-            {METRICS.map((m) => (
-              <div key={m.label} className="flex flex-col">
-                <span className="text-[10px] font-mono uppercase tracking-widest text-[#8BAAB8] mb-1">
-                  {m.label}
-                </span>
-                <span className="text-xs font-bold text-white tracking-tight">
-                  {m.value}
-                </span>
-              </div>
-            ))}
-          </motion.div>
+          {/* Interactive Sub-items Expansion Tray */}
+          <AnimatePresence mode="wait">
+            {activeCategory && activeCategory.subItems && (
+              <motion.div
+                key={activeCategory.id}
+                initial={{ opacity: 0, y: -8, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, y: -8, height: 0 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="overflow-hidden w-full max-w-xl mb-8"
+              >
+                <div className="p-4 rounded-xl border border-cyan-500/40 bg-gradient-to-br from-[#061826]/90 via-[#03111b]/95 to-black/95 backdrop-blur-xl shadow-[0_10px_35px_rgba(0,0,0,0.7),0_0_25px_rgba(0,209,255,0.15)]">
+                  <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-cyan-500/20">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#00D1FF]" />
+                      <span className="text-[11px] font-mono font-bold tracking-[0.18em] text-cyan-300 uppercase">
+                        {activeCategory.name} Varieties & Specifications
+                      </span>
+                      <span className="text-[10px] font-mono text-cyan-300 bg-cyan-950/80 px-2 py-0.5 rounded-md border border-cyan-500/30">
+                        {activeCategory.subItems.length} options
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setActivePillId(null)}
+                      className="text-slate-400 hover:text-white px-2 py-0.5 rounded-md hover:bg-white/10 transition-colors text-xs font-mono cursor-pointer"
+                      aria-label="Close"
+                      title="Close tray"
+                    >
+                      ✕
+                    </button>
+                  </div>
+
+                  <div className="flex flex-wrap gap-2">
+                    {activeCategory.subItems.map((sub, idx) => (
+                      <span
+                        key={sub}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-400/25 bg-cyan-950/40 text-cyan-50 text-xs font-mono tracking-wide hover:border-cyan-400/60 hover:bg-cyan-900/50 hover:text-white transition-all duration-150 shadow-[0_2px_8px_rgba(0,0,0,0.3)]"
+                      >
+                        <span className="text-cyan-400 text-[10px] font-bold">0{idx + 1}</span>
+                        <span>{sub}</span>
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+         
 
           {/* Call-to-Action Buttons */}
           <motion.div
@@ -170,39 +285,16 @@ export default function CardHeroSection({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            <Link
-              href="/contact"
-              className="px-8 py-4 rounded-xl bg-cyan-400 hover:bg-cyan-300 text-black font-extrabold text-xs tracking-[0.2em] uppercase transition-all duration-200 shadow-[0_0_25px_rgba(0,209,255,0.4)] hover:shadow-[0_0_35px_rgba(0,209,255,0.6)] hover:scale-105 flex items-center gap-2"
-            >
-              <span>Request Material Samples</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+            
 
             <a
               href="mailto:rtpt@juiglobal.com?subject=Card Raw Materials Inquiry"
-              className="px-6 py-4 rounded-xl border border-white/20 bg-white/5 text-white hover:bg-white/10 hover:border-white/40 font-bold text-xs tracking-[0.15em] uppercase transition-all duration-200 flex items-center gap-2 backdrop-blur-md"
+              className="px-6 py-4 rounded-xl border border-white/20 bg-white/5 text-white/90 hover:bg-white/10 hover:border-cyan-400/50 hover:text-cyan-300 font-mono text-xs sm:text-sm normal-case transition-all duration-200 flex items-center gap-2.5 backdrop-blur-md group"
             >
-              <Mail className="w-4 h-4 text-cyan-400" />
-              <span>rtpt@juiglobal.com</span>
+              <Mail className="w-4 h-4 text-cyan-400 group-hover:scale-110 transition-transform" />
+              <span className="lowercase">rtpt@juiglobal.com</span>
             </a>
           </motion.div>
-        </div>
-
-        {/* Floating HUD Indicator on bottom-right */}
-        <div className="absolute bottom-6 right-6 sm:right-10 z-30 hidden sm:flex items-center gap-3 rounded-full border border-white/[0.08] bg-black/60 px-4 py-2 backdrop-blur-md pointer-events-auto">
-          <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#00D1FF]" />
-          <span className="text-[11px] font-mono text-white/80">3D Smart Card Substrate</span>
-          <button
-            type="button"
-            onClick={() => setIsRotating(!isRotating)}
-            className="text-white/60 hover:text-cyan-400 transition-colors p-0.5 cursor-pointer ml-1"
-            title="Toggle 3D Rotation"
-          >
-            <RotateCw
-              className={`w-3.5 h-3.5 ${isRotating ? 'animate-spin' : ''}`}
-              style={{ animationDuration: '6s' }}
-            />
-          </button>
         </div>
       </div>
 

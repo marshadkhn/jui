@@ -311,6 +311,7 @@ const AnimatingEarthGroup = ({
   onSelectLocation,
   onScreenPosChange,
   onHoverCompany,
+  onDefaultPosChange,
   onDebugInfo,
 }: {
   smoothSize: MotionValue<number>;
@@ -330,6 +331,7 @@ const AnimatingEarthGroup = ({
   onSelectLocation?: (id: number | null) => void;
   onScreenPosChange?: (pos: { x: number; y: number } | null) => void;
   onHoverCompany?: (company: PrincipalCompany | null, pos?: { x: number; y: number } | null) => void;
+  onDefaultPosChange?: (pos: { x: number; y: number } | null) => void;
   onDebugInfo?: (info: string) => void;
 }) => {
   const groupRef = useRef<THREE.Group>(null);
@@ -363,6 +365,7 @@ const AnimatingEarthGroup = ({
         onSelectLocation={onSelectLocation}
         onScreenPosChange={onScreenPosChange}
         onHoverCompany={onHoverCompany}
+        onDefaultPosChange={onDefaultPosChange}
         onDebugInfo={onDebugInfo}
       />
     </group>
@@ -373,8 +376,8 @@ const AnimatingEarthGroup = ({
 const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number> }) => {
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
-  // 📍 Active location — starts on the default marker so its info card is open on arrival
-  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(DEFAULT_LOCATION_ID);
+  // 📍 Active location — null by default; opens only when clicked
+  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
   const selectedCompany = useMemo<PrincipalCompany | null>(
     () => getLocationCompany(selectedLocationId),
     [selectedLocationId]
@@ -382,6 +385,9 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
   const [screenPos, setScreenPos] = useState<{ x: number; y: number } | null>(null);
   const [hoveredCompany, setHoveredCompany] = useState<PrincipalCompany | null>(null);
   const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null);
+  const [defaultPos, setDefaultPos] = useState<{ x: number; y: number } | null>(null);
+  const [inPositionOne, setInPositionOne] = useState(true);
+  const defaultCompany = useMemo(() => getLocationCompany(DEFAULT_LOCATION_ID), []);
   const [debugClickInfo, setDebugClickInfo] = useState<string>('Click on any glowing red dot on the globe to inspect');
 
   const handleHoverCompany = useCallback((company: PrincipalCompany | null, pos?: { x: number; y: number } | null) => {
@@ -406,6 +412,17 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
       const dx = Math.abs(pos.x - prev.x);
       const dy = Math.abs(pos.y - prev.y);
       if (dx < 0.4 && dy < 0.4) return prev;
+      return pos;
+    });
+  }, []);
+
+  const handleDefaultPosChange = useCallback((pos: { x: number; y: number } | null) => {
+    setDefaultPos((prev) => {
+      if (!pos && !prev) return prev;
+      if (!pos || !prev) return pos ?? null;
+      const dx = Math.abs(pos.x - prev.x);
+      const dy = Math.abs(pos.y - prev.y);
+      if (dx < 0.5 && dy < 0.5) return prev;
       return pos;
     });
   }, []);
@@ -454,13 +471,10 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
       return;
     }
 
-    const inPositionOne = v >= INDIA_POSITION_1_START && v < INDIA_POSITION_1_END;
+    const pos1 = v >= INDIA_POSITION_1_START && v < INDIA_POSITION_1_END;
+    setInPositionOne(pos1);
 
-    if (inPositionOne) {
-      if (selectedLocationId !== DEFAULT_LOCATION_ID) {
-        setSelectedLocationId(DEFAULT_LOCATION_ID);
-      }
-    } else if (selectedLocationId !== null) {
+    if (!pos1 && selectedLocationId !== null) {
       setSelectedLocationId(null);
       setScreenPos(null);
     }
@@ -734,6 +748,7 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
                   onSelectLocation={handleSelectLocation}
                   onScreenPosChange={handleScreenPosChange}
                   onHoverCompany={handleHoverCompany}
+                  onDefaultPosChange={handleDefaultPosChange}
                   onDebugInfo={setDebugClickInfo}
                 />
               </Float>
@@ -742,11 +757,19 @@ const IndiaSectionStage = ({ globalScroll }: { globalScroll: MotionValue<number>
         )}
       </div>
 
-      {/* 💬 Simple Plain Text Short Company Name Hover Tooltip */}
-      <LocationHoverTooltip
-        company={hoveredCompany}
-        screenPos={hoverPos}
-      />
+      {/* 💬 Company Logo Tooltip: shows on hover, or by default for the featured marker on start; opens card on click */}
+      {(() => {
+        const activeTooltipCompany = hoveredCompany ?? (inPositionOne && !selectedLocationId ? defaultCompany : null);
+        const activeTooltipPos = hoveredCompany ? hoverPos : (inPositionOne && !selectedLocationId ? defaultPos : null);
+
+        return (
+          <LocationHoverTooltip
+            company={activeTooltipCompany}
+            screenPos={activeTooltipPos}
+            onClick={activeTooltipCompany ? () => handleSelectLocation(activeTooltipCompany.id) : undefined}
+          />
+        );
+      })()}
 
       {/* 🏷️ Sleek Company Pointer Line & Callout Badge */}
       <CompanyPointerCallout

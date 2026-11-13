@@ -81,10 +81,13 @@ export type EarthIndiaModelProps = React.ComponentProps<'group'> & {
   selectedLocationId?: number | null;
   /** This location is drawn with the needle icon instead of a plain dot */
   needleLocationId?: number | null;
+  /** Id of the default marker for initial start tooltip */
+  defaultLocationId?: number | null;
   onSelectCompany?: (company: PrincipalCompany | null, point3D?: THREE.Vector3) => void;
   onSelectLocation?: (id: number | null) => void;
   onScreenPosChange?: (pos: { x: number; y: number } | null) => void;
   onHoverCompany?: (company: PrincipalCompany | null, pos?: { x: number; y: number } | null) => void;
+  onDefaultPosChange?: (pos: { x: number; y: number } | null) => void;
   onDebugInfo?: (info: string) => void;
 };
 
@@ -97,10 +100,12 @@ export function EarthIndiaModel({
   selectedCompany = null,
   selectedLocationId = null,
   needleLocationId = null,
+  defaultLocationId = 9,
   onSelectCompany,
   onSelectLocation,
   onScreenPosChange,
   onHoverCompany,
+  onDefaultPosChange,
   onDebugInfo,
   ...props
 }: EarthIndiaModelProps) {
@@ -572,6 +577,36 @@ export function EarthIndiaModel({
         }
       } else {
         onHoverCompany(null, null);
+      }
+    }
+
+    // 📍 Project the default location marker for initial start tooltip
+    const targetDefaultId = defaultLocationId ?? needleLocationId ?? 9;
+    const defaultMarker = markersById[targetDefaultId];
+    if (defaultMarker && onDefaultPosChange && liveGlobe) {
+      const worldPos = defaultMarker.getWorldPosition(new THREE.Vector3());
+      const globeCenter = liveGlobe.geometry.boundingSphere
+        ? liveGlobe.geometry.boundingSphere.center.clone().applyMatrix4(liveGlobe.matrixWorld)
+        : liveGlobe.getWorldPosition(new THREE.Vector3());
+
+      const surfaceNormal = worldPos.clone().sub(globeCenter).normalize();
+      const viewDir = state.camera.position.clone().sub(worldPos).normalize();
+
+      const projected = worldPos.clone().project(state.camera);
+      const rect = state.gl.domElement.getBoundingClientRect();
+      const x = rect.left + (projected.x * 0.5 + 0.5) * rect.width;
+      const y = rect.top + (-projected.y * 0.5 + 0.5) * rect.height;
+
+      const facing = surfaceNormal.dot(viewDir) > -0.08;
+      const onScreen =
+        projected.z < 1 &&
+        x > -40 && x < window.innerWidth + 40 &&
+        y > -40 && y < window.innerHeight + 40;
+
+      if (facing && onScreen) {
+        onDefaultPosChange({ x, y });
+      } else {
+        onDefaultPosChange(null);
       }
     }
   });

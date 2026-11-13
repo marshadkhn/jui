@@ -66,6 +66,7 @@ const AnimatingEarthGroup = ({
   onSelectLocation,
   onScreenPosChange,
   onHoverCompany,
+  onDefaultPosChange,
   onDebugInfo,
 }: {
   smoothSize: MotionValue<number>;
@@ -85,6 +86,7 @@ const AnimatingEarthGroup = ({
   onSelectLocation?: (id: number | null) => void;
   onScreenPosChange?: (pos: { x: number; y: number } | null) => void;
   onHoverCompany?: (company: PrincipalCompany | null, pos?: { x: number; y: number } | null) => void;
+  onDefaultPosChange?: (pos: { x: number; y: number } | null) => void;
   onDebugInfo?: (info: string) => void;
 }) => {
   const groupRef = useRef<THREE.Group>(null);
@@ -118,6 +120,7 @@ const AnimatingEarthGroup = ({
         onSelectLocation={onSelectLocation}
         onScreenPosChange={onScreenPosChange}
         onHoverCompany={onHoverCompany}
+        onDefaultPosChange={onDefaultPosChange}
         onDebugInfo={onDebugInfo}
       />
     </group>
@@ -139,8 +142,8 @@ export const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>(({
   const [isMobile, setIsMobile] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Active location selection
-  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(DEFAULT_LOCATION_ID);
+  // Active location selection (initially null so no card is open until clicked)
+  const [selectedLocationId, setSelectedLocationId] = useState<number | null>(null);
   const selectedCompany = useMemo<PrincipalCompany | null>(
     () => getLocationCompany(selectedLocationId),
     [selectedLocationId]
@@ -148,6 +151,9 @@ export const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>(({
   const [screenPos, setScreenPos] = useState<{ x: number; y: number } | null>(null);
   const [hoveredCompany, setHoveredCompany] = useState<PrincipalCompany | null>(null);
   const [hoverPos, setHoverPos] = useState<{ x: number; y: number } | null>(null);
+  const [defaultPos, setDefaultPos] = useState<{ x: number; y: number } | null>(null);
+  const [inPositionOne, setInPositionOne] = useState(true);
+  const defaultCompany = useMemo(() => getLocationCompany(DEFAULT_LOCATION_ID), []);
 
   const STORAGE_KEY = 'jui_earth_india_standalone_debug_v2';
 
@@ -222,6 +228,17 @@ export const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>(({
     });
   }, []);
 
+  const handleDefaultPosChange = useCallback((pos: { x: number; y: number } | null) => {
+    setDefaultPos((prev) => {
+      if (!pos && !prev) return prev;
+      if (!pos || !prev) return pos ?? null;
+      const dx = Math.abs(pos.x - prev.x);
+      const dy = Math.abs(pos.y - prev.y);
+      if (dx < 0.5 && dy < 0.5) return prev;
+      return pos;
+    });
+  }, []);
+
   const userPickedRef = useRef(false);
   const pickScrollRef = useRef(0);
 
@@ -262,15 +279,12 @@ export const IndiaSection = forwardRef<HTMLElement, IndiaSectionProps>(({
       return;
     }
 
-    const inPositionOne = isStandalone
+    const pos1 = isStandalone
       ? (v < 0.35)
       : (v >= 0.74 && v < 0.835);
+    setInPositionOne(pos1);
 
-    if (inPositionOne) {
-      if (selectedLocationId !== DEFAULT_LOCATION_ID) {
-        setSelectedLocationId(DEFAULT_LOCATION_ID);
-      }
-    } else if (selectedLocationId !== null) {
+    if (!pos1 && selectedLocationId !== null) {
       setSelectedLocationId(null);
       setScreenPos(null);
     }
@@ -564,6 +578,7 @@ const P3_POSZ = ${p3PosZ.toFixed(3)};`;
                   onSelectLocation={handleSelectLocation}
                   onScreenPosChange={handleScreenPosChange}
                   onHoverCompany={handleHoverCompany}
+                  onDefaultPosChange={handleDefaultPosChange}
                 />
               </Float>
             </Suspense>
@@ -571,11 +586,19 @@ const P3_POSZ = ${p3PosZ.toFixed(3)};`;
         )}
       </div>
 
-      {/* 💬 Simple Plain Text Short Company Name Hover Tooltip */}
-      <LocationHoverTooltip
-        company={hoveredCompany}
-        screenPos={hoverPos}
-      />
+      {/* 💬 Company Logo Tooltip: shows on hover, or by default for the featured marker on start; opens card on click */}
+      {(() => {
+        const activeTooltipCompany = hoveredCompany ?? (inPositionOne && !selectedLocationId ? defaultCompany : null);
+        const activeTooltipPos = hoveredCompany ? hoverPos : (inPositionOne && !selectedLocationId ? defaultPos : null);
+
+        return (
+          <LocationHoverTooltip
+            company={activeTooltipCompany}
+            screenPos={activeTooltipPos}
+            onClick={activeTooltipCompany ? () => handleSelectLocation(activeTooltipCompany.id) : undefined}
+          />
+        );
+      })()}
 
       {/* 🏷️ Sleek Company Pointer Line & Callout Badge */}
       <CompanyPointerCallout

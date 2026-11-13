@@ -133,7 +133,11 @@ function MeshContent({ isHovered, mouseWorld }: { isHovered: boolean; mouseWorld
   );
 }
 
-export default function PaperWindMesh() {
+interface PaperWindMeshProps {
+  className?: string;
+}
+
+export default function PaperWindMesh({ className }: PaperWindMeshProps = {}) {
   const [isHovered, setIsHovered] = useState(false);
   const [mouseWorld, setMouseWorld] = useState(new THREE.Vector2(-100, -100));
   const [mounted, setMounted] = useState(false);
@@ -153,10 +157,14 @@ export default function PaperWindMesh() {
     setMouseWorld(new THREE.Vector2(xNorm * 14, yNorm * 7.875));
   };
 
+  const containerClasses =
+    className ||
+    "relative w-full aspect-[16/9] max-h-[820px] min-h-[400px] sm:min-h-[500px] my-0 cursor-pointer bg-transparent overflow-visible flex items-center justify-center";
+
   return (
     <div
       ref={containerRef}
-      className="relative w-full aspect-[16/9] max-h-[820px] min-h-[400px] sm:min-h-[500px] my-0 cursor-pointer bg-transparent overflow-visible flex items-center justify-center"
+      className={containerClasses}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
         setIsHovered(false);

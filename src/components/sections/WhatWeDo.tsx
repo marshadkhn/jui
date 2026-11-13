@@ -167,21 +167,21 @@ const WhatWeDo = () => {
 
         {/* HTML Content (Text and UI) - padded to align with the standard design grid */}
         <motion.div
-          className="absolute inset-0 w-full h-full flex flex-col lg:flex-row items-center justify-between px-6 sm:px-16 lg:px-40 z-20 pointer-events-none"
+          className="absolute inset-0 w-full h-full flex flex-col lg:flex-row items-center justify-between px-6 sm:px-16 lg:px-24 xl:px-36 z-20 pointer-events-none"
           style={{ opacity, y: yOffset, scale: scaleEffect }}
         >
           {/* Spacer on the left to push text to the right */}
-          <div className="hidden lg:block lg:w-1/2 pointer-events-none" />
+          <div className="hidden lg:block lg:flex-1 pointer-events-none" />
 
           <div
-            className="max-w-xl z-10 text-center lg:text-right flex flex-col items-center lg:items-end w-full lg:w-1/2 pointer-events-auto"
+            className="max-w-xl md:max-w-2xl lg:max-w-3xl xl:max-w-4xl z-10 text-center lg:text-right flex flex-col items-center lg:items-end w-full lg:w-auto pointer-events-auto"
           >
             <div className="flex items-center gap-6 mb-8">
               <div className="hidden lg:block w-16 h-[3px] bg-white opacity-90" />
               <h2 className="text-white text-5xl lg:text-7xl font-bold tracking-tight">What we do</h2>
             </div>
 
-            <p className="text-white text-xl lg:text-2xl leading-[1.4] mb-12">
+            <p className="text-white text-xl lg:text-2xl leading-[1.4] mb-12 w-[75%]">
               Representation, consulting, and trading services for world-renowned companies in India’s currency and security printing, security paper manufacturing, and minting industries.
             </p>
 

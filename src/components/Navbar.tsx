@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import JuiLogo from './shared/JuiLogo';
 
@@ -51,6 +52,7 @@ const menuItems = [
 const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const isCardPage = pathname === '/card' || pathname?.startsWith('/card');
 
   const handleItemClick = (e: React.MouseEvent<HTMLAnchorElement>, item: { name: string; href: string }) => {
     if (item.name === 'PAINT') {
@@ -65,9 +67,26 @@ const Navbar = () => {
 
   return (
     <nav className="absolute top-0 left-0 w-full z-50 flex items-center justify-between px-6 md:px-10 py-6 md:py-8 bg-transparent pointer-events-none transition-all duration-300">
-      {/* Logo with 4-Color CMYK Hover Effect */}
+      {/* Logo: RT Print Technology Logo on Card page, JUI Logo with CMYK hover effect on all other pages */}
       <div className="flex-1 pointer-events-auto">
-        <JuiLogo width={90} height={40} imageClassName="h-14 md:h-16 w-auto" />
+        {isCardPage ? (
+          <Link
+            href="/"
+            className="relative group inline-block p-1 transition-all duration-300"
+            title="RT Print Technology"
+          >
+            <Image
+              src="/rtprint.png"
+              alt="RT Print Technology Logo"
+              width={300}
+              height={84}
+              className="h-14 md:h-18 lg:h-20 w-auto object-contain brightness-110 group-hover:brightness-125 transition-all duration-300 group-hover:scale-105 group-hover:drop-shadow-[0_0_20px_rgba(0,209,255,0.4)]"
+              priority
+            />
+          </Link>
+        ) : (
+          <JuiLogo width={90} height={40} imageClassName="h-14 md:h-16 w-auto" />
+        )}
       </div>
 
       {/* Navigation Links */}
