@@ -199,6 +199,7 @@ export const defaultMintItems: ProductItem[] = [
     city: 'Kornwestheim',
     description: 'Laser machines and systems engineered for high-precision minting, coin die engraving, and currency security tooling.',
     website: 'https://acsyslaser.com/en/industries/mint-print/',
+    imageSrc: '/JUI Logos/1.png',
   },
   {
     id: 'mint-2',
@@ -217,6 +218,7 @@ export const defaultMintItems: ProductItem[] = [
     city: 'Subbiano, AR',
     description: 'Specialized hydraulic medal and coin stamping presses with extreme precision tonnage control for high-relief minting.',
     website: 'https://www.locatellimeccanica.com/',
+    imageSrc: '/JUI Logos/13.png',
   },
   {
     id: 'mint-4',
@@ -226,6 +228,7 @@ export const defaultMintItems: ProductItem[] = [
     city: 'Pessac',
     description: 'Automated optical and laser surface inspection systems delivering 100% real-time quality control for blank and struck coins.',
     website: 'https://proditec.com/minting-solutions/',
+    imageSrc: '/JUI Logos/17.png',
   },
   {
     id: 'mint-5',
@@ -235,6 +238,7 @@ export const defaultMintItems: ProductItem[] = [
     city: 'Verna, Goa',
     description: 'Automated industrial coin pouch and sachet packaging machinery ensuring secure, high-speed wrapping and vault dispatch.',
     website: 'https://www.syntegon.com/',
+    imageSrc: '/JUI Logos/19.png',
   },
 ];
 
@@ -267,6 +271,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Nuertingen',
     description: 'Kugler-Womako passport assembly & bookmaking machines and Bielomatik high-security banknote sheet finishing lines.',
     website: 'https://www.bwpapersystems.com/products/passport-machines',
+    imageSrc: '/JUI Logos/3.png',
   },
   {
     id: 'sec-4',
@@ -276,6 +281,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Bad Rappenau',
     description: 'Specialized precision perforating and punching machinery engineered specifically for postage stamps and security certificates.',
     website: 'https://wista.com/en/',
+    imageSrc: '/JUI Logos/9.png',
   },
   {
     id: 'sec-5',
@@ -285,6 +291,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Kirchheim bei Munich',
     description: 'Patented high-speed laser micro-perforation systems creating invisible and tactile anti-counterfeiting security features.',
     website: 'https://www.microlasertech.com/en/industries/laser-system-currency-identity/',
+    imageSrc: '/JUI Logos/8.png',
   },
   {
     id: 'sec-6',
@@ -294,6 +301,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Martorelles, Barcelona',
     description: 'Advanced narrow-to-mid web offset printing presses customized for tax stamps, security labels, and lottery tickets.',
     website: 'https://www.rotatek.com/',
+    imageSrc: '/JUI Logos/23.png',
   },
   {
     id: 'sec-7',
@@ -303,6 +311,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Schwelm',
     description: 'Fully automatic modular production lines for smart cards, contactless inlays, e-passports, and RFID security credentials.',
     website: 'https://www.melzermaschinenbau.de/en/',
+    imageSrc: '/JUI Logos/7.png',
   },
   {
     id: 'sec-8',
@@ -312,6 +321,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Shakopee, MN',
     description: 'World-leading central card issuance, high-speed chip encoding, laser engraving, and biometric personalization machines.',
     website: 'https://www.entrust.com/',
+    imageSrc: '/JUI Logos/20.png',
   },
   {
     id: 'sec-9',
@@ -321,6 +331,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Mumbai',
     description: 'Industrial high-resolution inkjet printing and serialized track-and-trace systems for security printers and paper mills.',
     website: 'https://www.condotsystems.com/',
+    imageSrc: '/JUI Logos/18.png',
   },
   {
     id: 'sec-10',
@@ -330,6 +341,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Neuwied',
     description: 'High-speed converting machinery engineered for tamper-evident, ballot, and confidential security envelopes.',
     website: 'https://www.bwconverting.com/brand/w-d',
+    imageSrc: '/JUI Logos/2.png',
   },
   {
     id: 'sec-11',
@@ -349,6 +361,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Ornago, MB',
     description: 'Complete pre-press and electronic chemical finishing systems for high-security intaglio and gravure printing cylinders.',
     website: 'https://www.acigraf.com/',
+    imageSrc: '/JUI Logos/12.png',
   },
   {
     id: 'sec-13',
@@ -358,6 +371,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Ceprano, FR',
     description: 'Specialized web-fed photogravure and combination printing machines tailored for postage stamps and security labels.',
     website: 'http://www.tecno-print.com/en/index/home-4.html',
+    imageSrc: '/JUI Logos/15.png',
   },
   {
     id: 'sec-14',
@@ -367,6 +381,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'High Wycombe',
     description: 'Ultra-high-precision inline rotary comb and pin perforation tools for postage stamp sheets and booklets.',
     website: 'https://www.apsworldwide.com/',
+    imageSrc: '/JUI Logos/24.png',
   },
   {
     id: 'sec-15',
@@ -376,6 +391,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Bollington',
     description: 'Specialist secure coated, gummed, and covert-taggant paper substrates engineered for postage stamps and tax banderols.',
     website: 'https://www.tullisrussell.com/',
+    imageSrc: '/JUI Logos/25.png',
   },
   {
     id: 'sec-16',
@@ -385,6 +401,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Changhua County',
     description: 'Electro-mechanical laser and diamond engraving machinery producing microscopic relief detail for gravure security cylinders.',
     website: 'https://dma-innotec.com/',
+    imageSrc: '/JUI Logos/26.png',
   },
   {
     id: 'sec-17',
@@ -394,6 +411,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Gossau SG',
     description: 'Precision hot-foil stamping and optical variable device (OVD) hologram registration machines for banknotes and passports.',
     website: 'https://www.gietz.ch/en/',
+    imageSrc: '/JUI Logos/27.png',
   },
   {
     id: 'sec-18',
@@ -403,6 +421,7 @@ export const defaultSecurityItems: ProductItem[] = [
     city: 'Boxmeer',
     description: 'Direct laser engraving prepress printing solutions, digital laser exposure, and high-definition screen technology.',
     website: 'https://www.spgprints.com/industrial-printing-label-screen-printing',
+    imageSrc: '/JUI Logos/28.png',
   },
 ];
 
@@ -580,10 +599,46 @@ export const CountryFlagBadge: React.FC<{ country?: string; className?: string }
   );
 };
 
+// Mapping of company name to official logo (retaining Currency folder logos, pulling remaining from JUI Logos)
+const COMPANY_LOGOS_MAP: Record<string, string> = {
+  'ACSYS Lasertechnik GmbH': '/JUI Logos/1.png',
+  'BW Converting GmbH (formerly W+D)': '/JUI Logos/2.png',
+  'BW Converting GmbH': '/JUI Logos/2.png',
+  'BW Papersystems Stuttgart GmbH': '/JUI Logos/3.png',
+  'GTS GmbH': '/Currency/GTS GmbH.png',
+  'I.T.G. GmbH Graphic Products': '/Currency/I.T.G. GmbH Graphic Products.png',
+  'MABEG Systems GmbH': '/Currency/MABEG Systems GmbH.png',
+  'Melzer Maschinenbau GmbH': '/JUI Logos/7.png',
+  'Micro Laser Technology GmbH': '/JUI Logos/8.png',
+  'Paul Leibinger GmbH & Co. KG': '/Currency/Paul Leibinger GmbH & Co. KG.png',
+  'WISTA GmbH': '/JUI Logos/9.png',
+  'Niemann': '/JUI Logos/10.png',
+  'Renzmann': '/JUI Logos/11.png',
+  'ACIGRAF Graphic Equipments S.r.l.': '/JUI Logos/12.png',
+  'Locatelli Meccanica S.r.l.': '/JUI Logos/13.png',
+  'PARVIS Systems and Services S.p.A.': '/Currency/PARVIS Systems and Services S.p.A.png',
+  'Tecnoprint S.r.l.': '/JUI Logos/15.png',
+  'IN-CORE Systemes': '/JUI Logos/16.png',
+  'PRODITEC': '/JUI Logos/17.png',
+  'CONDOT Systems Pvt. Ltd.': '/JUI Logos/18.png',
+  'Syntegon Technology India Private Limited': '/JUI Logos/19.png',
+  'ENTRUST Corporation': '/JUI Logos/20.png',
+  'KOVALUS Separation Solutions': '/Currency/KOVALUS Separation Solutions.png',
+  'GWT GmbH': '/Currency/GWT GmbH.png',
+  'ROTATEK Printing and Packaging Technologies S.L.': '/JUI Logos/23.png',
+  'APS Engineering Ltd': '/JUI Logos/24.png',
+  'Tullis Russell': '/JUI Logos/25.png',
+  'DMA Innotec international ,Ltd': '/JUI Logos/26.png',
+  'Gietz': '/JUI Logos/27.png',
+  'SPGPrints BV': '/JUI Logos/28.png',
+  'SPGPrints': '/JUI Logos/28.png',
+};
+
 const PartnerProductCard: React.FC<{ item: ProductItem; className?: string }> = ({ item, className = "" }) => {
   const displayTitle = item.title || item.companyName || 'PARTNER';
   const displayName = item.companyName || item.title || '';
-  const hasCustomLogo = Boolean(item.imageSrc && item.imageSrc.trim().length > 0);
+  const logoSrc = item.imageSrc || (item.companyName ? COMPANY_LOGOS_MAP[item.companyName] : undefined);
+  const hasCustomLogo = Boolean(logoSrc && logoSrc.trim().length > 0);
 
   return (
     <motion.div
@@ -610,7 +665,7 @@ const PartnerProductCard: React.FC<{ item: ProductItem; className?: string }> = 
       <div className="flex-1 w-full flex flex-col items-center justify-center transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-95 py-2 px-2 text-center">
         {hasCustomLogo ? (
           <img
-            src={item.imageSrc}
+            src={logoSrc}
             alt={displayName}
             className="max-h-20 sm:max-h-24 max-w-[88%] w-auto object-contain transition-all duration-300 group-hover:scale-105"
           />
@@ -639,7 +694,7 @@ const PartnerProductCard: React.FC<{ item: ProductItem; className?: string }> = 
         <div className={`w-full flex items-center justify-between flex-shrink-0 h-10 border-b ${CARD_THEME.hoverBorder} pb-1.5`}>
           {hasCustomLogo ? (
             <img
-              src={item.imageSrc}
+              src={logoSrc}
               alt={displayName}
               className="h-7 max-h-7 max-w-[140px] w-auto object-contain object-left"
             />

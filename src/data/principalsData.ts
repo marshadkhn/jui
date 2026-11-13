@@ -24,7 +24,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 1,
     "name": "ACSYS Lasertechnik GmbH",
     "shortName": "ACSYS",
-    "logo": "/currency page/logo1.png",
+    "logo": "/JUI Logos/1.png",
     "segments": [
       "Mint"
     ],
@@ -45,6 +45,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 2,
     "name": "BW Converting GmbH (formerly W+D)",
     "shortName": "BW Converting",
+    "logo": "/JUI Logos/2.png",
     "segments": [
       "Security"
     ],
@@ -65,6 +66,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 3,
     "name": "BW Papersystems Stuttgart GmbH",
     "shortName": "BW Papersystems",
+    "logo": "/JUI Logos/3.png",
     "segments": [
       "Security",
       "Paper Mill"
@@ -153,6 +155,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 7,
     "name": "Melzer Maschinenbau GmbH",
     "shortName": "Melzer",
+    "logo": "/JUI Logos/7.png",
     "segments": [
       "Security"
     ],
@@ -173,6 +176,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 8,
     "name": "Micro Laser Technology GmbH",
     "shortName": "Micro Laser Technology",
+    "logo": "/JUI Logos/8.png",
     "segments": [
       "Security"
     ],
@@ -215,6 +219,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 10,
     "name": "WISTA GmbH",
     "shortName": "WISTA",
+    "logo": "/JUI Logos/9.png",
     "segments": [
       "Security"
     ],
@@ -235,6 +240,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 11,
     "name": "ACIGRAF Graphic Equipments S.r.l.",
     "shortName": "ACIGRAF",
+    "logo": "/JUI Logos/12.png",
     "segments": [
       "Security"
     ],
@@ -255,6 +261,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 12,
     "name": "Locatelli Meccanica S.r.l.",
     "shortName": "Locatelli",
+    "logo": "/JUI Logos/13.png",
     "segments": [
       "Mint"
     ],
@@ -296,6 +303,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 14,
     "name": "Tecnoprint S.r.l.",
     "shortName": "Tecnoprint",
+    "logo": "/JUI Logos/15.png",
     "segments": [
       "Security"
     ],
@@ -316,6 +324,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 15,
     "name": "IN-CORE Systemes",
     "shortName": "IN-CORE",
+    "logo": "/JUI Logos/16.png",
     "segments": [
       "Paper Mill"
     ],
@@ -336,6 +345,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 16,
     "name": "PRODITEC",
     "shortName": "PRODITEC",
+    "logo": "/JUI Logos/17.png",
     "segments": [
       "Mint"
     ],
@@ -356,7 +366,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 17,
     "name": "CONDOT Systems Pvt. Ltd.",
     "shortName": "CONDOT",
-    "logo": "/currency page/logo1.png",
+    "logo": "/JUI Logos/18.png",
     "segments": [
       "Security",
       "Paper Mill"
@@ -378,7 +388,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 18,
     "name": "Syntegon Technology India Private Limited",
     "shortName": "Syntegon",
-    "logo": "/currency page/logo2.png",
+    "logo": "/JUI Logos/19.png",
     "segments": [
       "Mint"
     ],
@@ -399,6 +409,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 19,
     "name": "ENTRUST Corporation",
     "shortName": "ENTRUST",
+    "logo": "/JUI Logos/20.png",
     "segments": [
       "Security"
     ],
@@ -481,7 +492,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 23,
     "name": "ROTATEK Printing and Packaging Technologies S.L.",
     "shortName": "Rotec",
-    "logo": "/currency page/logo1.png",
+    "logo": "/JUI Logos/23.png",
     "segments": [
       "Security"
     ],
@@ -502,6 +513,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 24,
     "name": "APS Engineering Ltd",
     "shortName": "APS Engineering",
+    "logo": "/JUI Logos/24.png",
     "segments": [
       "Security"
     ],
@@ -522,6 +534,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 25,
     "name": "Niemann",
     "shortName": "Niemann",
+    "logo": "/niemann-logo.svg",
     "segments": [
       "Paints"
     ],
@@ -536,13 +549,13 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "notes": "",
     "u": 0.523334,
     "v": 0.789678,
-    "vThree": 0.210322,
-    "logo": "/niemann-logo.svg"
+    "vThree": 0.210322
   },
   {
     "id": 26,
     "name": "Renzmann",
     "shortName": "Renzmann",
+    "logo": "/renzmann-logo.svg",
     "segments": [
       "Paints"
     ],
@@ -557,13 +570,13 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "notes": "",
     "u": 0.521083,
     "v": 0.776626,
-    "vThree": 0.223374,
-    "logo": "/renzmann-logo.svg"
+    "vThree": 0.223374
   },
   {
     "id": 27,
     "name": "Tullis Russell",
     "shortName": "Tullis Russell",
+    "logo": "/JUI Logos/25.png",
     "segments": [
       "Security"
     ],
@@ -584,6 +597,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 28,
     "name": "DMA Innotec international ,Ltd",
     "shortName": "DMA Innotec",
+    "logo": "/JUI Logos/26.png",
     "segments": [
       "Security"
     ],
@@ -604,6 +618,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 29,
     "name": "Gietz",
     "shortName": "Gietz",
+    "logo": "/JUI Logos/27.png",
     "segments": [
       "Security"
     ],
@@ -624,6 +639,7 @@ export const PRINCIPALS_DATA: PrincipalCompany[] = [
     "id": 30,
     "name": "SPGPrints",
     "shortName": "SPGPrints",
+    "logo": "/JUI Logos/28.png",
     "segments": [
       "Security"
     ],
